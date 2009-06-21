@@ -1,0 +1,40 @@
+// Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+// Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+//
+// This file is part of Call of Duty 4 Promod.
+//
+// Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+// Terms of license can be found in LICENSE.md document bundled with the project.
+
+VERSION				"1"
+CONFIG				"C:\trees\cod3\cod3\bin\StringEd.cfg"
+FILENOTES			""
+
+REFERENCE			ATTACK_NAME
+LANG_ENGLISH		"Attack"
+
+REFERENCE			DEFENSE_NAME
+LANG_ENGLISH		"Defense"
+
+REFERENCE			ATTACK_ELIMINATED
+LANG_ENGLISH		"Attack eliminated"
+
+REFERENCE			DEFENSE_ELIMINATED
+LANG_ENGLISH		"Defense eliminated"
+
+REFERENCE			ATTACK_FORFEITED
+LANG_ENGLISH		"Attack forfeited"
+
+REFERENCE			DEFENSE_FORFEITED
+LANG_ENGLISH		"Defense forfeited"
+
+REFERENCE			MPUI_NO_ATTACHMENT
+LANG_ENGLISH		"1. No Attachment"
+
+REFERENCE			MPUI_SILENCER
+LANG_ENGLISH		"2. Silencer"
+
+REFERENCE			INVENTORY
+LANG_ENGLISH		"INVENTORY"
+
+ENDMARKER

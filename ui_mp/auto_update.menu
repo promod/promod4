@@ -1,0 +1,155 @@
+/*
+  Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+  Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+
+  This file is part of Call of Duty 4 Promod.
+
+  Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+  Terms of license can be found in LICENSE.md document bundled with the project.
+*/
+
+#include "ui/menudef.h"
+{
+	menuDef
+	{
+		name	"auconfirm"
+		fullscreen 0
+		rect 204 160 235 135
+		focusColor COLOR_FOCUSED
+		style 1
+		border 1
+		popup
+
+		onESC
+		{
+			close auconfirm
+		}
+
+		itemDef
+		{
+			name acwindow
+			group grpControlbutton
+			rect 0 2 235 135
+			style WINDOW_STYLE_FILLED
+			border 1
+			bordercolor .5 .5 .5 .5
+			forecolor 1 1 1 1
+			backcolor 0 0 0 .85
+			visible 1
+			decoration
+		}
+		itemDef
+		{
+			name acwindow2
+			group grpControlbutton
+			rect 2 4 231 20
+			style WINDOW_STYLE_FILLED
+			border 1
+			bordercolor .1 .1 .1 .2
+			forecolor 1 1 1 1
+			backcolor 1 1 .3 .3
+			visible 1
+			decoration
+		}
+		itemDef
+		{
+			name acconfirm
+			text "Call of Duty 4 Promod"
+			style 0
+			textscale .25
+			textstyle 3
+			rect 116 20 110 20
+			textalign ITEM_ALIGN_CENTER
+			textalignx -55
+			textaligny 0
+			textfont UI_FONT_NORMAL
+			decoration
+			forecolor 1 1 1 1
+			visible 1
+		}
+		itemDef
+		{
+			name oldtitle
+			text "Current Promod Version: 4.42"
+			style 0
+			textscale .25
+			textstyle 3
+			rect 30 40 110 20
+			textalign ITEM_ALIGN_LEFT
+			textalignx 0
+			textaligny 0
+			textfont UI_FONT_NORMAL
+			decoration
+			forecolor 1 1 1 1
+			visible 1
+		}
+		itemDef
+		{
+			name newtitle
+			text "Credits:"
+			style 0
+			textscale .25
+			textstyle 3
+			rect 30 55 95 20
+			textalign ITEM_ALIGN_LEFT
+			textalignx 0
+			textaligny 0
+			textfont UI_FONT_NORMAL
+			decoration
+			forecolor 1 1 1 1
+			visible 1
+		}
+		itemDef
+		{
+			name newtitle
+			text "Trivve, Ingram, raf1, MavLP, bullet-worm"
+			style 0
+			textscale .25
+			textstyle 3
+			rect 30 70 95 20
+			textalign ITEM_ALIGN_LEFT
+			textalignx 0
+			textaligny 0
+			textfont UI_FONT_NORMAL
+			decoration
+			forecolor 1 1 1 1
+			visible 1
+		}
+		itemDef
+		{
+			name newtitle
+			text "Big thanks to all beta testers!"
+			style 0
+			textscale .25
+			textstyle 3
+			rect 30 80 95 20
+			textalign ITEM_ALIGN_LEFT
+			textalignx 0
+			textaligny 0
+			textfont UI_FONT_NORMAL
+			decoration
+			forecolor 1 1 1 1
+			visible 1
+		}
+		itemDef
+		{
+			name no
+			text "OK"
+			type 1
+			textscale .3
+			style		WINDOW_STYLE_FILLED
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			rect 90 95 50 20
+			textalign ITEM_ALIGN_CENTER
+			textaligny 15
+			textfont UI_FONT_NORMAL
+			forecolor .9 .9 .95 1
+			visible 1
+			mouseEnter
+			{
+				play "mouse_over";
+			}
+			action { play "mouse_click"; close auconfirm }
+		}
+	}
+}

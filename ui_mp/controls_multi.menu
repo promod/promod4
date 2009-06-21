@@ -1,0 +1,82 @@
+/*
+  Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+  Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+
+  This file is part of Call of Duty 4 Promod.
+
+  Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+  Terms of license can be found in LICENSE.md document bundled with the project.
+*/
+
+#include "ui/menudef.h"
+#include "ui_mp/common_macro.inc"
+#define OPTIONS_STYLE 1
+#include "ui_mp/menustyle.inc"
+#include "ui/choices_setup_common.menu"
+
+{
+	menuDef
+	{
+		name			"controls_multi"
+		fullScreen		0
+		rect			0 0 640 480
+		focusColor		COLOR_FOCUSED
+		soundloop		""
+		onOpen
+		{
+			exec "setfromdvar ui_name name";
+			exec "setfromdvar ui_sensitivity sensitivity";
+
+			close options_look;
+			close options_move;
+			close options_shoot;
+			close options_graphics;
+			close options_sound;
+			close options_game;
+			close options_view;
+			close options_defaults;
+			close options_driverinfo;
+			close options_credits;
+			close options_graphics_defaults;
+			close options_graphics_texture;
+			close options_control_defaults;
+
+			setLocalVarBool ui_hideBack 1;
+		}
+		onClose
+		{
+			exec "setfromdvar sensitivity ui_sensitivity";
+			setLocalVarBool ui_hideBack 0;
+		}
+		onESC
+		{
+			close self;
+		}
+
+		#include "ui_mp/leftside_controls.inc"
+
+		CHOICE_SECTION_TITLE( 21, "Multiplayer" )
+
+		CHOICE_BIND( 22, "@MENU_CHAT", "chatmodepublic", ; )
+		CHOICE_BIND( 23, "@MENU_TEAM_CHAT", "chatmodeteam", ; )
+		CHOICE_BIND( 24, "@MENU_QUICK_CHAT", "mp_QuickMessage", ; )
+
+		CHOICE_SECTION_TITLE( 25, "Promod Binds" )
+
+		CHOICE_BIND( 26, "Change Class", "openscriptmenu quickpromod X", ; )
+		CHOICE_BIND( 27, "Drop Bomb", "openscriptmenu quickpromod 2", ; )
+		CHOICE_BIND( 28, "Toggle Special Grenade", "openscriptmenu quickpromod grenade", ; )
+		CHOICE_BIND( 29, "Toggle Silencer", "openscriptmenu quickpromod silencer", ; )
+		CHOICE_BIND( 30, "Assault", "openscriptmenu quickpromod assault", ; )
+		CHOICE_BIND( 31, "Spec Ops", "openscriptmenu quickpromod specops", ; )
+		CHOICE_BIND( 32, "Demolitions", "openscriptmenu quickpromod demolitions", ; )
+		CHOICE_BIND( 33, "Sniper", "openscriptmenu quickpromod sniper", ; )
+		CHOICE_BIND( 34, "Toggle Lighting", "openscriptmenu quickpromodgfx 1", ; )
+		CHOICE_BIND( 35, "Toggle Film Tweaks", "openscriptmenu quickpromodgfx 2", ; )
+		CHOICE_BIND( 36, "Toggle Normal Map", "openscriptmenu quickpromodgfx 4", ; )
+		CHOICE_BIND( 37, "Toggle FOV Scale", "openscriptmenu quickpromodgfx 5", ; )
+		CHOICE_DVAREDIT( 38, "Mouse Sensitivity", ui_sensitivity, ; )
+
+		CHOICE_KEYBINDHELP
+	}
+}

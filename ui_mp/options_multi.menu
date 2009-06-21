@@ -1,0 +1,85 @@
+/*
+  Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+  Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+
+  This file is part of Call of Duty 4 Promod.
+
+  Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+  Terms of license can be found in LICENSE.md document bundled with the project.
+*/
+
+#include "ui/menudef.h"
+#include "ui_mp/common_macro.inc"
+#define 	OPTIONS_STYLE			1
+#define 	CHOICE_SEP_1			23
+#include "ui_mp/menustyle.inc"
+#include "ui/choices_setup_common.menu"
+
+{
+	menuDef
+	{
+		name			"options_multi"
+		fullScreen		0
+		rect			0 0 640 480
+		focusColor		COLOR_FOCUSED
+		soundloop		""
+		onOpen
+		{
+			setLocalVarBool ui_hideBack 1;
+			exec "setfromdvar ui_name name";
+			exec "setfromdvar ui_fov cg_fov";
+
+			close options_look;
+			close options_move;
+			close options_shoot;
+			close options_graphics;
+			close options_sound;
+			close options_game;
+			close options_view;
+			close options_defaults;
+			close options_driverinfo;
+			close options_credits;
+			close options_graphics_defaults;
+			close options_graphics_texture;
+			close options_control_defaults;
+		}
+		onClose
+		{
+			setLocalVarBool ui_hideBack 0;
+			exec "setfromdvar name ui_name";
+			exec "setfromdvar cg_fov ui_fov";
+		}
+		onESC
+		{
+			close self;
+		}
+
+		#include "ui_mp/leftside_options.inc"
+
+		CHOICE_SECTION_TITLE( 21, "@MENU_MULTIPLAYER_OPTIONS" )
+
+		CHOICE_DVARYESNO( 22, "@MPUI_PUNKBUSTER", cl_punkbuster, ; )
+		CHOICE_DVARYESNO( 23, "@MENU_ALLOW_DOWNLOAD", cl_allowdownload, ; )
+		CHOICE_DVAREDIT_VIS( 24, "@MENU_PLAYER_NAME", ui_name, 15, 15, ;, 1 )
+		CHOICE_BUTTON( 25, "@MENU_ENTER_KEY_CODE", open cdkey_menu; )
+
+		CHOICE_SECTION_TITLE( 26, "Performance Settings" )
+		CHOICE_DVARYESNO( 27, "Draw Decals", r_drawDecals, ; )
+		CHOICE_DVARYESNO( 28, "Draw Sun", r_drawSun, ; )
+		CHOICE_DVARYESNO( 29, "Explosion Distortion", r_distortion, ; )
+		CHOICE_DVARYESNO( 30, "Eject Brass", cg_brass, ; )
+
+		CHOICE_SECTION_TITLE( 31, "Network Settings" )
+		CHOICE_DVARYESNO( 32, "Draw Lagometer", cg_drawLagometer, ; )
+		CHOICE_DVARSTRINGLIST( 33, "FPS Counter", cg_drawFPS, { "Off" Off "Simple" Simple "Simple+Ranges" SimpleRanges "Verbose" Verbose }, ; )
+		CHOICE_DVARFLOATLIST( 34, "Duplicate Packets", cl_packetdup, { "0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5 }, ; )
+
+		CHOICE_SECTION_TITLE( 35, "Visual Settings" )
+		CHOICE_DVARYESNO( 36, "Numerical Ammo Counter", cg_drawBreathHint, ; )
+		CHOICE_DVAREDIT( 37, "Field Of View", ui_fov, ; )
+		CHOICE_DVARFLOATLIST( 38, "Max FPS", com_maxfps, { "100 FPS" 100 "125 FPS" 125 "200 FPS" 200 "250 FPS" 250 }, ;)
+		CHOICE_DVARFLOATLIST( 39, "Draw Scorebar", cg_voiceIconSize, { "Yes" 0 "No" 1}, ; )
+
+		CHOICE_KEYBINDHELP
+	}
+}

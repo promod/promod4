@@ -1,0 +1,113 @@
+/*
+  Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+  Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+
+  This file is part of Call of Duty 4 Promod.
+
+  Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+  Terms of license can be found in LICENSE.md document bundled with the project.
+*/
+
+#include "ui/menudef.h"
+#include "ui_mp/common_macro.inc"
+
+#define CHOICE_SIZE_X			//150
+#define CHOICE_SIZE_Y			22
+
+#define CHOICE_X_START			0
+#define CHOICE_Y_START			34
+
+#define CHOICE_SEP_OFFSET_Y		-2
+
+#include "ui_mp/menustyle.inc"
+#include "ui/choices_setup_common.menu"
+
+#undef BUTTON_BG_COLOR
+#define BUTTON_BG_COLOR		0 0 0 0
+
+#define MENU_LOCKED_COLOR		0.25 0.25 0.25 1
+
+#define ORIGIN_BUTTON_BACK			52 438
+#define ORIGIN_MENU_TREE			54 64
+#define ORIGIN_MENU_TITLE_MARINES	178 64
+#define ORIGIN_MENU_TITLE_OPFOR		170 64
+#define TREE_COLOR					1 1 1 0.5
+#define LABEL_TEXT_COLOR		0.7 0.75 0.75 1
+
+{
+	menuDef
+	{
+		name			"changeclass_marines_mw"
+		rect			0 0 640 480
+		focuscolor		COLOR_FOCUSED
+		style			WINDOW_STYLE_EMPTY
+		blurWorld		7.0
+		onOpen
+		{
+			setLocalVarString ui_team "marines"
+			scriptMenuResponse "classavailability";
+		}
+		onEsc
+		{
+			scriptMenuResponse "back";
+		}
+
+		itemDef
+		{
+			style			WINDOW_STYLE_FILLED
+			rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
+			backcolor		0 0 0 0.75 //0 0.05 0.15 0.5
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			style			WINDOW_STYLE_SHADER
+			rect			0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+			background		"gradient_top"
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			style			WINDOW_STYLE_SHADER
+			rect			0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+			background		"gradient_bottom"
+			visible			1
+			decoration
+		}
+
+		CHOICE_MENU_TITLE( "@MPUI_CHOOSE_CLASS_CAP" )
+
+		#define BACK_OPEN;
+		#include "ui_mp/navcontrols.inc"
+		#include "ui_mp/teamicon.inc"
+
+		CHOICE_BUTTON_BG( 1, 1 )
+		CHOICE_HIGHLIGHT( 1, 1 )
+		CHOICE_BUTTON_VIS_NOHI( 1, "1. Assault", scriptMenuResponse "assault";, when( dvarBool( allies_allow_assault ) || dvarString( loadout_curclass ) == "assault" ) )
+		CHOICE_DBUTTON_VIS_NOHI( 1, "1. Assault", when( !dvarBool( allies_allow_assault ) && dvarString( loadout_curclass ) != "assault" ) )
+
+		CHOICE_BUTTON_BG( 2, 1 )
+		CHOICE_HIGHLIGHT( 2, 1 )
+		CHOICE_BUTTON_VIS_NOHI( 2, "2. Spec Ops", scriptMenuResponse "specops";, when( dvarBool( allies_allow_specops ) || dvarString( loadout_curclass ) == "specops" ) )
+		CHOICE_DBUTTON_VIS_NOHI( 2, "2. Spec Ops", when( !dvarBool( allies_allow_specops ) && dvarString( loadout_curclass ) != "specops" ) )
+
+		CHOICE_BUTTON_BG( 3, 1 )
+		CHOICE_HIGHLIGHT( 3, 1 )
+		CHOICE_BUTTON_VIS_NOHI( 3, "3. Demolitions", scriptMenuResponse "demolitions";, when( dvarBool( allies_allow_demolitions ) || dvarString( loadout_curclass ) == "demolitions" ) )
+		CHOICE_DBUTTON_VIS_NOHI( 3, "3. Demolitions", when( !dvarBool( allies_allow_demolitions ) && dvarString( loadout_curclass ) != "demolitions" ) )
+
+		CHOICE_BUTTON_BG( 4, 1 )
+		CHOICE_HIGHLIGHT( 4, 1 )
+		CHOICE_BUTTON_VIS_NOHI( 4, "4. Sniper", scriptMenuResponse "sniper";, when( dvarBool( allies_allow_sniper ) || dvarString( loadout_curclass ) == "sniper" ) )
+		CHOICE_DBUTTON_VIS_NOHI( 4, "4. Sniper", when( !dvarBool( allies_allow_sniper ) && dvarString( loadout_curclass ) != "sniper" ) )
+
+		execKey "1" { scriptMenuResponse "assault"; }
+		execKey "2" { scriptMenuResponse "specops"; }
+		execKey "3" { scriptMenuResponse "demolitions"; }
+		execKey "4" { scriptMenuResponse "sniper"; }
+
+		#include "ui/safearea.menu"
+	}
+}

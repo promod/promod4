@@ -1,0 +1,168 @@
+/*
+  Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+  Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+
+  This file is part of Call of Duty 4 Promod.
+
+  Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+  Terms of license can be found in LICENSE.md document bundled with the project.
+*/
+
+#include "ui/menudef.h"
+#include "ui_mp/common_macro.inc"
+
+#define CHOICE_SIZE_X			150
+#define CHOICE_SIZE_Y			22
+
+#define CHOICE_X_START			0
+#define CHOICE_Y_START			204 //180
+
+#define CHOICE_GROUP			"class"
+#define CHOICE_SEP_1			4
+
+#include "ui_mp/menustyle.inc"
+#include "ui_mp/choices_setup_teams.menu"
+
+#undef BUTTON_BG_COLOR
+#define BUTTON_BG_COLOR		0 0 0 0
+
+#define ORIGIN_DESCRIPTION		(CHOICE_X_START + 15) 190
+
+{
+	menuDef
+	{
+		name			"class"
+		rect			0 0 640 480
+		focuscolor		COLOR_FOCUSED
+		style			WINDOW_STYLE_EMPTY
+		blurWorld		7.0
+		onOpen
+		{
+			focusFirst;
+		}
+		onEsc 
+		{
+			scriptMenuResponse "back";
+		}
+		
+		// background overlay
+		itemDef
+		{
+			style			WINDOW_STYLE_FILLED
+			rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
+			backcolor		0 0 0 0.75 //0 0.05 0.15 0.5
+			visible			1
+			decoration
+		}
+
+		// gradient_top
+		itemDef
+		{
+			style			WINDOW_STYLE_SHADER
+			rect			0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+			background		"gradient_top"
+			visible			1
+			decoration
+		}
+
+		// gradient_bottom
+		itemDef
+		{
+			style			WINDOW_STYLE_SHADER
+			rect			0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+			background		"gradient_bottom"
+			visible			1
+			decoration
+		}
+		
+		// map display ================================================
+		#include "ui_mp/tactical_map.inc";
+		#define ORIGIN_BANNER		108 48
+
+		itemDef	{
+			style			WINDOW_STYLE_SHADER
+			rect			ORIGIN_BANNER 400 0.5
+			background		"line_horizontal"
+			forecolor		1 1 1 0.85
+			visible			1	decoration	}
+		itemDef	{
+			style			WINDOW_STYLE_SHADER
+			rect			ORIGIN_BANNER 340 10
+			origin			30 1
+			background		"line_horizontal"
+			forecolor		OBJECTIVE_COLOR_MARINES
+			visible			1
+			decoration	}
+		itemDef	{
+			style			WINDOW_STYLE_SHADER
+			rect			ORIGIN_BANNER 400 0.5
+			origin			0 12
+			background		"line_horizontal"
+			forecolor		1 1 1 0.85
+			visible			1	decoration	}
+			
+		itemDef	{
+			rect			-400 64 800 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_TITLE
+			textalign		ITEM_ALIGN_CENTER
+			forecolor		1 1 1 0.85
+			exp text ( gametypename() );
+			visible			1	decoration	}
+		itemDef	{
+			rect			-250 84 500 60 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_SMALL
+			textalign		ITEM_ALIGN_CENTER
+			forecolor		1 1 1 0.75
+			exp text( gametypedescription() );
+			autowrapped
+			visible			1	decoration	}
+		
+		// ------------------ TREE TITLE ------------------
+		
+		CHOICE_MENU_TITLE( "@MENU_OPTIONS_UPPER_CASE" )
+		
+		// ------------------ buttons ---------------------
+		#define BACK_OPEN	;
+		#include "ui_mp/navcontrols.inc"
+
+		//=========================================================
+		//===================== MENU SELECTION ====================
+		//=========================================================
+		#include "ui_mp/teamicon.inc"
+
+		// PC widescreen fix
+		#undef  CHOICE_X_START
+		#define CHOICE_X_START	-320
+		
+		#undef	CHOICE_HORIZONTAL_ALIGN
+		#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
+
+		CHOICE_BUTTON_BG( 1, when( (TEAM_IS_MARINES || TEAM_IS_OPFOR) && MAY_CHOOSE_CLASS ) )
+		CHOICE_HIGHLIGHT( 1, (TEAM_IS_MARINES || TEAM_IS_OPFOR) && MAY_CHOOSE_CLASS )
+		CHOICE_BUTTON_VIS_NOHI( 1, "@MPUI_CHOOSE_CLASS", scriptMenuResponse "changeclass_marines", when( TEAM_IS_MARINES && MAY_CHOOSE_CLASS ) )
+		CHOICE_BUTTON_VIS_NOHI( 1, "@MPUI_CHOOSE_CLASS", scriptMenuResponse "changeclass_opfor", when( TEAM_IS_OPFOR && MAY_CHOOSE_CLASS ) )
+		
+		CHOICE_BUTTON( 2, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam"; )
+
+		CHOICE_SEPARATOR( CHOICE_SEP_1 )
+
+		CHOICE_BUTTON( 3, "@MENU_CONTROLS", close self; open main_controls )
+		CHOICE_BUTTON( 4, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0"; )
+		
+		CHOICE_BUTTON_VIS( 5, "@MPUI_CALL_VOTE", open callvote; close self;, when( dvarbool( ui_allowvote ) ); )
+		CHOICE_DBUTTON_VIS( 5, "@MPUI_CALL_VOTE", when( !dvarbool( ui_allowvote ) ); )
+		
+		CHOICE_BUTTON( 6, "@MPUI_MUTE_PLAYERS", open muteplayer; close self; )
+		
+		CHOICE_BUTTON_BG( 7, 1 )
+		CHOICE_HIGHLIGHT( 7, 1 )
+		CHOICE_BUTTON_VIS_NOHI( 7, "@MENU_LEAVE_GAME", open popup_endgame, when( dvarbool( sv_running ) ) )
+		CHOICE_BUTTON_VIS_NOHI( 7, "@MENU_LEAVE_GAME", open popup_leavegame, when( !dvarbool( sv_running ) ) )
+
+		#include "ui/safearea.menu"
+	}
+}
+
+
