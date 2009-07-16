@@ -22,7 +22,7 @@ create()
 	level.prover_hud.hidewheninmenu = true;
 	level.prover_hud.color = (.8, 1, 1);
 	level.prover_hud setText( game["PROMOD_VERSION"] );
-	
+
 	level.hud_league_text = newHudElem();
 	level.hud_league_text.x = -7;
 	level.hud_league_text.y = 50;

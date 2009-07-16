@@ -14,7 +14,7 @@ main()
 		return;
 
 	game["promod_mode_loaded"] = 1;
-	game["PROMOD_VERSION"] = "Promod 4.42";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2";
 
 	promod_mode = toLower(getDvar("promod_mode") );
 
@@ -34,6 +34,7 @@ Promod_Mode_Explode()
 	game["COMP_PUBLIC"] = 0;
 	game["PROMOD_LIMITED"] = 0;
 	game["MR_RATING"] = 0;
+	game["PROMOD_STRATTIME"] = 6;
 
 	if ( isSubStr( game["PROMOD_MODE"], "knockout_mr" ) )
 	{
@@ -41,6 +42,7 @@ Promod_Mode_Explode()
 		game["KNOCKOUT_MODE"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^4Match Knockout ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "knockout_hc_mr" ) )
 	{
@@ -49,6 +51,7 @@ Promod_Mode_Explode()
 		game["HARDCORE_MODE"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^4Match Knockout ^1HC ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "knockout_lan_mr" ) )
 	{
@@ -58,6 +61,7 @@ Promod_Mode_Explode()
 		game["KNOCKOUT_MODE"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^4LAN Knockout ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "knockout_lan_hc_mr" ) )
 	{
@@ -67,6 +71,7 @@ Promod_Mode_Explode()
 		game["KNOCKOUT_MODE"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^4LAN Knockout ^1HC ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "knockout_1v1_mr" ) )
 	{
@@ -75,6 +80,7 @@ Promod_Mode_Explode()
 		game["PROMOD_LIMITED"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^41v1 Knockout ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr(game["PROMOD_MODE"], "knockout_1v1_hc_mr") )
 	{
@@ -84,6 +90,7 @@ Promod_Mode_Explode()
 		game["PROMOD_LIMITED"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^41v1 Knockout ^1HC ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "knockout_2v2_mr" ) )
 	{
@@ -92,6 +99,7 @@ Promod_Mode_Explode()
 		game["PROMOD_LIMITED"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^42v2 Knockout ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "knockout_2v2_hc_mr" ) )
 	{
@@ -101,6 +109,7 @@ Promod_Mode_Explode()
 		game["PROMOD_LIMITED"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
 		game["PROMOD_MODE_HUD"] = "^42v2 Knockout ^1HC ^3MR" + game["MR_RATING"];
+		game["PROMOD_STRATTIME"] = 10;
 	}
 	else if ( isSubStr( game["PROMOD_MODE"], "match_mr" ) )
 	{
@@ -356,11 +365,6 @@ Standardized_Server_Settings()
 
 	setDvar( "scr_enable_hiticon", "2" );
 	setDvar( "scr_enable_scoretext", "1" );
-
-	setDvar( "class_assault_movespeed", "0.95" );
-	setDvar( "class_specops_movespeed", "1.00" );
-	setDvar( "class_demolitions_movespeed", "1.00" );
-	setDvar( "class_sniper_movespeed", "1.00" );
 
 	if ( game["PROMOD_MODE"] == "comp_match" )
 	{

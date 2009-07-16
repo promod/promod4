@@ -155,14 +155,8 @@ main()
 	setDvar( "class_sniper_grenade", "smoke_grenade" );
 	setDvar( "class_sniper_camo", "camo_none" );
 
-	setDvar( "class_assault_movespeed", "0.95" );
-	setDvar( "class_specops_movespeed", "1.00" );
-	setDvar( "class_demolitions_movespeed", "1.00" );
-	setDvar( "class_sniper_movespeed", "1.00" );
-
 	// mode
 	setDvar( "scr_hardcore", "0" );
-	setDvar( "scr_game_onlyheadshots", "0" );
 
 	// team killing
 	setDvar( "scr_team_fftype", "1");
@@ -178,9 +172,6 @@ main()
 	setDvar( "scr_game_suicidepointloss", "0" );
 	setDvar( "scr_player_suicidespawndelay", "0" );
 
-	// player default movement speeds
-	setDvar( "scr_player_sprinttime", "4" );
-
 	// player fall damage
 	setDvar( "bg_fallDamageMinHeight", "140" );
 	setDvar( "bg_fallDamageMaxHeight", "350" );
@@ -191,7 +182,6 @@ main()
 
 	// hud
 	setDvar( "g_maxDroppedWeapons", "16" );
-	setDvar( "ui_hud_showdeathicons", "0" );
 
 	// grenades
 	setDvar( "weap_allow_flash_grenade", "1" );

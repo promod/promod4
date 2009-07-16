@@ -10,20 +10,8 @@
 
 #include "ui/menudef.h"
 
-#define ORIGIN_DIY_TITLE_PC			42 270
-#define ORIGIN_DIY_FRAME_PC			35 270
-#define ORIGIN_DIY_PC				37 290
-
-#define ORIGIN_DIY_TITLE_HIDEF		82 300
-#define ORIGIN_DIY_FRAME_HIDEF		75 300
-#define ORIGIN_DIY_HIDEF			77 320
-#define ORIGIN_DIY_TITLE			166 300
-#define ORIGIN_DIY_FRAME			159 300
-#define ORIGIN_DIY					161 320
-
 #define WIDESCREEN_OFFSET			107 0
 
-// Displayed when client is initially connecting to the server.
 {
 	menuDef
 	{
@@ -32,12 +20,12 @@
 		fullScreen		MENU_FALSE
 		focusColor		COLOR_FOCUSED
 		visible			MENU_FALSE
-#ifdef PC
+
 		backcolor		1 1 1 1
 		background		"$levelBriefing"
 		rect			FULLSCREEN_WIDE
 
-		itemDef // load progress bar background
+		itemDef
 		{
 			style			WINDOW_STYLE_FILLED
 			rect			-128 -40 260 4 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
@@ -45,7 +33,7 @@
 			backcolor		0 0 0 0.8
 			visible			1	decoration
 		}
-		itemDef // load progress bar
+		itemDef
 		{
 			name			"loadbar"
 			style			WINDOW_STYLE_LOADBAR
@@ -54,151 +42,6 @@
 			background		"white"
 			visible			1	decoration
 		}
-		itemDef
-		{
-			rect			ORIGIN_DIY_PC 270 140
-			type			ITEM_TYPE_BUTTON
-			textfont		UI_FONT_DEFAULT
-			dvar			"sv_hostname"
-			textalign 		ITEM_ALIGN_LEFT
-			textscale		TEXTSIZE_SMALL
-			forecolor		1 1 1 1
-			backcolor		0 0 0 0
-			textalignx 		5
-			textaligny 		0
-			origin			WIDESCREEN_OFFSET
-			visible			0 decoration	autowrapped
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			ORIGIN_DIY_FRAME_PC 283 138
-			origin			WIDESCREEN_OFFSET
-			background		"white"
-			forecolor		.5 .5 .5 0.15
-			border			1
-			bordersize		1
-			bordercolor		0.5 0.5 0.5 0.7
-			visible		0	decoration
-		}
-#else
-		backcolor		1 1 1 1
-		background		"$levelBriefing"
-		rect			FULLSCREEN_WIDE
-
-		itemDef // black background
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			-128 -26 260 4 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
-			origin			WIDESCREEN_OFFSET
-			backcolor		0 0 0 0.8
-			visible			when (dvarbool( hidef ))
-			decoration
-		}
-		itemDef // black background
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			-128 -26 260 4 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
-			origin			WIDESCREEN_OFFSET
-			backcolor		0 0 0 0.8
-			visible			when (!dvarbool( hidef ))
-			decoration
-		}
-		itemDef // load progress bar
-		{
-			name			"loadbar"
-			style			WINDOW_STYLE_LOADBAR
-			rect			-127 -25 258 2 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
-			origin			WIDESCREEN_OFFSET
-			background		"white"
-			visible			when (dvarbool( hidef ))
-			decoration
-		}
-		itemDef
-		{
-			name			"loadbar"
-			style			WINDOW_STYLE_LOADBAR
-			rect			-127 -25 258 2 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
-			origin			WIDESCREEN_OFFSET
-			background		"white"
-			visible			when (!dvarbool( hidef ))
-			decoration
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			ORIGIN_DIY_FRAME_HIDEF 285 100
-			backcolor		0 0 0 .5
-			visible			when (dvarbool( hidef ))
-			decoration
-		}
-		itemDef
-		{
-			rect			ORIGIN_DIY_HIDEF 270 100
-			type			ITEM_TYPE_BUTTON
-			textfont		UI_FONT_DEFAULT
-			dvar			"sv_hostname"
-			textalign 		ITEM_ALIGN_LEFT
-			textscale		TEXTSIZE_SMALL
-			forecolor		1 1 1 1
-			backcolor		0 0 0 0
-			textalignx 		0
-			textaligny 		-10
-			origin			5 10
-			visible			when (dvarbool( hidef ))
-			decoration
-			autowrapped
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			ORIGIN_DIY_FRAME_HIDEF 283 98
-			background		"white"
-			forecolor		.5 .5 .5 0.15
-			border			1
-			bordersize		1
-			bordercolor		0.5 0.5 0.5 0.7
-			visible			when (dvarbool( hidef ))
-			decoration
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			ORIGIN_DIY_FRAME 285 100
-			backcolor		0 0 0 .5
-			visible			when (!dvarbool( hidef ))
-			decoration
-		}
-		itemDef
-		{
-			rect			ORIGIN_DIY 270 100
-			type			ITEM_TYPE_BUTTON
-			textfont		UI_FONT_DEFAULT
-			dvar			"sv_hostname"
-			textalign 		ITEM_ALIGN_LEFT
-			textscale		TEXTSIZE_SMALL
-			forecolor		1 1 1 1
-			backcolor		0 0 0 0
-			textalignx 		0
-			textaligny 		-10
-			origin			5 10
-			visible			when (!dvarbool( hidef ))
-			decoration
-			autowrapped
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			ORIGIN_DIY_FRAME 283 98
-			background		"white"
-			forecolor		.5 .5 .5 0.15
-			border			1
-			bordersize		1
-			bordercolor		0.5 0.5 0.5 0.7
-			visible			when (!dvarbool( hidef ))
-			decoration
-		}
-#endif
 		#include "ui/safearea.menu"
 	}
 }

@@ -105,6 +105,7 @@ menufile,ui_mp/scriptmenus/changeclass_marines_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_opfor_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_mw.menu
 menufile,ui_mp/scriptmenus/class.menu
+menufile,ui_mp/scriptmenus/scoreboard.menu
 menufile,ui_mp/scriptmenus/shoutcast.menu
 menufile,ui_mp/scriptmenus/shoutcast_map.menu
 menufile,ui_mp/scriptmenus/quickpromod.menu

@@ -873,7 +873,7 @@ Think function for "use" type carry objects
 */
 useObjectUseThink()
 {
-	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] )
+	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
 		return;
 
 	level endon ( "game_ended" );
@@ -960,7 +960,7 @@ Think function for "proximity" type carry objects
 */
 useObjectProxThink()
 {
-	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] )
+	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ) )
 		return;
 
 	level endon ( "game_ended" );
@@ -1783,18 +1783,27 @@ setCanUse( relativeTeam )
 
 set2DIcon( relativeTeam, shader )
 {
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+		return;
+
 	self.compassIcons[relativeTeam] = shader;
 	updateCompassIcons();
 }
 
 set3DIcon( relativeTeam, shader )
 {
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+		return;
+
 	self.worldIcons[relativeTeam] = shader;
 	updateWorldIcons();
 }
 
 set3DUseIcon( relativeTeam, shader )
 {
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+		return;
+
 	self.worldUseIcons[relativeTeam] = shader;
 }
 

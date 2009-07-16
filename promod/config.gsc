@@ -16,14 +16,8 @@ main()
 	self.pers["PROMOD_CACHE_FOVSCALE"] = get_config( "PROMOD_FOVSCALE" );
 	self.pers["PROMOD_CACHE_NORMALMAP"] = get_config( "PROMOD_NORMALMAP" );
 	self.pers["PROMOD_CACHE_GFXBLUR"] = get_config( "PROMOD_GFXBLUR" );
-	self.pers["PROMOD_CACHE_CYCLEDELAY"] = get_config( "PROMOD_CYCLEDELAY" );
+	self.pers["PROMOD_CACHE_FIRSTTIME"] = get_config( "PROMOD_FIRSTTIME" );
 
-	if (self.pers["PROMOD_CACHE_CYCLEDELAY"] == 0) {
-		self setClientDvar( "cg_weaponcycledelay", 25 );
-		self.pers["PROMOD_CACHE_CYCLEDELAY"] = 1;
-		self set_config( "PROMOD_CYCLEDELAY", 1 );
-	}
-	
 	self use_config();
 }
 
@@ -42,6 +36,8 @@ toggle_sunlight()
 {
 	if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 0 )
 		self.pers["PROMOD_CACHE_SUNLIGHT"] = 1;
+	else if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 1 )
+		self.pers["PROMOD_CACHE_SUNLIGHT"] = 2;
 	else
 		self.pers["PROMOD_CACHE_SUNLIGHT"] = 0;
 
@@ -102,7 +98,12 @@ use_config()
 {
 	if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 0 )
 	{
-		if ( getDvar( "mapname" ) == "mp_backlot" )
+		self setClientDvars( "r_lighttweaksunlight", 1.2,
+							 "sunlight", "1.2" );
+	}
+	else if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 1 )
+	{
+		 if ( getDvar( "mapname" ) == "mp_backlot" )
 			self setClientDvar( "r_lighttweaksunlight", 1.3 );
 		else if ( getDvar( "mapname" ) == "mp_bloc" )
 			self setClientDvar( "r_lighttweaksunlight", 0.9 );
@@ -147,21 +148,21 @@ use_config()
 		else
 			self setClientDvar( "r_lighttweaksunlight", 1 );
 
-		self setClientDvar( "sunlight", "On" );
+		self setClientDvar("sunlight", "Stock");
 	}
 	else
 		self setClientDvars( "r_lighttweaksunlight", 0,
 							 "sunlight", "Off" );
 
 	if ( self.pers["PROMOD_CACHE_FOVSCALE"] == 0 )
-		self setClientDvar( "cg_fovscale", 1 );
-	else
 		self setClientDvar( "cg_fovscale", 1.125 );
+	else
+		self setClientDvar( "cg_fovscale", 1 );
 
 	if ( self.pers["PROMOD_CACHE_NORMALMAP"] == 0 )
-		self setClientDvar( "r_normalmap", 1 );
-	else
 		self setClientDvar( "r_normalmap", 0 );
+	else
+		self setClientDvar( "r_normalmap", 1 );
 
 	if ( self.pers["PROMOD_CACHE_GFXBLUR"] == 0 )
 		self setClientDvar( "r_blur", 0 );
@@ -175,6 +176,13 @@ use_config()
 		self setClientDvar( "r_blur", 0.8 );
 	else if ( self.pers["PROMOD_CACHE_GFXBLUR"] == 5 )
 		self setClientDvar( "r_blur", 1 );
+
+	if ( self.pers["PROMOD_CACHE_FIRSTTIME"] == 0 )
+	{
+		self setClientDvar( "cg_voiceIconSize", 1 );
+		self.pers["PROMOD_CACHE_FIRSTTIME"] = 1;
+		self set_config( "PROMOD_FIRSTTIME", 1 );
+	}
 
 	self setClientDvar( "r_texfilterdisable", self.pers["PROMOD_CACHE_TEXTURE"] );
 	self setClientDvar( "r_filmusetweaks", self.pers["PROMOD_CACHE_FILMTWEAK"] );

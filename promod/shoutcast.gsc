@@ -10,17 +10,19 @@
 
 updateHealthbar()
 {
+	self endon ( "disconnect" );
+
 	for(;;)
 	{
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
 		{
 			shout_attack_team = self.pers["team"] == "allies";
-			shout_defense_team = self.pers["team"] == "axis";
+			shout_defence_team = self.pers["team"] == "axis";
 		}
 		else
 		{
 			shout_attack_team = self.pers["team"] == "axis";
-			shout_defense_team = self.pers["team"] == "allies";
+			shout_defence_team = self.pers["team"] == "allies";
 		}
 
 		health = self.health / self.maxhealth;
@@ -37,7 +39,7 @@ updateHealthbar()
 				}
 			}
 		}
-		else if( shout_defense_team )
+		else if( shout_defence_team )
 		{
 			for( i = 0; i < level.players.size; i++ )
 			{
@@ -68,7 +70,6 @@ resetShoutcast()
 							"shout_allieshealth4", "",
 							"shout_allieshealth5", "" );
 
-	wait 0.05;
 
 	self setClientDvars(	"shout_axis1", "",
 							"shout_axis2", "",
@@ -81,12 +82,16 @@ resetShoutcast()
 							"shout_axishealth3", "",
 							"shout_axishealth4", "",
 							"shout_axishealth5", "" );
+	wait 0.05;
 
-	assignShoutID();
+	if ( isDefined( self ) )
+		assignShoutID();
 }
 
 assignShoutID()
 {
+	self endon ( "disconnect" );
+
 	axisNum = 0;
 	alliesNum = 0;
 	for( i = 0; i < level.players.size; i++ )

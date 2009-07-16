@@ -10,7 +10,10 @@
 
 main()
 {
-	if ( getDvarInt( "promod_enable_scorebot" ) != 1 || level.gametype != "sd" )
+	if ( getdvar( "promod_enable_scorebot" ) == "" )
+		setDvar( "promod_enable_scorebot", "0" );
+
+	if ( !getDvarInt( "promod_enable_scorebot" ) )
 	{
 		level.scorebot = false;
 		game["promod_scorebot_ticker_buffer"] = "";
@@ -70,7 +73,9 @@ Action_Ticker()
 
 		waittillframeend;
 
-		setDvar( "__promod_ticker", game["promod_scorebot_ticker_buffer"] );
-		game["promod_scorebot_ticker_buffer"] = getDvar( "promod_scorebot_ticker_num" );
+		if (isDefined(game["promod_scorebot_ticker_buffer"])) {
+			setDvar( "__promod_ticker", game["promod_scorebot_ticker_buffer"] );
+			game["promod_scorebot_ticker_buffer"] = getDvar( "promod_scorebot_ticker_num" );
+		}
 	}
 }

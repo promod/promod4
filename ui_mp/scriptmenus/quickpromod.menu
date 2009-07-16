@@ -102,5 +102,21 @@
 			decoration
 		}
 		execKey "4" { scriptMenuResponse "4"; close quickpromod }
+
+		itemDef
+		{
+			name			"window"
+			group			ingamebox
+			rect			16 100 0 0
+			origin			ORIGIN_QUICKMESSAGEWINDOW
+			forecolor		1 1 1 1
+			textfont		UI_FONT_NORMAL
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_SMALL
+			textaligny		8
+			text			"Esc. Exit"
+			visible			1
+			decoration
+		}
 	}
 }

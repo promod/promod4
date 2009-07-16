@@ -18,8 +18,9 @@ main()
 	setDvar( "clientsideeffects", "0" );
 	setDvar( "sv_pure", "1" );
 	setDvar( "sv_fps", "20" );
+	setDvar( "g_speed", "190" );
 	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ) );
-	setDvar( "__promod_version", game["PROMOD_VERSION"] );
+	setDvar( "__promod_version", "Promod LIVE V2" );
 
 	// Class counts
 	game["allies_assault_count"] = 0;

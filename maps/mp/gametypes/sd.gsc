@@ -119,6 +119,7 @@ getBetterTeam()
 
 onStartGameType()
 {
+	setClientNameMode("manual_change");
 	game["strings"]["target_destroyed"] = &"MP_TARGET_DESTROYED";
 	game["strings"]["bomb_defused"] = &"MP_BOMB_DEFUSED";
 
@@ -165,12 +166,14 @@ onSpawnPlayer()
 	else
 		spawnPointName = "mp_sd_spawn_defender";
 
+	self setclientdvar("ui_drawbombicon", 0);
 	if ( level.multiBomb && !isDefined( self.carryIcon ) && self.pers["team"] == game["attackers"] && !level.bombPlanted )
 	{
 		self.carryIcon = createIcon( "hud_suitcase_bomb", 50, 50 );
 		self.carryIcon setPoint( "CENTER", "CENTER", 223, 167 );
 		self.carryIcon.alpha = 0.75;
-	}
+		self setclientdvar("ui_drawbombicon", 1);
+		}
 
 	spawnPoints = getEntArray( spawnPointName, "classname" );
 	assert( spawnPoints.size );
@@ -446,7 +449,7 @@ onUsePlantObject( player )
 		level thread bombPlanted( self, player );
 
 		if ( isDefined( level.scorebot ) && level.scorebot )
-			game["promod_scorebot_ticker_buffer"] = game["promod_scorebot_ticker_buffer"] + "planted_by" + player.name;
+			game["promod_scorebot_ticker_buffer"] += "planted_by" + player.name;
 	}
 }
 
@@ -476,7 +479,7 @@ onUseDefuseObject( player )
 	player thread [[level.onXPEvent]]( "defuse" );
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] = game["promod_scorebot_ticker_buffer"] + "defused_by" + player.name;
+		game["promod_scorebot_ticker_buffer"] += "defused_by" + player.name;
 
 }
 
@@ -486,6 +489,9 @@ onDrop( player )
 	{
 		if ( isDefined( player ) && isDefined( player.name ) )
 			printOnTeamArg( &"MP_EXPLOSIVES_DROPPED_BY", game["attackers"], player );
+
+		if (level.scorebot && isDefined( player ) && isDefined( player.name ))
+				game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
 
 		if ( isDefined( player ) )
 		 	player logString( "bomb dropped" );
@@ -513,6 +519,9 @@ onPickup( player )
 			printOnTeamArg( &"MP_EXPLOSIVES_RECOVERED_BY", game["attackers"], player );
 
 		player logString( "bomb taken" );
+
+		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
+			game["promod_scorebot_ticker_buffer"] += "pickup_bomb" + player.name;
 	}
 	maps\mp\_utility::playSoundOnPlayers( game["bomb_recovered_sound"], game["attackers"] );
 }
@@ -596,7 +605,7 @@ bombPlanted( destroyedObj, player )
 	level.bombExploded = true;
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] = game["promod_scorebot_ticker_buffer"] + "bomb_exploded";
+		game["promod_scorebot_ticker_buffer"] += "bomb_exploded";
 
 	explosionOrigin = level.sdBombModel.origin;
 	level.sdBombModel hide();

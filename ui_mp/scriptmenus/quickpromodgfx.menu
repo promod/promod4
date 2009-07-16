@@ -30,7 +30,7 @@
 {
 	menuDef
 	{
-		IMPROVED_POPUP_SETUP_ONOPEN( quickpromodgfx, 10, 4, 210, ;, setDvar cl_bypassMouseInput "1";, 0 )
+		IMPROVED_POPUP_SETUP_ONOPEN( quickpromodgfx, 11.5, 4, 180, ;, setDvar cl_bypassMouseInput "1";, 0 )
 		onClose{ setDvar cl_bypassMouseInput "0" }
 
 		CHOICE_POPMENU_TITLE( "Promod Graphics" )
@@ -211,5 +211,21 @@
 			decoration
 		}
 		execKey "6" { scriptMenuResponse "6"; close quickpromodgfx }
+
+				itemDef
+		{
+			name			"window"
+			group			ingamebox
+			rect			16 194 0 0
+			origin			ORIGIN_QUICKMESSAGEWINDOW
+			forecolor		1 1 1 1
+			textfont		UI_FONT_NORMAL
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_SMALL
+			textaligny		8
+			text			"Esc. Exit"
+			visible			1
+			decoration
+		}
 	}
 }

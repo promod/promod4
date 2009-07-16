@@ -40,11 +40,11 @@
 		{
 			focusFirst;
 		}
-		onEsc 
+		onEsc
 		{
 			scriptMenuResponse "back";
 		}
-		
+
 		// background overlay
 		itemDef
 		{
@@ -74,7 +74,7 @@
 			visible			1
 			decoration
 		}
-		
+
 		// map display ================================================
 		#include "ui_mp/tactical_map.inc";
 		#define ORIGIN_BANNER		108 48
@@ -100,7 +100,7 @@
 			background		"line_horizontal"
 			forecolor		1 1 1 0.85
 			visible			1	decoration	}
-			
+
 		itemDef	{
 			rect			-400 64 800 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
@@ -118,11 +118,11 @@
 			exp text( gametypedescription() );
 			autowrapped
 			visible			1	decoration	}
-		
+
 		// ------------------ TREE TITLE ------------------
-		
+
 		CHOICE_MENU_TITLE( "@MENU_OPTIONS_UPPER_CASE" )
-		
+
 		// ------------------ buttons ---------------------
 		#define BACK_OPEN	;
 		#include "ui_mp/navcontrols.inc"
@@ -135,7 +135,7 @@
 		// PC widescreen fix
 		#undef  CHOICE_X_START
 		#define CHOICE_X_START	-320
-		
+
 		#undef	CHOICE_HORIZONTAL_ALIGN
 		#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
 
@@ -143,19 +143,19 @@
 		CHOICE_HIGHLIGHT( 1, (TEAM_IS_MARINES || TEAM_IS_OPFOR) && MAY_CHOOSE_CLASS )
 		CHOICE_BUTTON_VIS_NOHI( 1, "@MPUI_CHOOSE_CLASS", scriptMenuResponse "changeclass_marines", when( TEAM_IS_MARINES && MAY_CHOOSE_CLASS ) )
 		CHOICE_BUTTON_VIS_NOHI( 1, "@MPUI_CHOOSE_CLASS", scriptMenuResponse "changeclass_opfor", when( TEAM_IS_OPFOR && MAY_CHOOSE_CLASS ) )
-		
+
 		CHOICE_BUTTON( 2, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam"; )
 
 		CHOICE_SEPARATOR( CHOICE_SEP_1 )
 
 		CHOICE_BUTTON( 3, "@MENU_CONTROLS", close self; open main_controls )
 		CHOICE_BUTTON( 4, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0"; )
-		
+
 		CHOICE_BUTTON_VIS( 5, "@MPUI_CALL_VOTE", open callvote; close self;, when( dvarbool( ui_allowvote ) ); )
 		CHOICE_DBUTTON_VIS( 5, "@MPUI_CALL_VOTE", when( !dvarbool( ui_allowvote ) ); )
-		
+
 		CHOICE_BUTTON( 6, "@MPUI_MUTE_PLAYERS", open muteplayer; close self; )
-		
+
 		CHOICE_BUTTON_BG( 7, 1 )
 		CHOICE_HIGHLIGHT( 7, 1 )
 		CHOICE_BUTTON_VIS_NOHI( 7, "@MENU_LEAVE_GAME", open popup_endgame, when( dvarbool( sv_running ) ) )

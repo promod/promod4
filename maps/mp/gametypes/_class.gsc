@@ -15,110 +15,38 @@
 
 init()
 {
-	level.classMap["assault_mp"] = "CLASS_ASSAULT";
-	level.classMap["specops_mp"] = "CLASS_SPECOPS";
-	level.classMap["demolitions_mp"] = "CLASS_DEMOLITIONS";
-	level.classMap["sniper_mp"] = "CLASS_SNIPER";
-
-	level.classMap["offline_class1_mp"] = "OFFLINE_CLASS1";
-	level.classMap["offline_class2_mp"] = "OFFLINE_CLASS2";
-	level.classMap["offline_class3_mp"] = "OFFLINE_CLASS3";
-	level.classMap["offline_class4_mp"] = "OFFLINE_CLASS4";
-	level.classMap["offline_class5_mp"] = "OFFLINE_CLASS5";
-	level.classMap["offline_class6_mp"] = "OFFLINE_CLASS6";
-	level.classMap["offline_class7_mp"] = "OFFLINE_CLASS7";
-	level.classMap["offline_class8_mp"] = "OFFLINE_CLASS8";
-	level.classMap["offline_class9_mp"] = "OFFLINE_CLASS9";
-	level.classMap["offline_class10_mp"] = "OFFLINE_CLASS10";
-
-	level.classMap["custom1"] = "CLASS_CUSTOM1";
-	level.classMap["custom2"] = "CLASS_CUSTOM2";
-	level.classMap["custom3"] = "CLASS_CUSTOM3";
-	level.classMap["custom4"] = "CLASS_CUSTOM4";
-	level.classMap["custom5"] = "CLASS_CUSTOM5";
-
-	level.weapons["frag"] = "frag_grenade_mp";
-	level.weapons["smoke"] = "smoke_grenade_mp";
-	level.weapons["flash"] = "flash_grenade_mp";
-
-	level.perkNames = [];
-	level.perkIcons = [];
-
-	initPerkData( "specialty_bulletdamage" );
-	initPerkData( "specialty_extraammo" );
-
-	// generating weapon type arrays which classifies the weapon as primary (back stow), pistol, or inventory (side pack stow)
-	// using mp/statstable.csv's weapon grouping data ( numbering 0 - 149 )
 	level.primary_weapon_array = [];
-	level.side_arm_array = [];
-	level.grenade_array = [];
-	level.inventory_array = [];
-	max_weapon_num = 149;
-	for( i = 0; i < max_weapon_num; i++ )
-	{
-		weapon = tableLookup( "mp/statsTable.csv", 0, i, 4 );
-		if ( !isDefined( weapon ) || weapon == "" )
-			continue;
 
-		weapon_type = tableLookup( "mp/statsTable.csv", 0, i, 2 );
-		attachment = tableLookup( "mp/statsTable.csv", 0, i, 8 );
-
-		weapon_class_register( weapon+"_mp", weapon_type );
-
-		if( !isdefined( attachment ) || attachment == "" )
-			continue;
-
-		attachment_tokens = strTok( attachment, " " );
-		if( !isDefined( attachment_tokens ) )
-			continue;
-
-		if( attachment_tokens.size == 0 )
-		{
-			weapon_class_register( weapon+"_"+attachment+"_mp", weapon_type );
-		}
-		else
-		{
-			// multiple attachment options
-			for( k = 0; k < attachment_tokens.size; k++ )
-				weapon_class_register( weapon+"_"+attachment_tokens[k]+"_mp", weapon_type );
-		}
-	}
-
-	precacheShader( "waypoint_bombsquad" );
-
-	level.tbl_CamoSkin = [];
-	for( i=0; i<8; i++ )
-	{
-		// this for-loop is shared because there are equal number of attachments and camo skins.
-		level.tbl_CamoSkin[i]["bitmask"] = int( tableLookup( "mp/attachmentTable.csv", 11, i, 10 ) );
-
-		level.tbl_WeaponAttachment[i]["bitmask"] = int( tableLookup( "mp/attachmentTable.csv", 9, i, 10 ) );
-		level.tbl_WeaponAttachment[i]["reference"] = tableLookup( "mp/attachmentTable.csv", 9, i, 4 );
-	}
+	weapon_class_register( "m16_mp", "weapon_assault" );
+	weapon_class_register( "m16_silencer_mp", "weapon_assault" );
+	weapon_class_register( "ak47_mp", "weapon_assault" );
+	weapon_class_register( "ak47_silencer_mp", "weapon_assault" );
+	weapon_class_register( "m4_mp", "weapon_assault" );
+	weapon_class_register( "m4_silencer_mp", "weapon_assault" );
+	weapon_class_register( "g3_mp", "weapon_assault" );
+	weapon_class_register( "g3_silencer_mp", "weapon_assault" );
+	weapon_class_register( "g36c_mp", "weapon_assault" );
+	weapon_class_register( "g36c_silencer_mp", "weapon_assault" );
+	weapon_class_register( "m14_mp", "weapon_assault" );
+	weapon_class_register( "m14_silencer_mp", "weapon_assault" );
+	weapon_class_register( "mp44_mp", "weapon_assault" );
+	weapon_class_register( "mp5_mp", "weapon_smg" );
+	weapon_class_register( "mp5_silencer_mp", "weapon_smg" );
+	weapon_class_register( "uzi_mp", "weapon_smg" );
+	weapon_class_register( "uzi_silencer_mp", "weapon_smg" );
+	weapon_class_register( "ak74u_mp", "weapon_smg" );
+	weapon_class_register( "ak74u_silencer_mp", "weapon_smg" );
+	weapon_class_register( "winchester1200_mp", "weapon_shotgun" );
+	weapon_class_register( "m1014_mp", "weapon_shotgun" );
+	weapon_class_register( "m40a3_mp", "weapon_sniper" );
+	weapon_class_register( "remington700", "weapon_sniper" );
 
 	level thread onPlayerConnecting();
 }
 
-initPerkData( perkRef )
-{
-	level.perkNames[perkRef] = tableLookupIString( "mp/statsTable.csv", 4, perkRef, 3 );
-	level.perkIcons[perkRef] = tableLookup( "mp/statsTable.csv", 4, perkRef, 6 );
-	precacheString( level.perkNames[perkRef] );
-	precacheShader( level.perkIcons[perkRef] );
-}
-
 weapon_class_register( weapon, weapon_type )
 {
-	if( isSubstr( "weapon_smg weapon_assault weapon_projectile weapon_sniper weapon_shotgun weapon_lmg", weapon_type ) )
-		level.primary_weapon_array[weapon] = weapon_type;
-	else if( weapon_type == "weapon_pistol" )
-		level.side_arm_array[weapon] = 1;
-	else if( weapon_type == "weapon_grenade" )
-		level.grenade_array[weapon] = 1;
-	else if( weapon_type == "weapon_explosive" )
-		level.inventory_array[weapon] = 1;
-	else
-		assertex( false, "Weapon group info is missing from statsTable for: " + weapon_type );
+	level.primary_weapon_array[weapon] = weapon_type;
 }
 
 giveLoadout( team, class )
@@ -126,13 +54,6 @@ giveLoadout( team, class )
 	self takeAllWeapons();
 
 	self setClass( class );
-
-	// hardcoded perks
-	self.specialty = [];
-	self.specialty[0] = "specialty_extraammo";
-	self.specialty[1] = "specialty_bulletdamage";
-
-	self register_perks();
 
 	sidearmWeapon = self.pers[class]["loadout_secondary"];
 
@@ -197,9 +118,15 @@ giveLoadout( team, class )
 	}
 
 	// give frag grenade
-	if ( getDvarInt( "weap_allow_frag_grenade" ) )
+	if ( getDvarInt( "weap_allow_frag_grenade" ) && ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) ) )
 	{
-		if (isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) )
+		if ( level.hardcoreMode )
+		{
+			self giveWeapon( "frag_grenade_short_mp" );
+			self setWeaponAmmoClip( "frag_grenade_short_mp", 1 );
+			self switchToOffhand( "frag_grenade_short_mp" );
+		}
+		else
 		{
 			self giveWeapon( "frag_grenade_mp" );
 			self setWeaponAmmoClip( "frag_grenade_mp", 1 );
@@ -208,7 +135,7 @@ giveLoadout( team, class )
 	}
 
 	// give special grenade
-	if ( self.pers[class]["loadout_grenade"] != "none" && (getDvarInt("weap_allow_flash_grenade") || getDvarInt("weap_allow_smoke_grenade")) )
+	if ( self.pers[class]["loadout_grenade"] != "none" && getDvarInt( "weap_allow_flash_grenade" ) || getDvarInt( "weap_allow_smoke_grenade" ) )
 	{
 		if ( self.pers[class]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
 			self setOffhandSecondaryClass("flash");
@@ -225,16 +152,16 @@ giveLoadout( team, class )
 	switch ( class )
 	{
 		case "assault":
-			self setMoveSpeedScale( getDvarFloat( "class_assault_movespeed" ) );
+			self setMoveSpeedScale( 0.95 );
 			break;
 		case "specops":
-			self setMoveSpeedScale( getDvarFloat( "class_specops_movespeed" ) );
+			self setMoveSpeedScale( 1.0 );
 			break;
 		case "demolitions":
-			self setMoveSpeedScale( getDvarFloat( "class_demolitions_movespeed" ) );
+			self setMoveSpeedScale( 1.0 );
 			break;
 		case "sniper":
-			self setMoveSpeedScale( getDvarFloat( "class_sniper_movespeed" ) );
+			self setMoveSpeedScale( 1.0 );
 			break;
 		default:
 			self setMoveSpeedScale( 1.0 );
@@ -329,9 +256,6 @@ giveLoadout( team, class )
 	self set_config( CLASS_SECONDARY_ATTACHMENT, CLASS_SECONDARY_ATTACHMENT_VALUE );
 	self set_config( CLASS_GRENADE, CLASS_GRENADE_VALUE );
 	self set_config( CLASS_CAMO, CLASS_CAMO_VALUE );
-
-	self maps\mp\gametypes\_class::cac_selector();
-	return true;
 }
 
 set_config( dataName, value )
@@ -363,53 +287,13 @@ onPlayerConnecting()
 		if ( !isDefined( player.pers["class"] ) )
 			player.pers["class"] = undefined;
 		player.class = player.pers["class"];
-		player.detectExplosives = false;
-		player.bombSquadIcons = [];
-		player.bombSquadIds = [];
 	}
-}
-
-fadeAway( waitDelay, fadeDelay )
-{
-	wait waitDelay;
-
-	self fadeOverTime( fadeDelay );
-	self.alpha = 0;
 }
 
 setClass( newClass )
 {
 	self setClientDvar( "loadout_curclass", newClass );
 	self.curClass = newClass;
-}
-
-cac_selector()
-{
-	for ( index = 0; index < self.bombSquadIcons.size; index++ )
-		self.bombSquadIcons[index] destroy();
-
-	self.bombSquadIcons = [];
-}
-
-register_perks()
-{
-	perks = self.specialty;
-	self clearPerks();
-	for( i=0; i<perks.size; i++ )
-	{
-		perk = perks[i];
-
-		if ( perk != "specialty_extraammo" && perk != "specialty_bulletdamage" )
-			continue;
-
-		self setPerk( perk );
-	}
-}
-
-cac_hasSpecialty( perk_reference )
-{
-	return_value = self hasPerk( perk_reference );
-	return return_value;
 }
 
 cac_modified_damage( victim, attacker, damage, meansofdeath )
@@ -426,8 +310,8 @@ cac_modified_damage( victim, attacker, damage, meansofdeath )
 	final_damage = damage;
 
 	// if attacker has bullet damage then increase bullet damage
-	if( attacker cac_hasSpecialty( "specialty_bulletdamage" ) && isPrimaryDamage( meansofdeath ) )
-			final_damage = damage*(100+40)/100; //hardcoded
+	if( isPrimaryDamage( meansofdeath ) )
+			final_damage = damage*1.4; //hardcoded
 
 	// return unchanged damage
 	return int( final_damage );

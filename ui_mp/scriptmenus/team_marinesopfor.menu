@@ -84,8 +84,8 @@
 		CHOICE_BUTTON_VIS( 1, "1. Attack", play "mouse_click"; scriptMenuResponse "allies";, when( team( name ) == "TEAM_AXIS" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
 		CHOICE_DBUTTON_VIS( 1, "1. Attack", when( team( name ) == "TEAM_ALLIES" ) )
 
-		CHOICE_BUTTON_VIS( 2, "2. Defense", play "mouse_click"; scriptMenuResponse "axis";, when( team( name ) == "TEAM_ALLIES" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
-		CHOICE_DBUTTON_VIS( 2, "2. Defense", when( team( name ) == "TEAM_AXIS" ) )
+		CHOICE_BUTTON_VIS( 2, "2. Defence", play "mouse_click"; scriptMenuResponse "axis";, when( team( name ) == "TEAM_ALLIES" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
+		CHOICE_DBUTTON_VIS( 2, "2. Defence", when( team( name ) == "TEAM_AXIS" ) )
 
 		CHOICE_BUTTON_EX( 3, "3. Auto-Assign", play "mouse_click"; scriptMenuResponse "autoassign";, name "auto_assign" )
 

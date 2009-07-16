@@ -47,14 +47,6 @@ onPlayerConnect()
 	for(;;)
 	{
 		level waittill("connecting", player);
-
-		player setClientDvar("ui_3dwaypointtext", "1");
-		player.enable3DWaypoints = true;
-		player setClientDvar("ui_deathicontext", "1");
-		player.enableDeathIcons = true;
-		player.classType = undefined;
-		player.selectedClass = false;
-
 		player thread onMenuResponse();
 	}
 }
@@ -105,10 +97,7 @@ onMenuResponse()
 			self closeMenu();
 			self closeInGameMenu();
 
-			if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-				self openMenu(game["menu_team"]);
-			else
-				self openMenu(game["menu_team_flipped"]);
+			self openMenu(game["menu_team"]);
 		}
 
 		if( response == "changeclass_marines" )
@@ -127,41 +116,38 @@ onMenuResponse()
 			continue;
 		}
 
-		if( response == "endgame" )
-		{
-			continue;
-		}
-
 		if( menu == game["menu_team"] || menu == game["menu_team_flipped"] )
 		{
 			switch(response)
 			{
 				case "allies":
-					self setClientDvar( "g_compassShowEnemies", "0" );
+					self setClientDvars(	"g_compassShowEnemies", "0",
+											"r_contrast", "1",
+											"r_brightness", "0" );
 
-					if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-						self [[level.allies]]();
-					else
-						self [[level.axis]]();
+					self [[level.allies]]();
 					break;
 
 				case "axis":
-					self setClientDvar( "g_compassShowEnemies", "0" );
+					self setClientDvars(	"g_compassShowEnemies", "0",
+											"r_contrast", "1",
+											"r_brightness", "0" );
 
-					if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-						self [[level.axis]]();
-					else
-						self [[level.allies]]();
+					self [[level.axis]]();
 					break;
 
 				case "autoassign":
-					self setClientDvar( "g_compassShowEnemies", "0" );
+					self setClientDvars(	"g_compassShowEnemies", "0",
+											"r_contrast", "1",
+											"r_brightness", "0" );
 
 					self [[level.autoassign]]();
 					break;
 
 				case "shoutcast":
-					self setClientDvar( "g_compassShowEnemies", "1" );
+					self setClientDvars(	"g_compassShowEnemies", "1",
+											"r_contrast", "1",
+											"r_brightness", "0" );
 
 					self [[level.spectator]]();
 					break;
@@ -183,9 +169,6 @@ onMenuResponse()
 		}
 		else if( menu == game["menu_changeclass"] )
 		{
-			//self closeMenu();
-			//self closeInGameMenu();
-			self.selectedClass = true;
 			self maps\mp\gametypes\_promod::menuAcceptClass();
 		}
 

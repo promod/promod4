@@ -78,7 +78,7 @@
 		CHOICE_DVARYESNO( 36, "Numerical Ammo Counter", cg_drawBreathHint, ; )
 		CHOICE_DVAREDIT( 37, "Field Of View", ui_fov, ; )
 		CHOICE_DVARFLOATLIST( 38, "Max FPS", com_maxfps, { "100 FPS" 100 "125 FPS" 125 "200 FPS" 200 "250 FPS" 250 }, ;)
-		CHOICE_DVARFLOATLIST( 39, "Draw Scorebar", cg_voiceIconSize, { "Yes" 0 "No" 1}, ; )
+		CHOICE_DVARYESNO( 39, "Draw Scorebar", cg_voiceIconSize, ; )
 
 		CHOICE_KEYBINDHELP
 	}

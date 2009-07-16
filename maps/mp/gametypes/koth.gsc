@@ -152,6 +152,8 @@ onStartGameType()
 	else
 		updateObjectiveHintMessages( level.objectiveHintCaptureHQ, level.objectiveHintCaptureHQ );
 
+	setClientNameMode("auto_change");
+
 	// TODO: HQ spawnpoints
 	level.spawnMins = ( 0, 0, 0 );
 	level.spawnMaxs = ( 0, 0, 0 );
@@ -446,6 +448,10 @@ onRadioCapture( player )
 	level thread awardHQPoints( team );
 
 	level notify( "hq_captured" );
+
+	if ( isDefined( level.scorebot ) && level.scorebot )
+		game["promod_scorebot_ticker_buffer"] += "hq_captured" + player.name;
+
 }
 
 onRadioDestroy( player )
@@ -476,6 +482,10 @@ onRadioDestroy( player )
 
 	if ( level.kothmode )
 		level thread awardHQPoints( team );
+
+	if ( isDefined( level.scorebot ) && level.scorebot )
+		game["promod_scorebot_ticker_buffer"] += "hq_destroyed" + player.name;
+
 }
 
 DestroyHQAfterTime( time )

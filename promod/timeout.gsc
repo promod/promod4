@@ -73,7 +73,7 @@ Timeout_Time_Timer()
 
 Timeout_Call()
 {
-	if ( isDefined( level.ready_up_over ) && level.ready_up_over != true || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
+	if ( isDefined( level.ready_up_over ) && !level.ready_up_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
 		return;
 
 	if ( level.gametype != "sd" && level.gametype != "sab" )
@@ -93,6 +93,16 @@ Timeout_Call()
 
 	game["promod_timeout_called_by"] = self.name;
 	iprintln("^3Timeout called by " + game["promod_timeout_called_by"]);
+	if( isDefined( level.scorebot ) && level.scorebot ) {
+		timeout_team = "";
+		if ( self.pers["team"] == game["attackers"] )
+			timeout_team = "attack";
+		else if ( self.pers["team"] == game["defenders"] )
+			timeout_team = "defence";
+
+		game["promod_scorebot_ticker_buffer"] += "timeout_called" + timeout_team + "" + self.name;
+	}
+
 
 	if ( level.gametype == "sd" )
 		game[self.pers["team"] + "_timeout_called"] = 1;

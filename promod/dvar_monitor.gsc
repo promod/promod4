@@ -16,26 +16,20 @@ main()
 
 Server_DVAR_Monitor()
 {
-	o_onlyheadshots = getDvarInt("scr_game_onlyheadshots");
 	o_fftype = getDvarInt("scr_team_fftype");
 	o_player_numlives = getDvarInt("scr_player_numlives");
-	o_sprinttime = getDvarFloat("scr_player_sprinttime");
 	o_bg_fallDamageMinHeight = getDvarInt("bg_fallDamageMinHeight");
 	o_bg_fallDamageMaxHeight = getDvarInt("bg_fallDamageMaxHeight");
 	o_hiticon = getDvarInt("scr_enable_hiticon");
 	o_forceuav = getDvarInt("scr_game_forceuav");
 	o_assault_allowdrop = getDvarInt("class_assault_allowdrop");
 	o_assault_limit = getDvarInt("class_assault_limit");
-	o_assault_movespeed = getDvarFloat("class_assault_movespeed");
 	o_demolitions_allowdrop = getDvarInt("class_demolitions_allowdrop");
 	o_demolitions_limit = getDvarInt("class_demolitions_limit");
-	o_demolitions_movespeed = getDvarFloat("class_demolitions_movespeed");
 	o_sniper_allowdrop = getDvarInt("class_sniper_allowdrop");
 	o_sniper_limit = getDvarInt("class_sniper_limit");
-	o_sniper_movespeed = getDvarFloat("class_sniper_movespeed");
 	o_specops_allowdrop = getDvarInt("class_specops_allowdrop");
 	o_specops_limit = getDvarInt("class_specops_limit");
-	o_specops_movespeed = getDvarFloat("class_specops_movespeed");
 	o_killcam = getDvarInt("scr_game_allowkillcam");
 	o_drawfriend = getDvarInt("scr_drawfriend");
 	o_spectatetype = getDvarInt("scr_game_spectatetype");
@@ -52,10 +46,6 @@ Server_DVAR_Monitor()
 	{
 		wait 1.5;
 
-		onlyheadshots = getDvarInt("scr_game_onlyheadshots");
-		if (o_onlyheadshots != onlyheadshots)
-			o_onlyheadshots = dVar_Changed("scr_game_onlyheadshots", onlyheadshots);
-
 		fftype = getDvarInt("scr_team_fftype");
 		if (o_fftype != fftype)
 			o_fftype = dVar_Changed("scr_team_fftype", fftype);
@@ -63,10 +53,6 @@ Server_DVAR_Monitor()
 		player_numlives = getDvarInt("scr_player_numlives");
 		if (o_player_numlives != player_numlives)
 			o_player_numlives = dVar_Changed("scr_player_numlives", player_numlives);
-
-		sprinttime = getDvarFloat("scr_player_sprinttime");
-		if (o_sprinttime != sprinttime)
-			o_sprinttime = dVar_Changed("scr_player_sprinttime", sprinttime);
 
 		bg_fallDamageMinHeight = getDvarInt("bg_fallDamageMinHeight");
 		if (o_bg_fallDamageMinHeight != bg_fallDamageMinHeight)
@@ -92,10 +78,6 @@ Server_DVAR_Monitor()
 		if (o_assault_limit != assault_limit)
 			o_assault_limit = dVar_Changed("class_assault_limit", assault_limit);
 
-		assault_movespeed = getDvarFloat("class_assault_movespeed");
-		if (o_assault_movespeed != assault_movespeed)
-			o_assault_movespeed = dVar_Changed("class_assault_movespeed", assault_movespeed);
-
 		demolitions_allowdrop = getDvarInt("class_demolitions_allowdrop");
 		if (o_demolitions_allowdrop != demolitions_allowdrop)
 			o_demolitions_allowdrop = dVar_Changed("class_demolitions_allowdrop", demolitions_allowdrop);
@@ -103,10 +85,6 @@ Server_DVAR_Monitor()
 		demolitions_limit = getDvarInt("class_demolitions_limit");
 		if (o_demolitions_limit != demolitions_limit)
 			o_demolitions_limit = dVar_Changed("class_demolitions_limit", demolitions_limit);
-
-		demolitions_movespeed = getDvarFloat("class_demolitions_movespeed");
-		if (o_demolitions_movespeed != demolitions_movespeed)
-			o_demolitions_movespeed = dVar_Changed("class_demolitions_movespeed", demolitions_movespeed);
 
 		sniper_allowdrop = getDvarInt("class_sniper_allowdrop");
 		if (o_sniper_allowdrop != sniper_allowdrop)
@@ -116,10 +94,6 @@ Server_DVAR_Monitor()
 		if (o_sniper_limit != sniper_limit)
 			o_sniper_limit = dVar_Changed("class_sniper_limit", sniper_limit);
 
-		sniper_movespeed = getDvarFloat("class_sniper_movespeed");
-		if (o_sniper_movespeed != sniper_movespeed)
-			o_sniper_movespeed = dVar_Changed("class_sniper_movespeed", sniper_movespeed);
-
 		specops_allowdrop = getDvarInt("class_specops_allowdrop");
 		if (o_specops_allowdrop != specops_allowdrop)
 			o_specops_allowdrop = dVar_Changed("class_specops_allowdrop", specops_allowdrop);
@@ -127,10 +101,6 @@ Server_DVAR_Monitor()
 		specops_limit = getDvarInt("class_specops_limit");
 		if (o_specops_limit != specops_limit)
 			o_specops_limit = dVar_Changed("class_specops_limit", specops_limit);
-
-		specops_movespeed = getDvarFloat("class_specops_movespeed");
-		if (o_specops_movespeed != specops_movespeed)
-			o_specops_movespeed = dVar_Changed("class_specops_movespeed", specops_movespeed);
 
 		killcam = getDvarInt("scr_game_allowkillcam");
 		if (o_killcam != killcam)

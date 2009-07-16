@@ -118,14 +118,8 @@ init()
 	setDvarDefault( "scr_enable_hiticon", 2, 0, 2 );
 	setDvarDefault( "scr_enable_scoretext", 1, 0, 1 );
 
-	setDvarDefault( "class_assault_movespeed", 0.95, 0.25, 2.0 );
-	setDvarDefault( "class_specops_movespeed", 1.00, 0.25, 2.0 );
-	setDvarDefault( "class_demolitions_movespeed", 1.00, 0.25, 2.0 );
-	setDvarDefault( "class_sniper_movespeed", 1.00, 0.25, 2.0 );
-
 	level thread onPlayerConnect();
 }
-
 
 onPlayerConnect()
 {
@@ -136,18 +130,18 @@ onPlayerConnect()
 	}
 }
 
-
 releaseClass( teamName, classType )
 {
 	game[teamName + "_" + classType + "_count"]--;
 	updateClassAvailability( teamName, classType );
+	//println("^1releaseClass;" + " TEAM; " + teamName + "; classType; " + classType + " ^7" + "ALLIES: " + game["allies_assault_count"] + " " + game["allies_specops_count"] + " " + game["allies_demolitions_count"] + " " + game["allies_sniper_count"] + " " + "AXIS: " + game["axis_assault_count"] + " " + game["axis_specops_count"] + " " + game["axis_demolitions_count"] + " " + game["axis_sniper_count"] );
 }
-
 
 claimClass( teamName, classType )
 {
 	game[teamName + "_" + classType + "_count"]++;
 	updateClassAvailability( teamName, classType );
+	//println("^2claimClass;" + " TEAM; " + teamName + "; classType; " + classType + " ^7" + "ALLIES: " + game["allies_assault_count"] + " " + game["allies_specops_count"] + " " + game["allies_demolitions_count"] + " " + game["allies_sniper_count"] + " " + "AXIS: " + game["axis_assault_count"] + " " + game["axis_specops_count"] + " " + game["axis_demolitions_count"] + " " + game["axis_sniper_count"] );
 }
 
 setClassChoice( classType )
@@ -163,6 +157,7 @@ setClassChoice( classType )
 
 	self.pers["class"] = classType;
 	self.class = classType;
+	self.curClass = classType;
 
 	self setClientDvar( "loadout_class", classType );
 	self setDvarsFromClass( classType );
@@ -177,8 +172,7 @@ setClassChoice( classType )
 					"weap_allow_g3", getDvar( "weap_allow_g3" ),
 					"weap_allow_g36c", getDvar( "weap_allow_g36c" ),
 					"weap_allow_m14", getDvar( "weap_allow_m14" ),
-					"weap_allow_mp44", getDvar( "weap_allow_mp44" ) );
-			self setClientDvars(
+					"weap_allow_mp44", getDvar( "weap_allow_mp44" ),
 					"attach_allow_assault_none", getDvar( "attach_allow_assault_none" ),
 					"attach_allow_assault_silencer", getDvar( "attach_allow_assault_silencer" ) );
 			break;
@@ -186,8 +180,7 @@ setClassChoice( classType )
 			self setClientDvars(
 					"weap_allow_mp5", getDvar( "weap_allow_mp5" ),
 					"weap_allow_uzi", getDvar( "weap_allow_uzi" ),
-					"weap_allow_ak74u", getDvar( "weap_allow_ak74u" ) );
-			self setClientDvars(
+					"weap_allow_ak74u", getDvar( "weap_allow_ak74u" ),
 					"attach_allow_smg_none", getDvar( "attach_allow_smg_none" ),
 					"attach_allow_smg_silencer", getDvar( "attach_allow_smg_silencer" ) );
 			break;
@@ -195,17 +188,14 @@ setClassChoice( classType )
 			self setClientDvars(
 					"weap_allow_m1014", getDvar( "weap_allow_m1014" ),
 					"weap_allow_winchester1200", getDvar( "weap_allow_winchester1200" ) );
-			self setClientDvar(	"attach_allow_shotgun_none", getDvar( "attach_allow_shotgun_none" ) );
 			break;
 		case "sniper":
 			self setClientDvars(
 					"weap_allow_m40a3", getDvar( "weap_allow_m40a3" ),
 					"weap_allow_remington700", getDvar( "weap_allow_remington700" ) );
-			self setClientDvar( "attach_allow_sniper_none", getDvar( "attach_allow_sniper_none" ) );
 			break;
 	}
 }
-
 
 setDvarWrapper( dvarName, setVal )
 {
@@ -219,8 +209,6 @@ setDvarWrapper( dvarName, setVal )
 	}
 }
 
-
-// set a dvar to a default value or, if it already has a value, assure that it's in the valid range
 setDvarDefault( dvarName, setVal, minVal, maxVal )
 {
 	// no value set
@@ -242,9 +230,6 @@ setDvarDefault( dvarName, setVal, minVal, maxVal )
 	return setVal;
 }
 
-
-// set a dvar to a default value or, if it already has a value, assure that it's in the valid range
-// server dvars should always be updated to client when they change
 setServerDvarDefault( dvarName, setVal, minVal, maxVal )
 {
 	setVal = setDvarDefault( dvarName, setVal, minVal, maxVal );
@@ -252,16 +237,12 @@ setServerDvarDefault( dvarName, setVal, minVal, maxVal )
 	level.serverDvars[dvarName] = setVal;
 }
 
-
-// set a dvar to a default value or, if it already has a value, assure that it's in the valid range
-// server info dvars are automatically updated to the clients by code, but increase the config string count and gamestate size
 setServerInfoDvarDefault( dvarName, setVal, minVal, maxVal )
 {
 	makeDvarServerInfo( dvarName, setVal );
 
 	setVal = setDvarDefault( dvarName, setVal, minVal, maxVal );
 }
-
 
 initClassAvailability()
 {
@@ -271,8 +252,6 @@ initClassAvailability()
 						 self.pers["team"] + "_allow_sniper", game[self.pers["team"] + "_sniper_count"] < getDvarInt( "class_sniper_limit" ) );
 }
 
-
-// init all player classes to default server settings
 initClassLoadouts()
 {
 	self initLoadoutForClass( "assault" );
@@ -281,8 +260,6 @@ initClassLoadouts()
 	self initLoadoutForClass( "sniper" );
 }
 
-
-// copy server side class settings into client loadout
 initLoadoutForClass( classType )
 {
 	CLASS_PRIMARY = "";
@@ -370,8 +347,6 @@ initLoadoutForClass( classType )
 		self.pers[classType]["loadout_camo"] = get_config( CLASS_CAMO );
 }
 
-
-// update the client ui with dvars from the specified class
 setDvarsFromClass( classType )
 {
 	self setClientDvars(
@@ -383,8 +358,6 @@ setDvarsFromClass( classType )
 		"loadout_camo", self.pers[classType]["loadout_camo"] );
 }
 
-
-// handle script menu responses related to loadout changes
 processLoadoutResponse( respString )
 {
 	commandTokens = strTok( respString, "," );
@@ -479,7 +452,6 @@ processLoadoutResponse( respString )
 	}
 }
 
-
 verifyWeaponChoice( weaponName, classType )
 {
 	if ( tableLookup( "mp/statsTable.csv", 4, weaponName, 2 ) == "weapon_pistol" )
@@ -508,25 +480,23 @@ verifyWeaponChoice( weaponName, classType )
 	return false;
 }
 
-
 verifyClassChoice( teamName, classType )
 {
-	assert( teamName == "allies" || teamName == "axis" );
-	assert( classType == "assault" || classType == "specops" || classType == "demolitions" || classType == "sniper" );
+	if ((teamName == "allies" || teamName == "axis") && (classType == "assault" || classType == "specops" || classType == "demolitions" || classType == "sniper")) {
+
 	if ( isDefined( self.curClass ) && self.curClass == classType && getDvarInt( "class_" + classType + "_limit" ) )
 		return true;
 
 	return ( game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
+	}
 }
-
 
 updateClassAvailability( teamName, classType )
 {
-	assert( teamName == "allies" || teamName == "axis" );
-	assert( classType == "assault" || classType == "specops" || classType == "demolitions" || classType == "sniper" );
-	setDvarWrapper( teamName + "_allow_" + classType, game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
+	if ((teamName == "allies" || teamName == "axis") && (classType == "assault" || classType == "specops" || classType == "demolitions" || classType == "sniper")) {
+		setDvarWrapper( teamName + "_allow_" + classType, game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
+	}
 }
-
 
 menuAcceptClass()
 {
@@ -544,14 +514,11 @@ menuAcceptClass()
 
 		if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
 		{
-			self.tag_stowed_back = undefined;
-			self.tag_stowed_hip = undefined;
-
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
 		}
 		else
 		{
-			if ( self.curClass != self.pers["class"] )
+			if ( isDefined( self.oldClass ) && self.oldClass != self.pers["class"] )
 			{
 				self iPrintLnBold( game["strings"]["change_class"] );
 				self setClientDvar( "loadout_curclass", self.pers["class"] );
@@ -574,12 +541,10 @@ menuAcceptClass()
 			self thread [[level.spawnClient]]();
 	}
 
-	level thread maps\mp\gametypes\_globallogic::updateTeamStatus();
+	//level thread maps\mp\gametypes\_globallogic::updateTeamStatus();
 	self thread maps\mp\gametypes\_spectating::setSpectatePermissions();
 }
 
-
-//this could be optimized to use setClientDvars
 updateServerDvars()
 {
 	self endon ( "disconnect" );
@@ -591,7 +556,6 @@ updateServerDvars()
 		wait ( 0.05 );
 	}
 }
-
 
 get_config( dataName )
 {

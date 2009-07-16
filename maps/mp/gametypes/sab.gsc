@@ -115,6 +115,8 @@ onStartGameType()
 	if ( !isdefined( game["switchedsides"] ) )
 		game["switchedsides"] = false;
 
+	setClientNameMode("auto_change");
+
 	game["strings"]["target_destroyed"] = &"MP_TARGET_DESTROYED";
 
 	if ( !game["tiebreaker"] )
@@ -321,7 +323,7 @@ sabotage()
 	precacheModel( "prop_suitcase_bomb" );
 	visuals[0] setModel( "prop_suitcase_bomb" );
 
-	if ( isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] && isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "strat" )
+	if ( ( !isDefined( game["promod_do_readyup"] ) || isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] ) && ( !isDefined( game["promod_match_mode"] ) || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "strat" ) )
 	{
 		level.sabBomb = maps\mp\gametypes\_gameobjects::createCarryObject( "neutral", trigger, visuals, (0,0,32) );
 		level.sabBomb maps\mp\gametypes\_gameobjects::allowCarry( "any" );
@@ -433,6 +435,9 @@ onPickup( player )
 	player playLocalSound( "mp_suitcase_pickup" );
 	player logString( "bomb taken" );
 
+	if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
+		game["promod_scorebot_ticker_buffer"] += "pickup_bomb" + player.name;
+
 	excludeList[0] = player;
 
 	player.isBombCarrier = true;
@@ -462,14 +467,13 @@ onPickup( player )
 
 onDrop( player )
 {
-	if ( level.bombPlanted )
-	{
-
-	}
-	else
+	if ( !level.bombPlanted )
 	{
 		if ( isDefined( player ) )
 			printOnTeamArg( &"MP_EXPLOSIVES_DROPPED_BY", self maps\mp\gametypes\_gameobjects::getOwnerTeam(), player );
+
+		if (level.scorebot && isDefined( player ) && isDefined( player.name ))
+			game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
 
 		playSoundOnPlayers( game["bomb_dropped_sound"], self maps\mp\gametypes\_gameobjects::getOwnerTeam() );
 		if ( isDefined( player ) )
@@ -531,6 +535,9 @@ onUse( player )
 		player thread [[level.onXPEvent]]( "plant" );
 		level thread bombPlanted( self, player.pers["team"] );
 
+		if ( isDefined( level.scorebot ) && level.scorebot )
+			game["promod_scorebot_ticker_buffer"] += "planted_by" + player.name;
+
 		level.bombOwner = player;
 
 		level.sabBomb.autoResetTime = undefined;
@@ -557,6 +564,9 @@ onUse( player )
 
 		player thread [[level.onXPEvent]]( "defuse" );
 		level thread bombDefused( self );
+
+		if ( isDefined( level.scorebot ) && level.scorebot )
+			game["promod_scorebot_ticker_buffer"] += "defused_by" + player.name;
 
 		if ( level.inOverTime && isDefined( level.plantingTeamDead ) )
 		{
@@ -607,6 +617,9 @@ bombPlanted( destroyedObj, team )
 
 	explosionOrigin = level.sabBomb.visuals[0].origin;
 	level.bombExploded = true;
+
+	if ( isDefined( level.scorebot ) && level.scorebot )
+		game["promod_scorebot_ticker_buffer"] += "bomb_exploded";
 
 	if ( isdefined( level.bombowner ) )
 		destroyedObj.visuals[0] radiusDamage( explosionOrigin, 512, 200, 20, level.bombowner );

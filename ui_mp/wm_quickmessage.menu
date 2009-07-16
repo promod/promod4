@@ -22,9 +22,6 @@
 #undef CHOICE_SIZE_X
 #define CHOICE_SIZE_X			186
 
-#undef BUTTON_BG_COLOR
-#define BUTTON_BG_COLOR		0 0 0 0
-
 #undef CHOICE_POPUP_BACKCOLOR
 #define CHOICE_POPUP_BACKCOLOR 0.2 0.2 0.22 0.65
 
@@ -33,7 +30,7 @@
 {
 	menuDef
 	{
-		IMPROVED_POPUP_SETUP_ONOPEN( quickmessage, 6, 4, 292, ;, setDvar cl_bypassMouseInput "1";, 0 )
+		IMPROVED_POPUP_SETUP_ONOPEN( quickmessage, 7.6, 4, 258, ;, setDvar cl_bypassMouseInput "1";, 0 )
 		onClose{ setDvar cl_bypassMouseInput "0" }
 
 		CHOICE_POPMENU_TITLE( "@QUICKMESSAGE_QUICK_MESSAGE" )
@@ -117,5 +114,20 @@
 			decoration
 		}
 		execKey "5" { close quickmessage; open quickpromodgfx }
+
+		itemDef
+		{
+			name			"window"
+			visible			1
+			rect			16 116 0 0
+			origin			ORIGIN_QUICKMESSAGEWINDOW
+			forecolor		1 1 1 1
+			textfont		UI_FONT_NORMAL
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_SMALL
+			textaligny		8
+			text			"Esc. Exit"
+			decoration
+		}
 	}
 }

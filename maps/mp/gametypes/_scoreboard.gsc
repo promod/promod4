@@ -13,11 +13,7 @@ init()
 	switch(game["allies"])
 	{
 	case "sas":
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			setdvar("g_TeamName_Allies", &"PROMOD_ATTACK_NAME");
-		else
-			setdvar("g_TeamName_Allies", &"PROMOD_DEFENSE_NAME");
-
+		setdvar("g_TeamName_Allies", &"PROMOD_ATTACK_NAME");
 		precacheShader("faction_128_sas");
 		setdvar("g_TeamIcon_Allies", "faction_128_sas");
 		setdvar("g_TeamColor_Allies", ".5 .5 .5");
@@ -26,11 +22,7 @@ init()
 		break;
 
 	case "marines":
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			setdvar("g_TeamName_Allies", &"PROMOD_ATTACK_NAME");
-		else
-			setdvar("g_TeamName_Allies", &"PROMOD_DEFENSE_NAME");
-
+		setdvar("g_TeamName_Allies", &"PROMOD_ATTACK_NAME");
 		precacheShader("faction_128_usmc");
 		setdvar("g_TeamIcon_Allies", "faction_128_usmc");
 		setdvar("g_TeamColor_Allies", "0.6 0.64 0.69");
@@ -43,10 +35,7 @@ init()
 	case "opfor":
 	case "arab":
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			setdvar("g_TeamName_Axis", &"PROMOD_DEFENSE_NAME");
-		else
-			setdvar("g_TeamName_Axis", &"PROMOD_ATTACK_NAME");
-
+			setdvar("g_TeamName_Axis", &"PROMOD_DEFENCE_NAME");
 		precacheShader("faction_128_arab");
 		setdvar("g_TeamIcon_Axis", "faction_128_arab");
 		setdvar("g_TeamColor_Axis", "0.65 0.57 0.41");
@@ -54,11 +43,7 @@ init()
 		break;
 
 	default:
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			setdvar("g_TeamName_Axis", &"PROMOD_DEFENSE_NAME");
-		else
-			setdvar("g_TeamName_Axis", &"PROMOD_ATTACK_NAME");
-
+		setdvar("g_TeamName_Axis", &"PROMOD_DEFENCE_NAME");
 		precacheShader("faction_128_ussr");
 		setdvar("g_TeamIcon_Axis", "faction_128_ussr");
 		setdvar("g_TeamColor_Axis", "0.52 0.28 0.28");

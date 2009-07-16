@@ -19,6 +19,9 @@ violationSystem()
 
 	while( 1 )
 	{
+		if ( getDvarInt( "sv_cheats" ) == 1 )
+			break;
+
 		cacheIWDname = toLower( getDvar( "sv_iwdnames" ) );
 		cacheIWDsum = getDvar( "sv_iwds" );
 
@@ -46,20 +49,20 @@ violationSystem()
 		if ( getDvarInt( "sv_pure" ) != 1 )
 			iPrintLNBold("^1Server Violation ^3#0107^7: Impure Server");
 
-		if ( getDvar( "fs_game" ) != ( "mods/promod442" ) && game["CUSTOM_MODE"] != 0 )
+		if ( getDvar( "fs_game" ) != ( "mods/promodlive2" ) && game["CUSTOM_MODE"] != 0 )
 		{
-			if ( getDvar( "fs_game" ) != ( "mods/promod442_custom" ) )
+			if ( getDvar( "fs_game" ) != ( "mods/promodlive2_custom" ) )
 				iPrintLNBold("^1Server Violation ^3#0108^7: Bad Server Path (fs_game)");
 		}
 		else
 		{
-			if ( getDvar( "fs_game" ) != ( "mods/promod442" ) )
+			if ( getDvar( "fs_game" ) != ( "mods/promodlive2" ) )
 				iPrintLNBold("^1Server Violation ^3#0108^7: Bad Server Path (fs_game)");
 
 			if ( isSubStr( cacheIWDname, "svr" ) )
 				iPrintLNBold("^1Server Violation ^3#0109^7: No Additional IWD Files Allowed");
 
-			if ( !isSubStr( cacheIWDsum, "1205705642" ) )
+			if ( !isSubStr( cacheIWDsum, "1488399193" ) )
 				iPrintLNBold("^1Server Violation ^3#0200^7: Promod IWD Checksum Failed");
 		}
 

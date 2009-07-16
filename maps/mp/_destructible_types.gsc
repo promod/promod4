@@ -16,17 +16,10 @@ makeType( destructibleType )
 	level.carHP = 200;
 	level.carExpMin = 20;
 	level.carExpMax = 300;
-	//println( destructibleType );
 
-	// if it's already been created dont create it again
 	infoIndex = getInfoIndex( destructibleType );
 	if ( infoIndex >= 0 )
-	{
-		//println( "### DESTRUCTIBLE ### already created" );
 		return infoIndex;
-	}
-
-	//println( "### DESTRUCTIBLE ### creating" );
 
 	switch( destructibleType )
 	{
@@ -86,8 +79,6 @@ makeType( destructibleType )
 			break;
 		case "vehicle_80s_hatch2_green":
 			return -1;
-//			vehicle_80s_hatch2( "green" );
-//			break;
 		case "vehicle_small_wagon_blue":
 			vehicle_small_wagon( "blue" );
 			break;
@@ -159,9 +150,9 @@ vehicle_80s_sedan1( color )
 			destructible_state( undefined, "vehicle_80s_sedan1_" + color + "_destructible_mp", 300, "player_only", 32, "no_melee" );
 				destructible_loopsound( "fire_vehicle_med" );
 			destructible_state( undefined, "vehicle_80s_sedan1_" + color + "_destructible_mp", 400, undefined, 32, "no_melee" );
-				//destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
+				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
-				destructible_explode( 4000, 5000, 250, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
+				destructible_explode( 4000, 5000, 375, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
 				destructible_anim( %vehicle_80s_sedan1_destroy, #animtree, "setanimknob" );
 				destructible_loopfx( "tag_hood_fx", "smoke/car_damage_blacksmoke_fire", 9999 );
 			destructible_state( undefined, "vehicle_80s_sedan1_" + color + "_destroyed", undefined, 32, "no_melee" );
@@ -272,7 +263,7 @@ vehicle_80s_wagon1( color )
 			destructible_state( undefined, "vehicle_80s_wagon1_" + color + "_destructible_mp", 300, "player_only", 32, "no_melee" );
 				destructible_loopsound( "fire_vehicle_med" );
 			destructible_state( undefined, "vehicle_80s_wagon1_" + color + "_destructible_mp", 400, undefined, 32, "no_melee" );
-				//destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
+				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
 				destructible_anim( %vehicle_80s_sedan1_destroy, #animtree, "setanimknob" );
@@ -394,7 +385,7 @@ vehicle_80s_hatch1( color )
 			destructible_state( undefined, "vehicle_80s_hatch1_" + color + "_destructible_mp", 300, "player_only", 32, "no_melee" );
 				destructible_loopsound( "fire_vehicle_med" );
 			destructible_state( undefined, "vehicle_80s_hatch1_" + color + "_destructible_mp", 400, undefined, 32, "no_melee" );
-				//destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
+				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
 				destructible_anim( %vehicle_80s_sedan1_destroy, #animtree, "setanimknob" );
@@ -500,7 +491,7 @@ vehicle_small_wagon( color )
 			destructible_state( undefined, "vehicle_small_wagon_" + color + "_destructible_mp", 300, "player_only", 32, "no_melee" );
 				destructible_loopsound( "fire_vehicle_med" );
 			destructible_state( undefined, "vehicle_small_wagon_" + color + "_destructible_mp", 400, undefined, 32, "no_melee" );
-				//destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
+				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
 				destructible_anim( %vehicle_80s_sedan1_destroy, #animtree, "setanimknob" );
@@ -606,7 +597,7 @@ vehicle_small_hatch( color )
 			destructible_state( undefined, "vehicle_small_hatch_" + color + "_destructible_mp", 300, "player_only", 32, "no_melee" );
 				destructible_loopsound( "fire_vehicle_med" );
 			destructible_state( undefined, "vehicle_small_hatch_" + color + "_destructible_mp", 400, undefined, 32, "no_melee" );
-				//destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
+				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
 				destructible_anim( %vehicle_80s_sedan1_destroy, #animtree, "setanimknob" );
@@ -727,7 +718,7 @@ vehicle_80s_hatch2( color )
 			destructible_state( undefined, "vehicle_80s_hatch2_" + color + "_destructible_mp", 300, "player_only", 32, "no_melee" );
 				destructible_loopsound( "fire_vehicle_med" );
 			destructible_state( undefined, "vehicle_80s_hatch2_" + color + "_destructible_mp", 400, undefined, 32, "no_melee" );
-				//destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
+				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, level.carExpMin, level.carExpMax ); 	// force_min, force_max, range, mindamage, maxdamage
 				destructible_anim( %vehicle_80s_sedan1_destroy, #animtree, "setanimknob" );

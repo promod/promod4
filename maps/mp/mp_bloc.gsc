@@ -15,8 +15,8 @@ main()
 
 	game["allies"] = "sas";
 	game["axis"] = "russian";
-	game["attackers"] = "axis";
-	game["defenders"] = "allies";
+	game["attackers"] = "allies";
+	game["defenders"] = "axis";
 	game["allies_soldiertype"] = "woodland";
 	game["axis_soldiertype"] = "woodland";
 }

@@ -19,8 +19,8 @@ main()
 		sb_text = "2nd_half_ready_up";
 	else
 		sb_text = "timeout_ready_up";
-
-	game["promod_scorebot_ticker_buffer"] = game["promod_scorebot_ticker_buffer"] + "" + sb_text;
+	if ( isDefined( level.scorebot ) && level.scorebot)
+		game["promod_scorebot_ticker_buffer"] += "" + sb_text;
 
 	level.timeLimitOverride = true;
 	level.rdyup = 1;
@@ -48,20 +48,7 @@ main()
 	Ready_up_matchStartTimer();
 
 	game["promod_do_readyup"] = false;
-	setClientNameMode( "manual_change" );
-
-	if ( !game["promod_first_readyup_done"] && !game["promod_in_timeout"] )
-		sb_text = "1st_half_started";
-	else if ( game["promod_first_readyup_done"] && !game["promod_in_timeout"] )
-		sb_text = "2nd_half_started";
-	else if ( game["promod_in_timeout"] )
-		sb_text = "match_resumed";
-
-	game["promod_in_timeout"] = 0;
 	game["promod_first_readyup_done"] = 1;
-
-	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] = game["promod_scorebot_ticker_buffer"] + "" + sb_text;
 
 	level notify ( "restarting" );
 	game["state"] = "playing";

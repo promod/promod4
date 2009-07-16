@@ -97,6 +97,8 @@ onStartGameType()
 	maps\mp\gametypes\_globallogic::setObjectiveHintText( "allies", &"OBJECTIVES_DOM_HINT" );
 	maps\mp\gametypes\_globallogic::setObjectiveHintText( "axis", &"OBJECTIVES_DOM_HINT" );
 
+	setClientNameMode("auto_change");
+
 	level.spawnMins = ( 0, 0, 0 );
 	level.spawnMaxs = ( 0, 0, 0 );
 	maps\mp\gametypes\_spawnlogic::placeSpawnPoints( "mp_dom_spawn_allies_start" );
@@ -253,23 +255,19 @@ domFlags()
 		visuals[0] setModel( game["flagmodels"]["neutral"] );
 
 		domFlag = maps\mp\gametypes\_gameobjects::createUseObject( "neutral", trigger, visuals, (0,0,100) );
-
-		if ( isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] && isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "strat" )
-		{
-			domFlag maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
-			domFlag maps\mp\gametypes\_gameobjects::setUseTime( 10.0 );
-			domFlag maps\mp\gametypes\_gameobjects::setUseText( &"MP_CAPTURING_FLAG" );
-			label = domFlag maps\mp\gametypes\_gameobjects::getLabel();
-			domFlag.label = label;
-			domFlag maps\mp\gametypes\_gameobjects::set2DIcon( "friendly", "compass_waypoint_defend" + label );
-			domFlag maps\mp\gametypes\_gameobjects::set3DIcon( "friendly", "waypoint_defend" + label );
-			domFlag maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_captureneutral" + label );
-			domFlag maps\mp\gametypes\_gameobjects::set3DIcon( "enemy", "waypoint_captureneutral" + label );
-			domFlag maps\mp\gametypes\_gameobjects::setVisibleTeam( "any" );
-			domFlag.onUse = ::onUse;
-			domFlag.onBeginUse = ::onBeginUse;
-			domFlag.onEndUse = ::onEndUse;
-		}
+		domFlag maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
+		domFlag maps\mp\gametypes\_gameobjects::setUseTime( 10.0 );
+		domFlag maps\mp\gametypes\_gameobjects::setUseText( &"MP_CAPTURING_FLAG" );
+		label = domFlag maps\mp\gametypes\_gameobjects::getLabel();
+		domFlag.label = label;
+		domFlag maps\mp\gametypes\_gameobjects::set2DIcon( "friendly", "compass_waypoint_defend" + label );
+		domFlag maps\mp\gametypes\_gameobjects::set3DIcon( "friendly", "waypoint_defend" + label );
+		domFlag maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_captureneutral" + label );
+		domFlag maps\mp\gametypes\_gameobjects::set3DIcon( "enemy", "waypoint_captureneutral" + label );
+		domFlag maps\mp\gametypes\_gameobjects::setVisibleTeam( "any" );
+		domFlag.onUse = ::onUse;
+		domFlag.onBeginUse = ::onBeginUse;
+		domFlag.onEndUse = ::onEndUse;
 
 		traceStart = visuals[0].origin + (0,0,32);
 		traceEnd = visuals[0].origin + (0,0,-32);
@@ -289,23 +287,14 @@ domFlags()
 		domFlag.levelFlag = level.flags[index];
 
 		level.domFlags[level.domFlags.size] = domFlag;
-
-		if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
-		{
-			trigger delete();
-			visuals[0] delete();
-		}
 	}
 
-	if ( isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] && isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "strat" )
-	{
-		// level.bestSpawnFlag is used as a last resort when the enemy holds all flags.
-		level.bestSpawnFlag = [];
-		level.bestSpawnFlag[ "allies" ] = getUnownedFlagNearestStart( "allies", undefined );
-		level.bestSpawnFlag[ "axis" ] = getUnownedFlagNearestStart( "axis", level.bestSpawnFlag[ "allies" ] );
+	// level.bestSpawnFlag is used as a last resort when the enemy holds all flags.
+	level.bestSpawnFlag = [];
+	level.bestSpawnFlag[ "allies" ] = getUnownedFlagNearestStart( "allies", undefined );
+	level.bestSpawnFlag[ "axis" ] = getUnownedFlagNearestStart( "axis", level.bestSpawnFlag[ "allies" ] );
 
-		flagSetup();
-	}
+	flagSetup();
 }
 
 onRoundSwitch()
@@ -384,6 +373,9 @@ onUse( player )
 	team = player.pers["team"];
 	oldTeam = self maps\mp\gametypes\_gameobjects::getOwnerTeam();
 	label = self maps\mp\gametypes\_gameobjects::getLabel();
+
+	if ( isDefined( level.scorebot ) && level.scorebot )
+		game["promod_scorebot_ticker_buffer"] += "captured" + self.label + "" + player.name;
 
 	player logString( "flag captured: " + self.label );
 

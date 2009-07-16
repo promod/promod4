@@ -24,6 +24,7 @@ init()
 	precacheItem( "deserteagle_mp" );
 	precacheItem( "deserteaglegold_mp" );
 	precacheItem( "frag_grenade_mp" );
+	precacheItem( "frag_grenade_short_mp" );
 	precacheItem( "g3_mp" );
 	precacheItem( "g3_silencer_mp" );
 	precacheItem( "g36c_mp" );
@@ -47,7 +48,6 @@ init()
 	precacheItem( "winchester1200_mp" );
 	precacheItem( "smoke_grenade_mp" );
 	precacheItem( "flash_grenade_mp" );
-	precacheItem( "frag_grenade_short_mp" );
 	precacheItem( "destructible_car" );
 	precacheShellShock( "default" );
 	thread maps\mp\_flashgrenades::main();
@@ -83,8 +83,6 @@ onPlayerSpawned()
 
 		self.droppedDeathWeapon = undefined;
 		self.tookWeaponFrom = [];
-
-		self thread updateStowedWeapon();
 	}
 }
 
@@ -107,17 +105,11 @@ watchWeaponChange()
 	}
 }
 
-isPistol( weapon )
-{
-	return isdefined( level.side_arm_array[ weapon ] );
-}
-
 isHackWeapon( weapon )
 {
-	if ( weapon == "radar_mp" || weapon == "airstrike_mp" || weapon == "helicopter_mp" )
-		return true;
 	if ( weapon == "briefcase_bomb_mp" )
 		return true;
+
 	return false;
 }
 
@@ -306,7 +298,11 @@ getWeaponBasedSmokeGrenadeCount(weapon)
 
 getFragGrenadeCount()
 {
-	grenadetype = "frag_grenade_mp";
+	if ( level.hardcoreMode )
+		grenadetype = "frag_grenade_short_mp";
+	else
+		grenadetype = "frag_grenade_mp";
+
 	count = self getammocount(grenadetype);
 	return count;
 }
@@ -475,10 +471,7 @@ beginGrenadeTracking()
 
 	self waittill ( "grenade_fire", grenade, weaponName );
 
-	if ( (getTime() - startTime > 1000) )
-		grenade.isCooked = true;
-
-	if ( weaponName == "frag_grenade_mp" )
+	if ( weaponName == "frag_grenade_mp" || weaponName == "frag_grenade_short_mp" )
 	{
 		grenade thread maps\mp\gametypes\_shellshock::grenade_earthQuake();
 		grenade.originalOwner = self;
@@ -525,187 +518,7 @@ onWeaponDamage( eInflictor, sWeapon, meansOfDeath, damage )
 	}
 }
 
-// weapon stowing logic ===================================================================
-
-// weapon class boolean helpers
 isPrimaryWeapon( weaponname )
 {
 	return isdefined( level.primary_weapon_array[weaponname] );
-}
-
-isSideArm( weaponname )
-{
-	return isdefined( level.side_arm_array[weaponname] );
-}
-
-isInventory( weaponname )
-{
-	return isdefined( level.inventory_array[weaponname] );
-}
-
-isGrenade( weaponname )
-{
-	return isdefined( level.grenade_array[weaponname] );
-}
-
-getWeaponClass_array( current )
-{
-	if( isPrimaryWeapon( current ) )
-		return level.primary_weapon_array;
-	else if( isSideArm( current ) )
-		return level.side_arm_array;
-	else if( isGrenade( current ) )
-		return level.grenade_array;
-	else
-		return level.inventory_array;
-}
-
-// thread loop life = player's life
-updateStowedWeapon()
-{
-	self endon( "spawned" );
-	self endon( "killed_player" );
-	self endon( "disconnect" );
-
-	self.tag_stowed_back = undefined;
-	self.tag_stowed_hip = undefined;
-
-	team = self.pers["team"];
-	class = self.pers["class"];
-
-	while ( true )
-	{
-		self waittill( "weapon_change", newWeapon );
-
-		// weapon array reset, might have swapped weapons off the ground
-		self.weapon_array_primary =[];
-		self.weapon_array_sidearm = [];
-		self.weapon_array_grenade = [];
-		self.weapon_array_inventory =[];
-
-		// populate player's weapon stock arrays
-		weaponsList = self GetWeaponsList();
-		for( idx = 0; idx < weaponsList.size; idx++ )
-		{
-			if ( isPrimaryWeapon( weaponsList[idx] ) )
-				self.weapon_array_primary[self.weapon_array_primary.size] = weaponsList[idx];
-			else if ( isSideArm( weaponsList[idx] ) )
-				self.weapon_array_sidearm[self.weapon_array_sidearm.size] = weaponsList[idx];
-			else if ( isGrenade( weaponsList[idx] ) )
-				self.weapon_array_grenade[self.weapon_array_grenade.size] = weaponsList[idx];
-			else if ( isInventory( weaponsList[idx] ) )
-				self.weapon_array_inventory[self.weapon_array_inventory.size] = weaponsList[idx];
-		}
-
-		detach_all_weapons();
-		stow_on_back();
-		stow_on_hip();
-	}
-}
-
-detach_all_weapons()
-{
-	if( isDefined( self.tag_stowed_back ) )
-	{
-		self detach( self.tag_stowed_back, "tag_stowed_back" );
-		self.tag_stowed_back = undefined;
-	}
-	if( isDefined( self.tag_stowed_hip ) )
-	{
-		detach_model = getWeaponModel( self.tag_stowed_hip );
-		self detach( detach_model, "tag_stowed_hip_rear" );
-		self.tag_stowed_hip = undefined;
-	}
-}
-
-stow_on_back()
-{
-	current = self getCurrentWeapon();
-
-	self.tag_stowed_back = undefined;
-
-	// large projectile weaponry always show
-	if ( self hasWeapon( "rpg_mp" ) && current != "rpg_mp" )
-	{
-		self.tag_stowed_back = "weapon_rpg7_stow";
-	}
-	else
-	{
-		for ( idx = 0; idx < self.weapon_array_primary.size; idx++ )
-		{
-			index_weapon = self.weapon_array_primary[idx];
-			assertex( isdefined( index_weapon ), "Primary weapon list corrupted." );
-
-			if ( index_weapon == current )
-				continue;
-
-			if( isSubStr( current, "gl_" ) || isSubStr( index_weapon, "gl_" ) )
-			{
-				index_weapon_tok = strtok( index_weapon, "_" );
-				current_tok = strtok( current, "_" );
-				// finding the alt-mode of current weapon; the tokens of both weapons are subsets of each other
-				for( i=0; i<index_weapon_tok.size; i++ )
-				{
-					if( !isSubStr( current, index_weapon_tok[i] ) || index_weapon_tok.size != current_tok.size )
-					{
-						i = 0;
-						break;
-					}
-				}
-				if( i == index_weapon_tok.size )
-					continue;
-			}
-				self.tag_stowed_back = getWeaponModel( index_weapon, 0 );
-		}
-	}
-
-	if ( !isDefined( self.tag_stowed_back ) )
-		return;
-
-	self attach( self.tag_stowed_back, "tag_stowed_back", true );
-}
-
-stow_on_hip()
-{
-	current = self getCurrentWeapon();
-
-	self.tag_stowed_hip = undefined;
-
-	for ( idx = 0; idx < self.weapon_array_inventory.size; idx++ )
-	{
-		if ( self.weapon_array_inventory[idx] == current )
-			continue;
-
-		if ( !self GetWeaponAmmoStock( self.weapon_array_inventory[idx] ) )
-			continue;
-
-		self.tag_stowed_hip = self.weapon_array_inventory[idx];
-	}
-
-	if ( !isDefined( self.tag_stowed_hip ) )
-		return;
-
-	weapon_model = getWeaponModel( self.tag_stowed_hip );
-	self attach( weapon_model, "tag_stowed_hip_rear", true );
-}
-
-stow_inventory( inventories, current )
-{
-	// deatch last weapon attached
-	if( isdefined( self.inventory_tag ) )
-	{
-		detach_model = getweaponmodel( self.inventory_tag );
-		self detach( detach_model, "tag_stowed_hip_rear" );
-		self.inventory_tag = undefined;
-	}
-
-	if( !isdefined( inventories[0] ) || self GetWeaponAmmoStock( inventories[0] ) == 0 )
-		return;
-
-	if( inventories[0] != current )
-	{
-		self.inventory_tag = inventories[0];
-		weapon_model = getweaponmodel( self.inventory_tag );
-		self attach( weapon_model, "tag_stowed_hip_rear", true );
-	}
 }

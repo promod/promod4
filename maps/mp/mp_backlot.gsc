@@ -15,8 +15,8 @@ main()
 
 	game["allies"] = "marines";
 	game["axis"] = "opfor";
-	game["attackers"] = "axis";
-	game["defenders"] = "allies";
+	game["attackers"] = "allies";
+	game["defenders"] = "axis";
 	game["allies_soldiertype"] = "desert";
 	game["axis_soldiertype"] = "desert";
 }

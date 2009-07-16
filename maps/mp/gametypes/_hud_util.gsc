@@ -436,6 +436,9 @@ showElem()
 
 destroyElem()
 {
+	if ( !isDefined( self.children ) )
+		return;
+
 	tempChildren = [];
 
 	for ( index = 0; index < self.children.size; index++ )
@@ -479,6 +482,9 @@ setSize( width, height )
 
 updateChildren()
 {
+	if ( !isDefined( self.children ) )
+		return;
+
 	for ( index = 0; index < self.children.size; index++ )
 	{
 		child = self.children[index];
@@ -486,82 +492,5 @@ updateChildren()
 	}
 }
 
-showPerk( index, perk, ypos )
-{
-	assert( game["state"] != "postgame" );
-
-	if ( !isdefined( self.perkicon ) )
-	{
-		self.perkicon = [];
-		self.perkname = [];
-	}
-
-	iconsize = 32;
-
-	if ( !isdefined( self.perkicon[ index ] ) )
-	{
-		assert( !isdefined( self.perkname[ index ] ) );
-
-		xpos = -5;
-		ypos = 0 - (90 + iconsize * (2 - index));
-
-		icon = createIcon( "white", iconsize, iconsize );
-		icon setPoint( "BOTTOMRIGHT", undefined, xpos, ypos );
-		icon.archived = false;
-		icon.foreground = true;
-
-		text = createFontString( "default", 1.4 );
-		text setParent( icon );
-		text setPoint( "RIGHT", "LEFT", -5, 0 );
-		text.archived = false;
-		text.alignX = "right";
-		text.alignY = "middle";
-		text.foreground = true;
-
-		self.perkicon[ index ] = icon;
-		self.perkname[ index ] = text;
-	}
-
-	icon = self.perkicon[ index ];
-	text = self.perkname[ index ];
-
-	if ( perk == "specialty_null" )
-	{
-		icon.alpha = 0;
-		text.alpha = 0;
-	}
-	else
-	{
-		assertex( isDefined( level.perkIcons[perk] ), perk );
-		assertex( isDefined( level.perkNames[perk] ), perk );
-
-		icon.alpha = 1;
-		icon setShader( level.perkIcons[perk], iconsize, iconsize );
-
-		text.alpha = 1;
-		text setText( level.perkNames[perk] );
-	}
-}
-
-hidePerk( index, fadetime, hideTextOnly )
-{
-	if ( game["state"] == "postgame" )
-	{
-		assert( !isdefined( self.perkicon[ index ] ) );
-		assert( !isdefined( self.perkname[ index ] ) );
-		return;
-	}
-	assert( isdefined( self.perkicon[ index ] ) );
-	assert( isdefined( self.perkname[ index ] ) );
-
-	if ( isdefined( fadetime ) )
-	{
-		if ( !isDefined( hideTextOnly ) || !hideTextOnly )
-			self.perkicon[ index ] fadeOverTime( fadetime );
-		self.perkname[ index ] fadeOverTime( fadetime );
-	}
-
-	if ( !isDefined( hideTextOnly ) || !hideTextOnly )
-		self.perkicon[ index ].alpha = 0;
-	self.perkname[ index ].alpha = 0;
-}
+showPerk( index, perk, ypos ) {}
+hidePerk( index, fadetime, hideTextOnly ) {}

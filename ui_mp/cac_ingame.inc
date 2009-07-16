@@ -57,7 +57,7 @@
 			decoration
 		}
 
-		CHOICE_MENU_TITLE( "@PROMOD_INVENTORY" )
+		CHOICE_MENU_TITLE( "INVENTORY" )
 
 		#define BACK_OPEN;
 		#include "ui_mp/navcontrols.inc"
