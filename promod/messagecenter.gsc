@@ -14,10 +14,10 @@ main()
 		return;
 
 	// Continuous Message Center
-	if (getDvar("promod_messagecenter_enable") == "" || getDvarInt("promod_messagecenter_enable") < 1)
+	if (getDvar("promod_mc_enable") == "" || getDvarInt("promod_mc_enable") < 1)
 		return;
 
-	if (getDvarInt("promod_mc_restart_every_round") )
+	if (getDvarInt("promod_mc_rs_every_round") )
 		setDvar("mc_current_msg", "0");
 
 	if (getDvar("mc_current_msg") == "")

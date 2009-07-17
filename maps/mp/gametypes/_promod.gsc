@@ -130,31 +130,8 @@ onPlayerConnect()
 	}
 }
 
-releaseClass( teamName, classType )
-{
-	game[teamName + "_" + classType + "_count"]--;
-	updateClassAvailability( teamName, classType );
-	//println("^1releaseClass;" + " TEAM; " + teamName + "; classType; " + classType + " ^7" + "ALLIES: " + game["allies_assault_count"] + " " + game["allies_specops_count"] + " " + game["allies_demolitions_count"] + " " + game["allies_sniper_count"] + " " + "AXIS: " + game["axis_assault_count"] + " " + game["axis_specops_count"] + " " + game["axis_demolitions_count"] + " " + game["axis_sniper_count"] );
-}
-
-claimClass( teamName, classType )
-{
-	game[teamName + "_" + classType + "_count"]++;
-	updateClassAvailability( teamName, classType );
-	//println("^2claimClass;" + " TEAM; " + teamName + "; classType; " + classType + " ^7" + "ALLIES: " + game["allies_assault_count"] + " " + game["allies_specops_count"] + " " + game["allies_demolitions_count"] + " " + game["allies_sniper_count"] + " " + "AXIS: " + game["axis_assault_count"] + " " + game["axis_specops_count"] + " " + game["axis_demolitions_count"] + " " + game["axis_sniper_count"] );
-}
-
 setClassChoice( classType )
 {
-	if ( !isDefined( self.curClass ) )
-		self maps\mp\gametypes\_promod::claimClass( self.pers["team"], classType );
-
-	if ( isDefined( self.curClass ) && self.curClass != classType )
-		self releaseClass( self.pers["team"], self.curClass );
-
-	if ( isDefined( self.curClass ) && self.curClass != classType )
-		self claimClass( self.pers["team"], classType );
-
 	self.pers["class"] = classType;
 	self.class = classType;
 	self.curClass = classType;
@@ -195,6 +172,9 @@ setClassChoice( classType )
 					"weap_allow_remington700", getDvar( "weap_allow_remington700" ) );
 			break;
 	}
+
+	thread updateClassAvailability( self.pers["team"] );
+	self thread maps\mp\gametypes\_class::preserveClass( classType );
 }
 
 setDvarWrapper( dvarName, setVal )
@@ -482,20 +462,63 @@ verifyWeaponChoice( weaponName, classType )
 
 verifyClassChoice( teamName, classType )
 {
-	if ((teamName == "allies" || teamName == "axis") && (classType == "assault" || classType == "specops" || classType == "demolitions" || classType == "sniper")) {
+	if ( teamName == "allies" || teamName == "axis" )
+	{
+		if ( getDvarInt( "class_" + classType + "_limit" ) == 0 )
+			return false;
 
-	if ( isDefined( self.curClass ) && self.curClass == classType && getDvarInt( "class_" + classType + "_limit" ) )
+		if ( isDefined( self.pers["class"] ) && self.pers["class"] == classType )
+			return true;
+
+		game[teamName + "_" + classType + "_count"] = 0;
+		players = level.players;
+		for ( index = 0; index < players.size; index++ )
+		{
+			player = players[index];
+
+			if ( player.team == self.team && isDefined( player.class ) && player.class == classType )
+				game[teamName + "_" + classType + "_count"]++;
+		}
+
+		if ( getDvarInt( "class_" + classType + "_limit" ) > 0 )
+		{
+			if ( game[teamName + "_" + classType + "_count"] >= getDvarInt( "class_" + classType + "_limit" ) )
+				return false;
+		}
+
 		return true;
-
-	return ( game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
 	}
 }
 
-updateClassAvailability( teamName, classType )
+updateClassAvailability( teamName )
 {
-	if ((teamName == "allies" || teamName == "axis") && (classType == "assault" || classType == "specops" || classType == "demolitions" || classType == "sniper")) {
-		setDvarWrapper( teamName + "_allow_" + classType, game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
+	game[teamName + "_assault_count"] = 0;
+	game[teamName + "_specops_count"] = 0;
+	game[teamName + "_demolitions_count"] = 0;
+	game[teamName + "_sniper_count"] = 0;
+
+	players = level.players;
+	for ( index = 0; index < players.size; index++ )
+	{
+		player = players[index];
+
+		if ( player.team == teamName && isDefined( player.class ) && player.class == "assault" )
+			game[teamName + "_assault_count"]++;
+
+		if ( player.team == teamName && isDefined( player.class ) && player.class == "specops" )
+			game[teamName + "_specops_count"]++;
+
+		if ( player.team == teamName && isDefined( player.class ) && player.class == "demolitions" )
+			game[teamName + "_demolitions_count"]++;
+
+		if ( player.team == teamName && isDefined( player.class ) && player.class == "sniper" )
+			game[teamName + "_sniper_count"]++;
 	}
+
+	setDvarWrapper( teamName + "_allow_assault", game[teamName + "_assault_count"] < getDvarInt( "class_assault_limit" ) );
+	setDvarWrapper( teamName + "_allow_specops", game[teamName + "_specops_count"] < getDvarInt( "class_specops_limit" ) );
+	setDvarWrapper( teamName + "_allow_demolitions", game[teamName + "_demolitions_count"] < getDvarInt( "class_demolitions_limit" ) );
+	setDvarWrapper( teamName + "_allow_sniper", game[teamName + "_sniper_count"] < getDvarInt( "class_sniper_limit" ) );
 }
 
 menuAcceptClass()

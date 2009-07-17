@@ -49,16 +49,8 @@ violationSystem()
 		if ( getDvarInt( "sv_pure" ) != 1 )
 			iPrintLNBold("^1Server Violation ^3#0107^7: Impure Server");
 
-		if ( getDvar( "fs_game" ) != ( "mods/promodlive2" ) && game["CUSTOM_MODE"] != 0 )
+		if ( getDvar( "fs_game" ) != ( "mods/promodlive201_custom" ) && game["CUSTOM_MODE"] != 0 )
 		{
-			if ( getDvar( "fs_game" ) != ( "mods/promodlive2_custom" ) )
-				iPrintLNBold("^1Server Violation ^3#0108^7: Bad Server Path (fs_game)");
-		}
-		else
-		{
-			if ( getDvar( "fs_game" ) != ( "mods/promodlive2" ) )
-				iPrintLNBold("^1Server Violation ^3#0108^7: Bad Server Path (fs_game)");
-
 			if ( isSubStr( cacheIWDname, "svr" ) )
 				iPrintLNBold("^1Server Violation ^3#0109^7: No Additional IWD Files Allowed");
 

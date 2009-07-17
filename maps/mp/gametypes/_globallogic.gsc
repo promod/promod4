@@ -895,22 +895,6 @@ endGame( winner, endReasonText )
 						player.pers["savedmodel"] = undefined;
 					}
 				}
-
-				//Class counts switch
-				game["temp_allies_assault_count"] = game["allies_assault_count"];
-				game["temp_allies_specops_count"] = game["allies_specops_count"];
-				game["temp_allies_demolitions_count"] = game["allies_demolitions_count"];
-				game["temp_allies_sniper_count"] = game["allies_sniper_count"];
-
-				game["allies_assault_count"] = game["axis_assault_count"];
-				game["allies_specops_count"] = game["axis_specops_count"];
-				game["allies_demolitions_count"] = game["axis_demolitions_count"];
-				game["allies_sniper_count"] = game["axis_sniper_count"];
-
-				game["axis_assault_count"] = game["temp_allies_assault_count"];
-				game["axis_specops_count"] = game["temp_allies_specops_count"];
-				game["axis_demolitions_count"] = game["temp_allies_demolitions_count"];
-				game["axis_sniper_count"] = game["temp_allies_sniper_count"];
 			}
 
 			level notify ( "restarting" );
@@ -1352,16 +1336,6 @@ menuAutoAssign()
 		}
 	}
 
-	if ( assignment != self.pers["team"] )
-	{
-		if ( isDefined( self.curClass ) && self.curClass != "" )
-		{
-			self maps\mp\gametypes\_promod::releaseClass( self.pers["team"], self.curClass );
-			self setClientDvar( "loadout_curclass", "" );
-			self.curClass = undefined;
-		}
-	}
-
 	if ( assignment != self.pers["team"] && self.sessionstate == "playing" )
 	{
 		self.switching_teams = true;
@@ -1378,6 +1352,7 @@ menuAutoAssign()
 	self.team = assignment;
 	self.pers["weapon"] = undefined;
 	self.pers["savedmodel"] = undefined;
+	self setClientDvar(	"loadout_curclass", "" );
 
 	self updateObjectiveText();
 
@@ -1410,6 +1385,9 @@ menuAutoAssign()
 		else
 			iPrintLN(self.name + " Joined Attack");
 	}
+
+	if ( oldTeam != self.pers["team"] && ( self.pers["team"] == "allies" || self.pers["team"] == "axis" ) )
+			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
 
 	self beginClassChoice();
 
@@ -1477,13 +1455,6 @@ menuAllies()
 			}
 		}
 
-		if ( isDefined( self.curClass ) && self.curClass != "" )
-		{
-			self maps\mp\gametypes\_promod::releaseClass( self.pers["team"], self.curClass );
-			self setClientDvar( "loadout_curclass", "" );
-			self.curClass = undefined;
-		}
-
 		// allow respawn when switching teams during grace period.
 		if ( level.inGracePeriod && (!isdefined(self.hasDoneCombat) || !self.hasDoneCombat) )
 			self.hasSpawned = false;
@@ -1496,12 +1467,15 @@ menuAllies()
 			self suicide();
 		}
 
+		oldTeam = self.pers["team"];
+
 		self.pers["class"] = undefined;
 		self.class = undefined;
 		self.pers["team"] = "allies";
 		self.team = "allies";
 		self.pers["weapon"] = undefined;
 		self.pers["savedmodel"] = undefined;
+		self setClientDvar(	"loadout_curclass", "" );
 
 		self updateObjectiveText();
 
@@ -1528,6 +1502,9 @@ menuAllies()
 				player thread promod\shoutcast::resetShoutcast();
 			}
 		}
+
+		if ( oldTeam == "axis" )
+			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
 	}
 
 	self beginClassChoice();
@@ -1548,13 +1525,6 @@ menuAxis()
 			}
 		}
 
-		if ( isDefined( self.curClass ) && self.curClass != "" )
-		{
-			self maps\mp\gametypes\_promod::releaseClass( self.pers["team"], self.curClass );
-			self setClientDvar( "loadout_curclass", "" );
-			self.curClass = undefined;
-		}
-
 		// allow respawn when switching teams during grace period.
 		if ( level.inGracePeriod && (!isdefined(self.hasDoneCombat) || !self.hasDoneCombat) )
 			self.hasSpawned = false;
@@ -1567,12 +1537,15 @@ menuAxis()
 			self suicide();
 		}
 
+		oldTeam = self.pers["team"];
+
 		self.pers["class"] = undefined;
 		self.class = undefined;
 		self.pers["team"] = "axis";
 		self.team = "axis";
 		self.pers["weapon"] = undefined;
 		self.pers["savedmodel"] = undefined;
+		self setClientDvar(	"loadout_curclass", "" );
 
 		self updateObjectiveText();
 
@@ -1599,6 +1572,9 @@ menuAxis()
 				player thread promod\shoutcast::resetShoutcast();
 			}
 		}
+
+		if ( oldTeam == "allies" )
+			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
 	}
 
 	self beginClassChoice();
@@ -1610,13 +1586,6 @@ menuSpectator()
 
 	if(self.pers["team"] != "spectator")
 	{
-		if ( isDefined( self.curClass ) && self.curClass != "" )
-		{
-			self maps\mp\gametypes\_promod::releaseClass( self.pers["team"], self.curClass );
-			self setClientDvar( "loadout_curclass", "" );
-			self.curClass = undefined;
-		}
-
 		if(self.sessionstate == "playing")
 		{
 			self.switching_teams = true;
@@ -1625,12 +1594,15 @@ menuSpectator()
 			self suicide();
 		}
 
+		oldTeam = self.pers["team"];
+
 		self.pers["class"] = undefined;
 		self.class = undefined;
 		self.pers["team"] = "spectator";
 		self.team = "spectator";
 		self.pers["weapon"] = undefined;
 		self.pers["savedmodel"] = undefined;
+		self setClientDvar(	"loadout_curclass", "" );
 
 		self updateObjectiveText();
 
@@ -1662,6 +1634,9 @@ menuSpectator()
 				player thread promod\shoutcast::resetShoutcast();
 			}
 		}
+
+		if ( oldTeam == "allies" || oldTeam == "axis" )
+			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
 	}
 }
 
@@ -2220,7 +2195,7 @@ startGame()
 	}
 
 	// Strat Time Sequence
-	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" && level.gametype == "sd" )
+	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_strattime" ) && level.gametype == "sd" )
 		promod\strat_time::main();
 
 	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
@@ -2246,7 +2221,7 @@ startGame()
 
 		if ( game["roundsplayed"] == 0 && !game["promod_in_timeout"] )
 			sb_text = "1st_half_started";
-		else if ( game["roundsplayed"] % level.roundswitch == 0 && !game["promod_in_timeout"] )
+		else if ( level.roundswitch > 0 && game["roundsplayed"] % level.roundswitch == 0 && !game["promod_in_timeout"] )
 			sb_text = "2nd_half_started";
 		else if ( game["promod_in_timeout"] )
 			sb_text = "match_resumed";
@@ -2900,7 +2875,7 @@ checkRoundSwitch()
 
 	if ( game["roundsplayed"] % level.roundswitch == 0 )
 	{
-		if ( game["promod_match_mode"] == "match" && game["promod_first_readyup_done"])
+		if ( game["promod_match_mode"] == "match" && game["promod_first_readyup_done"] )
 			game["promod_do_readyup"] = true;
 
 		game["promod_timeout_called"] = false;
@@ -3109,9 +3084,6 @@ Callback_PlayerDisconnect()
 	if ( level.gameEnded )
 		self removeDisconnectedPlayerFromPlacement();
 
-	if ( isDefined( self.curClass ) && self.curClass != "" )
-		self maps\mp\gametypes\_promod::releaseClass( self.pers["team"], self.curClass );
-
 	for( i = 0; i < level.players.size; i++ )
 	{
 		player = level.players[i];
@@ -3120,6 +3092,8 @@ Callback_PlayerDisconnect()
 			player thread promod\shoutcast::resetShoutcast();
 		}
 	}
+
+	thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
 
 	level thread updateTeamStatus();
 }

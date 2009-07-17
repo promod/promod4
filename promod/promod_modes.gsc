@@ -14,7 +14,7 @@ main()
 		return;
 
 	game["promod_mode_loaded"] = 1;
-	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.01";
 
 	promod_mode = toLower(getDvar("promod_mode") );
 
@@ -377,6 +377,9 @@ Standardized_Server_Settings()
 		setDvar( "class_specops_grenade", "smoke_grenade" );
 		setDvar( "class_demolitions_grenade", "smoke_grenade" );
 		setDvar( "class_sniper_grenade", "smoke_grenade" );
+		setDvar( "scr_war_roundswitch", "1" );
+		setDvar( "scr_war_roundlimit", "2" );
+		setDvar( "scr_team_teamkillpointloss", "5" );
 	}
 	else if ( game["PROMOD_MODE"] == "comp_public" )
 	{
@@ -390,7 +393,9 @@ Standardized_Server_Settings()
 		setDvar( "class_demolitions_grenade", "none" );
 		setDvar( "class_sniper_grenade", "none" );
 		setDvar( "scr_war_roundswitch", "0" );
+		setDvar( "scr_war_roundlimit", "1" );
 		setDvar( "g_deadChat", "1" );
+		setDvar( "scr_team_teamkillpointloss", "0" );
 	}
 	else
 	{
@@ -407,6 +412,7 @@ Standardized_Server_Settings()
 		setDvar( "class_sniper_grenade", "smoke_grenade" );
 		setDvar( "scr_game_matchstarttime", "0" );
 		setDvar( "scr_game_playerwaittime", "0" );
+		setDvar( "scr_team_teamkillpointloss", "5" );
 	}
 }
 

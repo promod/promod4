@@ -20,9 +20,8 @@ main()
 	setDvar( "sv_fps", "20" );
 	setDvar( "g_speed", "190" );
 	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ) );
-	setDvar( "__promod_version", "Promod LIVE V2" );
+	setDvar( "__promod_version", "Promod LIVE V2.01" );
 
-	// Class counts
 	game["allies_assault_count"] = 0;
 	game["allies_specops_count"] = 0;
 	game["allies_demolitions_count"] = 0;
@@ -33,13 +32,11 @@ main()
 	game["axis_demolitions_count"] = 0;
 	game["axis_sniper_count"] = 0;
 
-	// Timeout
 	game["promod_timeout_called"] = 0;
 	game["promod_in_timeout"] = 0;
 	game["allies_timeout_called"] = 0;
 	game["axis_timeout_called"] = 0;
 
-	// Ready-Up/Strat-Bypass
 	game["promod_first_readyup_done"] = 0;
 	game["promod_allies_bypassed_by"] = 0;
 	game["promod_axis_bypassed_by"] = 0;

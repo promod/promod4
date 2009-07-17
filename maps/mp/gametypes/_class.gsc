@@ -167,7 +167,10 @@ giveLoadout( team, class )
 			self setMoveSpeedScale( 1.0 );
 			break;
 	}
+}
 
+preserveClass( class )
+{
 	CLASS_PRIMARY = "";
 	CLASS_PRIMARY_ATTACHMENT = "";
 	CLASS_SECONDARY = "";

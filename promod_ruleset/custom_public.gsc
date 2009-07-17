@@ -215,24 +215,22 @@ main()
 	setDvar( "sv_voice", "0" );
 	setDvar( "scr_enable_hiticon", "2" );
 	setDvar( "scr_enable_scoretext", "1" );
-
-	// scorebot
-	setDvar( "promod_enable_scorebot", "0" );
+	setDvar( "promod_allow_strattime", "0" );
 
 	// website
 	setDvar( "promod_hud_show_website", "1" );
 	setDvar( "promod_hud_website", "www.callofduty.com" );
 
 	// messagecenter
-	setDvar( "promod_messagecenter_enable", "0" ); //enable or disable messagecenter
-	setDvar( "promod_mc_restart_every_round", "0" ); //if round-based, messages restarts everyround
-	setDvar( "promod_mc_delay", "45" ); //delay between messages (seconds)
-	setDvar( "promod_mc_loopdelay", "45" ); //delay (seconds) between the last message in the cue and the first message re-appearing
-	setDvar( "promod_mc_maxmessages", "3" ); //numbers of messages to look for
+	setDvar( "promod_mc_enable", "0" );
+	setDvar( "promod_mc_rs_every_round", "0" );
+	setDvar( "promod_mc_delay", "45" );
+	setDvar( "promod_mc_loopdelay", "45" );
+	setDvar( "promod_mc_maxmessages", "3" );
 	setDvar( "promod_mc_message_1", "Message Center ON" );
 	setDvar( "promod_mc_message_2", "Set Me Up Or Turn Me OFF" );
 	setDvar( "promod_mc_message_3", "<*nextmap*>" );
-	setDvar( "promod_mc_messagedelay_1", "0" ); //override the default delay between messages
+	setDvar( "promod_mc_messagedelay_1", "0" );
 	setDvar( "promod_mc_messagedelay_2", "0" );
 	setDvar( "promod_mc_messagedelay_3", "0" );
 }
