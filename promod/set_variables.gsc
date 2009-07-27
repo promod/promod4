@@ -10,7 +10,6 @@
 
 main()
 {
-	// Promod
 	setDvar( "bg_bobMax", "0" );
 	setDvar( "player_sustainAmmo", "0" );
 	setDvar( "player_throwBackInnerRadius", "0" );
@@ -18,9 +17,10 @@ main()
 	setDvar( "clientsideeffects", "0" );
 	setDvar( "sv_pure", "1" );
 	setDvar( "sv_fps", "20" );
+	setDvar( "sv_maxRate", "25000" );
 	setDvar( "g_speed", "190" );
 	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ) );
-	setDvar( "__promod_version", "Promod LIVE V2.01" );
+	setDvar( "__promod_version", "Promod LIVE V2.03" );
 
 	game["allies_assault_count"] = 0;
 	game["allies_specops_count"] = 0;

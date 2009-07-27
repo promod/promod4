@@ -13,7 +13,6 @@ main()
 	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" )
 		return;
 
-	// Continuous Message Center
 	if (getDvar("promod_mc_enable") == "" || getDvarInt("promod_mc_enable") < 1)
 		return;
 
@@ -30,26 +29,21 @@ Run_Messages()
 {
 	level endon("mc_restart");
 
-	// Set up Generic timer
 	if(getDvar("promod_mc_delay") == "")
 		setDvar("promod_mc_delay", "20");
 	generic_delay = 20;
 
-	//Check to see if max messages is set, if not default to 20
 	if (getDvar("promod_mc_maxmessages") == "")
 		setDvar("promod_mc_maxmessages" , 20);
 
 	while (1)
 	{
-		// Set up Maximum Messages
 		max = getDvarInt("promod_mc_maxmessages") +1;
 
 		last_message = getDvarInt("mc_current_msg");
 
-		// Run Through Possible Messages
 		for (i=last_message;i<max;i++)
 		{
-			// No message, continue looking
 			if (getDvar("promod_mc_message_" + i) == "")
 			{
 				wait .05;
@@ -57,13 +51,10 @@ Run_Messages()
 			}
 			else
 			{
-				// Found Message, set it up for display
 				message = getDvar("promod_mc_message_" + i);
 
-				//First check for message specific timer
 				if (getDvar("promod_mc_messagedelay_" +i) == "")
 				{
-					// No message specific timer, use generic timer
 					if (generic_delay != getDvarInt("promod_mc_delay"))
 					{
 						generic_delay = getDvarInt("promod_mc_delay");
@@ -83,12 +74,10 @@ Run_Messages()
 						delay = 0;
 				}
 
-				//Lets see if this is a SPECIAL message
 				if (message == "<*nextmap*>")
 					message = Get_Next_Map();
 				else if (message == "<*gtrules*>")
 					message = GameTypeRules();
-
 
 				if (!isDefined(message))
 				{
@@ -96,7 +85,6 @@ Run_Messages()
 					continue;
 				}
 
-				// Run Timer
 				wait delay;
 
 				iprintln(message);
@@ -106,7 +94,6 @@ Run_Messages()
 			}
 		}
 
-		// Reset Message Loop
 		setDvar("mc_current_msg", "0");
 
 		loopdelay = getDvarInt("promod_mc_loopdelay");
@@ -137,18 +124,14 @@ Get_Next_Map()
 {
 	maprot = "";
 
-	// Get current maprotation
 	maprot = strip(getDvar("sv_maprotationcurrent"));
 
-	// Get maprotation if current empty or not the one we want
 	if(maprot == "")
 		maprot = strip(getDvar("sv_maprotation"));
 
-	// No map rotation setup!
 	if(maprot == "")
 		return undefined;
 
-	// Explode entries into an array
 	j=0;
 	temparr2[j] = "";
 	for(i=0;i<maprot.size;i++)
@@ -200,17 +183,11 @@ Get_Next_Map()
 	if (!isdefined(gt))
 		gt = getDvar("g_gametype");
 
-	//Construct string
 	nextmap = "^3Next Map: ^2" + map + " (" + gt + ")";
 
 	return nextmap;
 }
 
-////////////////////////////////////////////////////////////////////
-/* BELOW CODE ORIGINALLY FROM CODAM AND/OR AWE FOR COD AND COD:UO */
-////////////////////////////////////////////////////////////////////
-
-// Strip blanks at start and end of string
 strip(s)
 {
 	if(s=="")
@@ -223,7 +200,6 @@ strip(s)
 	while(i<s.size && s[i]==" ")
 		i++;
 
-	// String is just blanks?
 	if(i==s.size)
 		return "";
 

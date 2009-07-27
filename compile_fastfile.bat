@@ -24,7 +24,7 @@ copy promod.str ..\..\raw\english\localizedstrings /Y
 cd ..\..\bin
 linker_pc.exe -language english -compress -cleanup mod -verbose
 
-cd ..\mods\promodlive201
+cd ..\mods\promodlive203
 copy ..\..\zone\english\mod.ff
 
 pause

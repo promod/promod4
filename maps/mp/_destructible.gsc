@@ -13,12 +13,6 @@
 #using_animtree( "vehicles" );
 init()
 {
-	if ( getdvar( "debug_destructibles" ) == "" )
-		setdvar( "debug_destructibles", "0" );
-
-	if ( getdvar( "destructibles_enable_physics" ) == "" )
-		setdvar( "destructibles_enable_physics", "1" );
-
 	level.destructibleSpawnedEntsLimit = 25;
 	level.destructibleSpawnedEnts = [];
 
@@ -29,16 +23,12 @@ init()
 
 destructible_create( type, health, validAttackers, validDamageZone, validDamageCause )
 {
-	//---------------------------------------------------------------------
-	// Creates a new information structure for a destructible object
-	//---------------------------------------------------------------------
 	assert( isdefined( type ) );
 
 	if( !isdefined( level.destructible_type ) )
 		level.destructible_type = [];
 
 	destructibleIndex = level.destructible_type.size;
-
 
 	destructibleIndex = level.destructible_type.size;
 	level.destructible_type[ destructibleIndex ] = spawnStruct();
@@ -55,10 +45,6 @@ destructible_create( type, health, validAttackers, validDamageZone, validDamageC
 
 destructible_part( tagName, modelName, health, noDraw, validDamageZone, validDamageCause, alsoDamageParent, physicsOnExplosion )
 {
-	//---------------------------------------------------------------------
-	// Adds a part to the last created destructible information structure
-	// This part will be created and attached to the specified bone on load
-	//---------------------------------------------------------------------
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
 	assert( isdefined( level.destructible_type[ destructibleIndex ].parts.size ) );
@@ -73,12 +59,6 @@ destructible_part( tagName, modelName, health, noDraw, validDamageZone, validDam
 
 destructible_state( tagName, modelName, health, noDraw, validDamageZone, validDamageCause )
 {
-	//---------------------------------------------------------------------
-	// Adds a new part that is a state of the last created part
-	// When the previous part reaches zero health this part will show up
-	// and the previous part will be removed
-	//---------------------------------------------------------------------
-
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size );
@@ -278,19 +258,11 @@ destructible_info( partIndex, stateIndex, tagName, modelName, health, noDraw, va
 
 find_destructibles()
 {
-	//---------------------------------------------------------------------
-	// Find all destructibles by their targetnames and run the setup
-	//---------------------------------------------------------------------
 	array_thread( getentarray( "destructible", "targetname" ), ::setup_destructibles );
 }
 
-
 precache_destructibles(  )
 {
-	// I needed this to be seperate for vehicle scripts.
-	//---------------------------------------------------------------------
-	// Precache referenced models and load referenced effects
-	//---------------------------------------------------------------------
 	if ( isdefined( level.destructible_type[self.destuctableInfo].parts ) )
 	{
 		for( i = 0 ; i < level.destructible_type[ self.destuctableInfo ].parts.size ; i++ )
@@ -313,26 +285,18 @@ precache_destructibles(  )
 	}
 }
 
-
 setup_destructibles()
 {
-	//---------------------------------------------------------------------
-	// Figure out what destructible information this entity should use
-	//---------------------------------------------------------------------
 	destuctableInfo = undefined;
 	assertEx( isdefined( self.destructible_type ), "Destructible object with targetname 'destructible' does not have a 'destructible_type' key/value" );
 
 	self.destuctableInfo = maps\mp\_destructible_types::makeType( self.destructible_type );
-	//println( "### DESTRUCTIBLE ### assigned infotype index: " + self.destuctableInfo );
-//	assert( self.destuctableInfo >= 0 );
+
 	if ( self.destuctableInfo < 0 )
 		return;
 
 	precache_destructibles();
 
-	//---------------------------------------------------------------------
-	// Attach all parts to the entity
-	//---------------------------------------------------------------------
 	if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts ) )
 	{
 		self.destructible_parts = [];
@@ -340,18 +304,14 @@ setup_destructibles()
 		{
 			self.destructible_parts[ i ] = spawnStruct();
 
-			// set it's current state to 0 since it has never taken damage yet and will be on it's first state
 			self.destructible_parts[ i ].v[ "currentState" ] = 0;
 
-			// if it has a health value then store it's value
 			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "health" ] ) )
 				self.destructible_parts[ i ].v[ "health" ] = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "health" ];
 
-			// continue if it's the base model since its not an attached part
 			if ( i == 0 )
 				continue;
 
-			// attach the part now
 			modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "modelName" ];
 			tagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "tagName" ];
 
@@ -367,9 +327,6 @@ setup_destructibles()
 		}
 	}
 
-	//---------------------------------------------------------------------
-	// Make this entity take damage and wait for events
-	//---------------------------------------------------------------------
 	if(	self.classname != "script_vehicle" )
 		self setCanDamage( true );
 	self thread destructible_think();
@@ -391,9 +348,6 @@ damage_mirror( parent, modelName, tagName )
 
 destructible_think()
 {
-	//---------------------------------------------------------------------
-	// Wait until this entity takes damage
-	//---------------------------------------------------------------------
 	self endon( "stop_taking_damage" );
 	for(;;)
 	{
@@ -404,24 +358,15 @@ destructible_think()
 		if ( damage <= 0 )
 			continue;
 
+		if ( isDefined( level.strat_over ) && !level.strat_over )
+			continue;
+
 		if ( isDefined( attacker ) && isPlayer( attacker ) )
 			self.damageOwner = attacker;
 
 		type = getDamageType( type );
 		assert( isdefined( type ) );
 
-		if ( getdvar( "debug_destructibles" ) == "1" )
-		{
-			print3d( point, ".", ( 1, 1, 1 ), 1.0, 0.5, 100 );
-			iprintln( "damage amount: " + damage );
-			iprintln( "hit model: " + modelName );
-			if ( isdefined( tagName ) )
-				iprintln( "hit model tag: " + tagName );
-			else
-				iprintln( "hit model tag: " );
-		}
-
-		// override for when base model is damaged. We dont want to pass in empty strings
 		assert( isdefined( modelName ) );
 		if ( modelName == "" )
 		{
@@ -436,12 +381,8 @@ destructible_think()
 				tagName = undefined;
 		}
 
-		// special handling for splash and projectile damage
 		if ( type == "splash" )
 		{
-			if ( getdvar( "debug_destructibles" ) == "1" )
-				iprintln( "type = splash" );
-
 			damage *= 2.75;
 
 			self destructible_splash_damage( int( damage ), point, direction_vec, attacker, type );
@@ -454,20 +395,10 @@ destructible_think()
 
 destructible_update_part( damage, modelName, tagName, point, direction_vec, attacker, damageType )
 {
-	//---------------------------------------------------------------------
-	// Find what part this is, or is a child of. If the base model was
-	// the entity that was damaged the part index will be -1
-	//---------------------------------------------------------------------
 	if ( !isdefined( self.destructible_parts ) )
 		return;
 	if ( self.destructible_parts.size == 0 )
 		return;
-
-	if ( isDefined( level.strat_over ) )
-	{
-		while (!level.strat_over)
-			return;
-	}
 
 	partIndex = -1;
 	stateIndex = -1;
@@ -507,10 +438,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 	if ( partIndex < 0 )
 		return;
 
-	//---------------------------------------------------------------------
-	// Deduct the damage amount from the part's health
-	// If the part runs out of health go to the next state
-	//---------------------------------------------------------------------
 	state_before = stateIndex;
 	updateHealthValue = false;
 	delayModelSwap = false;
@@ -518,11 +445,9 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 	{
 		stateIndex = self.destructible_parts[ partIndex ].v[ "currentState" ];
 
-		// there isn't another state to go to when damaged
 		if ( !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ] ) )
 			break;
 
-		// see if the model is also supposed to damage the parent
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ 0 ].v[ "alsoDamageParent" ] ) )
 		{
 			if ( getDamageType( damageType ) != "splash" )
@@ -542,14 +467,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			self.destructible_parts[ partIndex ].v[ "health" ] = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "health" ];
 		updateHealthValue = false;
 
-		if ( getdvar( "debug_destructibles" ) == "1" )
-		{
-			iprintln( "stateindex: " + stateIndex );
-			iprintln( "damage: " + damage );
-			iprintln( "health (before): " + self.destructible_parts[ partIndex ].v[ "health" ] );
-		}
-
-		// apply the damage to the part if the attacker was a valid attacker
 		validAttacker = self isAttackerValid( partIndex, stateIndex, attacker );
 		if ( validAttacker )
 		{
@@ -563,16 +480,11 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 		}
 
-		if ( getdvar( "debug_destructibles" ) == "1" )
-			iprintln( "health (after): " + self.destructible_parts[ partIndex ].v[ "health" ] );
-
-		// if the part still has health left then we're done
 		if ( self.destructible_parts[ partIndex ].v[ "health" ] > 0 )
 		{
 			return;
 		}
 
-		// if the part ran out of health then carry over to the next part
 		damage = int( abs( self.destructible_parts[ partIndex ].v[ "health" ] ) );
 		if ( damage < 0 )
 		{
@@ -587,19 +499,9 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			return;
 		}
 
-		//---------------------------------------------------------------------
-		// A state change is required so detach the old model or replace it if
-		// it's the base model that took the damage.
-		// Then attach the model ( if specified ) used for the new state
-		// Only do this if there is another state to go to, some parts might have
-		// fx or anims, or sounds but no next model to go to
-		//---------------------------------------------------------------------
-
-		// if the part is meant to explode on this state set a flag. Actual explosion will be done down below
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "explode_force_min" ] ) )
 			self.exploding = true;
 
-		// stop all previously looped sounds
 		if ( ( isdefined( self.loopingSoundStopNotifies ) ) && ( isdefined( self.loopingSoundStopNotifies[ string( partIndex ) ] ) ) )
 		{
 			for( i = 0 ; i < self.loopingSoundStopNotifies[ string( partIndex ) ].size ; i++ )
@@ -618,7 +520,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 			else
 			{
-				// handle a part getting damaged here - must be detached and reattached
 				self hideapart( tagName );
 				modelName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "modelName" ];
 				tagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "tagName" ];
@@ -628,7 +529,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 		}
 
-		// if the part has an fx then play it now
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx" ] ) )
 		{
 			assert( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx_tag" ] ) );
@@ -647,7 +547,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 		}
 
-		// if the part has a looping fx then play it now
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx" ] ) )
 		{
 			assert( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx_tag" ] ) );
@@ -658,44 +557,21 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			self thread loopfx_onTag( loopfx, loopfx_tag, loopRate, partIndex );
 		}
 
-		// if the part has an anim then play it now
 		if ( !isdefined( self.exploded ) )
 		{
 			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ] ) )
 			{
 				animName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ];
 				animTree = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "animTree" ];
-				self useanimtree( animTree );
-				animType = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "animType" ];
 				if ( !isdefined( self.animsApplied ) )
 					self.animsApplied = [];
 				self.animsApplied[ self.animsApplied.size ] = animName;
-
-				if ( isdefined( self.exploding ) )
-				{
-					//clear all previously blended anims if the vehicle is exploding so the explosion doesn't have to blend with anything
-					if ( isdefined( self.animsApplied ) )
-					{
-						for( i = 0 ; i < self.animsApplied.size ; i++ )
-						{
-							self clearAnim( self.animsApplied[ i ], 0 );
-						}
-					}
-				}
-
-				if ( animType == "setanim" )
-					self setAnim( animName, 1.0, 1.0, 1.0 );
-				else if ( animType == "setanimknob" )
-					self setAnimKnob( animName, 1.0, 1.0, 1.0 );
-				else
-					assertMsg( "Tried to play an animation on a destructible with an invalid animType: " + animType );
 
 				if ( partIndex == 0 )
 					self thread explodeAnim();
 					}
 		}
 
-		// if the part has a soundalias then play it now
 		if ( !isdefined( self.exploded ) )
 		{
 			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ] ) )
@@ -714,7 +590,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 		}
 
-		// if the part has a looping soundalias then start looping it now
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopsound" ] ) )
 		{
 			for( i = 0 ; i < level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopsound" ].size ; i++ )
@@ -736,7 +611,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 		}
 
-		// if the part should drain health then start the drain
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "healthdrain_amount" ] ) )
 		{
 			self notify( "Health_Drain_State_Change" + partIndex );
@@ -751,7 +625,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			}
 		}
 
-		// if the part is meant to explode on this state then do it now. Causes all attached models to become physics with the specified force
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "explode_force_min" ] ) )
 		{
 			delayModelSwap = true;
@@ -763,7 +636,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			self thread explode( partIndex, force_min, force_max, range, mindamage, maxdamage );
 		}
 
-		// if the part should do physics here then initiate the physics and velocity
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "physics" ] ) )
 		{
 			initial_velocity = point;
@@ -771,8 +643,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			if ( isdefined( attacker ) )
 			{
 				impactDir = attacker.origin;
-				//if ( attacker == level.player )
-				//	impactDir = level.player getEye();
 				initial_velocity = vectorNormalize( point - impactDir);
 				initial_velocity = vectorScale( initial_velocity, 200 );
 			}
@@ -792,9 +662,6 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 	if ( isDefined( self.exploded ) )
 		return;
 
-	//------------------------------------------------------------------------
-	// Fill an array of all possible parts that might have been splash damaged
-	//------------------------------------------------------------------------
 	damagedParts = [];
 	closestPartDist = undefined;
 	if ( isdefined( level.destructible_type[self.destuctableInfo].parts ) )
@@ -808,11 +675,9 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 
 				if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "modelName" ] ) )
 				{
-					// see how far the part is from the splash damage origin
 					modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "modelName" ];
 					assert( isdefined( modelName ) );
 
-					// special handling for the base model which doesn't use a tag
 					if ( i == 0 )
 					{
 						d = distance( point, self.origin );
@@ -828,7 +693,6 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 					if ( ( !isdefined( closestPartDist ) ) || ( d < closestPartDist ) )
 						closestPartDist = d;
 
-					// add the part to the list of parts to be damaged
 					index = damagedParts.size;
 					damagedParts[ index ] = spawnStruct();
 					damagedParts[ index ].v[ "modelName" ] = modelName;
@@ -846,9 +710,6 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 	if ( damagedParts.size <= 0 )
 		return;
 
-	//--------------------------------------------------------------------------
-	// Damage each part depending on how close it was to the splash damage point
-	//--------------------------------------------------------------------------
 	for( i = 0 ; i < damagedParts.size ; i++ )
 	{
 		distanceMod = ( damagedParts[ i ].v[ "distance" ] * 1.4 );
@@ -859,12 +720,6 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 
 		if ( isDefined( self.exploded ) )
 			continue;
-
-		if ( getdvar( "debug_destructibles" ) == "1" )
-		{
-			if ( isdefined( damagedParts[ i ].v[ "tagName" ] ) )
-				print3d( self getTagOrigin( damagedParts[ i ].v[ "tagName" ] ), damageAmount, ( 1, 1, 1 ), 1.0, 0.5, 200 );
-		}
 
 		self thread destructible_update_part( damageAmount, damagedParts[ i ].v[ "modelName" ], damagedParts[ i ].v[ "tagName" ], point, direction_vec, attacker, damageType);
 	}
@@ -907,8 +762,6 @@ isValidDamageCause( partIndex, stateIndex, damageType )
 
 getDamageType( type )
 {
-	//returns a simple damage type: melee, bullet, splash, or unknown
-
 	if ( !isdefined( type ) )
 		return "unknown";
 
@@ -958,11 +811,6 @@ health_drain( amount, interval, partIndex, modelName, tagName )
 
 	while( self.destructible_parts[ partIndex ].v[ "health" ] > 0 )
 	{
-		if ( getdvar( "debug_destructibles" ) == "1" )
-		{
-			iprintln( "health before damage: " + self.destructible_parts[ partIndex ].v[ "health" ] );
-			iprintln( "doing " + amount + " damage" );
-		}
 		self notify( "damage", amount, self, ( 0, 0, 0 ) , ( 0, 0, 0 ), "MOD_UNKNOWN", modelName, tagName );
 		wait interval;
 	}
@@ -978,19 +826,15 @@ physics_launch( partIndex, stateIndex, point, initial_velocity )
 	if ( getdvar( "destructibles_enable_physics" ) == "0" )
 		return;
 
-	// If we've reached the max number of spawned physics models for destructible vehicles then delete one before creating another
 	if ( level.destructibleSpawnedEnts.size >= level.destructibleSpawnedEntsLimit )
 		physics_object_remove( level.destructibleSpawnedEnts[ 0 ] );
 
-	// Spawn a model to use for physics using the modelname and position of the part
 	physicsObject = spawn( "script_model", self getTagOrigin( tagName ) );
 	physicsObject.angles = self getTagAngles( tagName );
 	physicsObject setModel( modelName );
 
-	// Keep track of the new part so it can be removed later if we reach the max
 	level.destructibleSpawnedEnts[ level.destructibleSpawnedEnts.size ] = physicsObject;
 
-	// Do physics on the model
 	physicsObject physicsLaunch( point, initial_velocity );
 }
 
@@ -1050,7 +894,6 @@ explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 
 			if ( self.destructible_parts[ i ] isLinked() )
 			{
-				// dont do physics on parts that are supposed to be removed on explosion
 				if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "physicsOnExplosion" ] ) )
 				{
 					if ( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "physicsOnExplosion" ] > 0 )
@@ -1065,7 +908,6 @@ explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 						continue;
 					}
 				}
-//				self.destructible_parts[ i ] hide();
 			}
 		}
 	}
@@ -1087,35 +929,6 @@ explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 isLinked()
 {
 	return !isDefined( self.unlinked );
-	/*
-	qAttached = false;
-
-	modelName = tolower( modelName );
-	tagName = tolower( tagName );
-
-	assert( isdefined( modelName ) );
-	if( !isdefined( tagName ) )
-		return qAttached;
-
-	attachedModelCount = self getattachsize();
-	attachedModels = [];
-	for ( i = 0 ; i < attachedModelCount ; i++ )
-		attachedModels[ i ] = tolower( self getAttachModelName( i ) );
-
-	for( i = 0 ; i < attachedModels.size ; i++ )
-	{
-		if ( attachedModels[ i ] != modelName )
-			continue;
-
-		sName = tolower( self getattachtagname( i ) );
-		if ( tagName != sName )
-			continue;
-
-		qAttached = true;
-		break;
-	}
-	return qAttached;
-	*/
 }
 
 play_loop_sound_on_destructible( alias, tag )
@@ -1154,36 +967,11 @@ string( num )
 
 deleteEnt( ent )
 {
-	// created so entities can be deleted using array_thread
 	ent delete();
 }
 
-setAnim( animName, val, val, val )
+hideapart( tagName ){	self hidepart( tagName );}showapart( tagName )
 {
-}
-
-setAnimKnob( animName, val, val, val )
-{
-}
-
-clearAnim( animName, value )
-{
-}
-
-useAnimTree( animTree )
-{
-}
-
-
-hideapart( tagName )
-{
-//	println( "Hiding part: " + tagName );
-	self hidepart( tagName );
-}
-
-showapart( tagName )
-{
-//	println( "Showing part: " + tagName );
 	self showpart( tagName );
 }
 

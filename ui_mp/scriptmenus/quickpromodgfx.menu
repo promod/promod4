@@ -11,7 +11,7 @@
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
 
-#define CHOICE_GROUP			"quickpromodgfx"
+#define CHOICE_GROUP "quickpromodgfx"
 
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
@@ -20,12 +20,12 @@
 #include "ui/choices_setup_popmenu.menu"
 
 #undef CHOICE_SIZE_X
-#define CHOICE_SIZE_X			186
+#define CHOICE_SIZE_X 186
 
 #undef CHOICE_POPUP_BACKCOLOR
-#define CHOICE_POPUP_BACKCOLOR  0.2 0.2 0.22 0.65
+#define CHOICE_POPUP_BACKCOLOR 0.2 0.2 0.22 0.65
 
-#define ORIGIN_QUICKMESSAGEWINDOW		0 16
+#define ORIGIN_QUICKMESSAGEWINDOW 0 16
 
 {
 	menuDef
@@ -212,7 +212,7 @@
 		}
 		execKey "6" { scriptMenuResponse "6"; close quickpromodgfx }
 
-				itemDef
+		itemDef
 		{
 			name			"window"
 			group			ingamebox

@@ -16,7 +16,6 @@ init()
 	level thread onPlayerConnect();
 }
 
-
 onPlayerConnect()
 {
 	for(;;)
@@ -29,7 +28,6 @@ onPlayerConnect()
 	}
 }
 
-
 onPlayerSpawned()
 {
 	self endon("disconnect");
@@ -40,7 +38,6 @@ onPlayerSpawned()
 		self setSpectatePermissions();
 	}
 }
-
 
 onJoinedTeam()
 {
@@ -64,7 +61,6 @@ onJoinedSpectators()
 	}
 }
 
-
 updateSpectateSettings()
 {
 	level endon ( "game_ended" );
@@ -72,7 +68,6 @@ updateSpectateSettings()
 	for ( index = 0; index < level.players.size; index++ )
 		level.players[index] setSpectatePermissions();
 }
-
 
 getOtherTeam( team )
 {
@@ -84,7 +79,6 @@ getOtherTeam( team )
 		return "none";
 }
 
-
 setSpectatePermissions()
 {
 	team = self.sessionteam;
@@ -93,13 +87,13 @@ setSpectatePermissions()
 
 	switch( spectateType )
 	{
-		case 0: // disabled
+		case 0:
 			self allowSpectateTeam( "allies", false );
 			self allowSpectateTeam( "axis", false );
 			self allowSpectateTeam( "freelook", false );
 			self allowSpectateTeam( "none", true );
 			break;
-		case 1: // team/player only
+		case 1:
 			if ( !level.teamBased )
 			{
 				self allowSpectateTeam( "allies", true );
@@ -122,7 +116,7 @@ setSpectatePermissions()
 				self allowSpectateTeam( "none", false );
 			}
 			break;
-		case 2: // free
+		case 2:
 			self allowSpectateTeam( "allies", true );
 			self allowSpectateTeam( "axis", true );
 			self allowSpectateTeam( "freelook", true );

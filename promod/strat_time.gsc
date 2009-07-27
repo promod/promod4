@@ -24,8 +24,6 @@ main()
 	level thread Strat_Time_Timer();
 
 	level waittill( "strat_over" );
-	setDvar( "g_speed", 190 );
-	wait .1;
 
 	players = getentarray("player", "classname");
 	for ( i = 0; i < players.size; i++ )
@@ -35,17 +33,28 @@ main()
 
 		if ( ( player.pers["team"] == "allies" || player.pers["team"] == "axis" ) && player.sessionstate == "playing" )
 		{
-			if ( level.hardcoreMode )
+			if ( level.hardcoreMode && getDvarInt("weap_allow_frag_grenade") )
 				player giveWeapon( "frag_grenade_short_mp" );
-			else
+			else if ( getDvarInt( "weap_allow_frag_grenade" ) )
 				player giveWeapon( "frag_grenade_mp" );
 
-			player giveWeapon( player.pers[classType]["loadout_grenade"] + "_mp" );
+			if ( player.pers[classType]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
+			{
+				player setOffhandSecondaryClass("flash");
+				player giveWeapon( "flash_grenade_mp" );
+			}
+			else if ( player.pers[classType]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
+			{
+				player setOffhandSecondaryClass("smoke");
+				player giveWeapon( "smoke_grenade_mp" );
+			}
+
 			player shellShock( "damage_mp", 0.01 );
 			player allowsprint(true);
 		}
 	}
 
+	setDvar( "g_speed", 190 );
 	setDvar( "player_sustainAmmo", 0 );
 
 	if ( game["promod_timeout_called"] )
@@ -74,7 +83,7 @@ Strat_Time()
 		{
 			player = players[i];
 
-			if ( player.pers["team"] == "allies" || player.pers["team"] == "axis" )
+			if ( player.pers["team"] == "allies" || player.pers["team"] == "axis" && player.sessionstate == "playing" )
 				player allowsprint(false);
 		}
 

@@ -145,30 +145,25 @@ onSpawnPlayer()
 
 		if ( flagsOwned == level.flags.size )
 		{
-			// own all flags! pretend we don't own the last one we got, so enemies can spawn there
 			enemyBestSpawnFlag = level.bestSpawnFlag[ getOtherTeam( self.pers["team"] ) ];
-
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all, getSpawnsBoundingFlag( enemyBestSpawnFlag ) );
 		}
 		else if ( flagsOwned > 0 )
 		{
-			// spawn near any flag we own that's nearish something we can capture
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all, getBoundaryFlagSpawns( myTeam ) );
 		}
 		else
 		{
-			// own no flags!
 			bestFlag = undefined;
 			if ( enemyFlagsOwned > 0 && enemyFlagsOwned < level.flags.size )
 			{
-				// there should be an unowned one to use
 				bestFlag = getUnownedFlagNearestStart( myTeam );
 			}
 			if ( !isdefined( bestFlag ) )
 			{
-				// pretend we still own the last one we lost
 				bestFlag = level.bestSpawnFlag[ self.pers["team"] ];
 			}
+
 			level.bestSpawnFlag[ self.pers["team"] ] = bestFlag;
 
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all, bestFlag.nearbyspawns );
@@ -182,8 +177,6 @@ onSpawnPlayer()
 		else
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random(level.spawn_allies_start);
 	}
-
-	//spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all );
 
 	assert( isDefined(spawnpoint) );
 
@@ -226,7 +219,6 @@ domFlags()
 
 	if ( (primaryFlags.size + secondaryFlags.size) < 2 )
 	{
-		printLn( "^1Not enough domination flags found in level!" );
 		maps\mp\gametypes\_callbacksetup::AbortLevel();
 		return;
 	}
@@ -279,7 +271,6 @@ domFlags()
 
 		domFlag.baseeffectpos = trace["position"];
 
-		// legacy spawn code support
 		level.flags[index].useObj = domFlag;
 		level.flags[index].adjflags = [];
 		level.flags[index].nearbyspawns = [];
@@ -289,7 +280,6 @@ domFlags()
 		level.domFlags[level.domFlags.size] = domFlag;
 	}
 
-	// level.bestSpawnFlag is used as a last resort when the enemy holds all flags.
 	level.bestSpawnFlag = [];
 	level.bestSpawnFlag[ "allies" ] = getUnownedFlagNearestStart( "allies", undefined );
 	level.bestSpawnFlag[ "axis" ] = getUnownedFlagNearestStart( "axis", level.bestSpawnFlag[ "allies" ] );
@@ -342,7 +332,6 @@ onBeginUse( player )
 	self.objPoints["allies"] thread maps\mp\gametypes\_objpoints::startFlashing();
 	self.objPoints["axis"] thread maps\mp\gametypes\_objpoints::startFlashing();
 }
-
 
 onEndUse( team, player, success )
 {
@@ -418,10 +407,8 @@ giveFlagCaptureXP( touchList )
 	}
 }
 
-
 updateDomScores()
 {
-	// disable score limit check to allow both axis and allies score to be processed
 	level.endGameOnScoreLimit = false;
 
 	while ( !level.gameEnded )
@@ -481,7 +468,6 @@ getFlagTeam()
 
 getBoundaryFlags()
 {
-	// get all flags which are adjacent to flags that aren't owned by the same team
 	bflags = [];
 	for (i = 0; i < level.flags.size; i++)
 	{
@@ -545,8 +531,6 @@ getSpawnsBoundingFlag( avoidflag )
 	return spawns;
 }
 
-// gets an array of all spawnpoints which are near flags that are
-// owned by the given team, or that are adjacent to flags owned by the given team.
 getOwnedAndBoundingFlagSpawns(team)
 {
 	spawns = [];
@@ -555,7 +539,6 @@ getOwnedAndBoundingFlagSpawns(team)
 	{
 		if ( level.flags[i] getFlagTeam() == team )
 		{
-			// add spawns near this flag
 			for (s = 0; s < level.flags[i].nearbyspawns.size; s++)
 				spawns[spawns.size] = level.flags[i].nearbyspawns[s];
 		}
@@ -565,7 +548,6 @@ getOwnedAndBoundingFlagSpawns(team)
 			{
 				if ( level.flags[i].adjflags[j] getFlagTeam() == team )
 				{
-					// add spawns near this flag
 					for (s = 0; s < level.flags[i].nearbyspawns.size; s++)
 						spawns[spawns.size] = level.flags[i].nearbyspawns[s];
 					break;
@@ -577,8 +559,6 @@ getOwnedAndBoundingFlagSpawns(team)
 	return spawns;
 }
 
-// gets an array of all spawnpoints which are near flags that are
-// owned by the given team
 getOwnedFlagSpawns(team)
 {
 	spawns = [];
@@ -587,7 +567,6 @@ getOwnedFlagSpawns(team)
 	{
 		if ( level.flags[i] getFlagTeam() == team )
 		{
-			// add spawns near this flag
 			for (s = 0; s < level.flags[i].nearbyspawns.size; s++)
 				spawns[spawns.size] = level.flags[i].nearbyspawns[s];
 		}
@@ -598,10 +577,8 @@ getOwnedFlagSpawns(team)
 
 flagSetup()
 {
-	maperrors = [];
 	descriptorsByLinkname = [];
 
-	// (find each flag_descriptor object)
 	descriptors = getentarray("flag_descriptor", "targetname");
 
 	flags = level.flags;
@@ -619,55 +596,31 @@ flagSetup()
 			}
 		}
 
-		if (!isdefined(closestdesc)) {
-			maperrors[maperrors.size] = "there is no flag_descriptor in the map! see explanation in dom.gsc";
-			break;
-		}
-		if (isdefined(closestdesc.flag)) {
-			maperrors[maperrors.size] = "flag_descriptor with script_linkname \"" + closestdesc.script_linkname + "\" is nearby more than one flag; is there a unique descriptor near each flag?";
-			continue;
-		}
 		flags[i].descriptor = closestdesc;
 		closestdesc.flag = flags[i];
 		descriptorsByLinkname[closestdesc.script_linkname] = closestdesc;
 	}
 
-	if (maperrors.size == 0)
+	for (i = 0; i < flags.size; i++)
 	{
-		// find adjacent flags
-		for (i = 0; i < flags.size; i++)
+		if (isdefined(flags[i].descriptor.script_linkto))
+			adjdescs = strtok(flags[i].descriptor.script_linkto, " ");
+		else
+			adjdescs = [];
+
+		for (j = 0; j < adjdescs.size; j++)
 		{
-			if (isdefined(flags[i].descriptor.script_linkto))
-				adjdescs = strtok(flags[i].descriptor.script_linkto, " ");
-			else
-				adjdescs = [];
-			for (j = 0; j < adjdescs.size; j++)
-			{
-				otherdesc = descriptorsByLinkname[adjdescs[j]];
-				if (!isdefined(otherdesc) || otherdesc.targetname != "flag_descriptor") {
-					maperrors[maperrors.size] = "flag_descriptor with script_linkname \"" + flags[i].descriptor.script_linkname + "\" linked to \"" + adjdescs[j] + "\" which does not exist as a script_linkname of any other entity with a targetname of flag_descriptor (or, if it does, that flag_descriptor has not been assigned to a flag)";
-					continue;
-				}
-				adjflag = otherdesc.flag;
-				if (adjflag == flags[i]) {
-					maperrors[maperrors.size] = "flag_descriptor with script_linkname \"" + flags[i].descriptor.script_linkname + "\" linked to itself";
-					continue;
-				}
-				flags[i].adjflags[flags[i].adjflags.size] = adjflag;
-			}
+			otherdesc = descriptorsByLinkname[adjdescs[j]];
+			adjflag = otherdesc.flag;
+			flags[i].adjflags[flags[i].adjflags.size] = adjflag;
 		}
 	}
 
-	// assign each spawnpoint to nearest flag
 	spawnpoints = getentarray("mp_dom_spawn", "classname");
 	for (i = 0; i < spawnpoints.size; i++)
 	{
 		if (isdefined(spawnpoints[i].script_linkto)) {
 			desc = descriptorsByLinkname[spawnpoints[i].script_linkto];
-			if (!isdefined(desc) || desc.targetname != "flag_descriptor") {
-				maperrors[maperrors.size] = "Spawnpoint at " + spawnpoints[i].origin + "\" linked to \"" + spawnpoints[i].script_linkto + "\" which does not exist as a script_linkname of any entity with a targetname of flag_descriptor (or, if it does, that flag_descriptor has not been assigned to a flag)";
-				continue;
-			}
 			nearestflag = desc.flag;
 		}
 		else {
@@ -684,18 +637,5 @@ flagSetup()
 			}
 		}
 		nearestflag.nearbyspawns[nearestflag.nearbyspawns.size] = spawnpoints[i];
-	}
-
-	if (maperrors.size > 0)
-	{
-		println("^1------------ Map Errors ------------");
-		for(i = 0; i < maperrors.size; i++)
-			println(maperrors[i]);
-		println("^1------------------------------------");
-
-		maps\mp\_utility::error("Map errors. See above");
-		maps\mp\gametypes\_callbacksetup::AbortLevel();
-
-		return;
 	}
 }

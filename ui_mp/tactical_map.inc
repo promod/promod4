@@ -16,10 +16,8 @@
 #define MAP_WIDTH2				(MAP_WIDTH+5)
 #define SHOULD_SHOW_MAP			1
 
-// map display ================================================
-
 #define UI_MAP_NAME		"@"+tablelookup("mp/mapsTable.csv",0,dvarString(mapname),3)
-#define MAP_OFFSET		0 21 //2 20
+#define MAP_OFFSET		0 21
 
 	itemDef
    	{
@@ -45,7 +43,6 @@
 		decoration
    	}
 
-	// Objective pointers
 	itemDef
 	{
 		name			"compasspointers2"
@@ -57,7 +54,6 @@
 		visible			when ( SHOULD_SHOW_MAP );
 		decoration
 	}
-   	// Friendlies pointers
 	itemDef
 	{
 		name			"compassfriendlies2"
@@ -69,7 +65,6 @@
 		visible			when ( SHOULD_SHOW_MAP );
 		decoration
 	}
-   	// Enemy pings
 	itemDef
 	{
 		name			"compassenemies2"

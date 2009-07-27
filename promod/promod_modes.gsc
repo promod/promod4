@@ -14,7 +14,7 @@ main()
 		return;
 
 	game["promod_mode_loaded"] = 1;
-	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.01";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.03";
 
 	promod_mode = toLower(getDvar("promod_mode") );
 
@@ -178,7 +178,20 @@ Promod_Mode_Explode()
 	{
 		game["HARDCORE_MODE"] = 1;
 		game["PROMOD_MODE"] = "comp_match";
-		game["PROMOD_MODE_HUD"] = "^4Match ^1HC";
+		game["PROMOD_MODE_HUD"] = "^4Match ^1HC ^3Standard";
+	}
+	else if ( game["PROMOD_MODE"] == "lan" )
+	{
+		game["LAN_MODE"] = 1;
+		game["PROMOD_MODE"] = "comp_match";
+		game["PROMOD_MODE_HUD"] = "^4LAN ^3Standard";
+	}
+	else if ( game["PROMOD_MODE"] == "lan_hc" )
+	{
+		game["HARDCORE_MODE"] = 1;
+		game["LAN_MODE"] = 1;
+		game["PROMOD_MODE"] = "comp_match";
+		game["PROMOD_MODE_HUD"] = "^4LAN ^1HC ^3Standard";
 	}
 	else if ( game["PROMOD_MODE"] == "comp_public" )
 	{
@@ -189,7 +202,7 @@ Promod_Mode_Explode()
 	{
 		game["HARDCORE_MODE"] = 1;
 		game["PROMOD_MODE"] = "comp_public";
-		game["PROMOD_MODE_HUD"] = "Competitive Public HC";
+		game["PROMOD_MODE_HUD"] = "Competitive Public ^1HC";
 	}
 	else if ( game["PROMOD_MODE"] == "custom_public" )
 	{
@@ -281,7 +294,6 @@ Generic_Strip_Mode( pretext, mode )
 
 Standardized_Server_Settings()
 {
-	// classes
 	setDvar( "class_assault_limit", "64" );
 	setDvar( "class_demolitions_limit", "1" );
 	setDvar( "class_sniper_limit", "1" );
@@ -291,7 +303,6 @@ Standardized_Server_Settings()
 	setDvar( "class_demolitions_allowdrop", "0" );
 	setDvar( "class_sniper_allowdrop", "0" );
 
-	// assault rifles
 	setDvar( "weap_allow_m16", "1" );
 	setDvar( "weap_allow_ak47", "1" );
 	setDvar( "weap_allow_m4", "1" );
@@ -300,63 +311,52 @@ Standardized_Server_Settings()
 	setDvar( "weap_allow_m14", "1" );
 	setDvar( "weap_allow_mp44", "1" );
 
-	// assault attachments
 	setDvar( "attach_allow_assault_none", "1" );
 	setDvar( "attach_allow_assault_silencer", "1" );
 
-	// smgs
 	setDvar( "weap_allow_mp5", "1" );
 	setDvar( "weap_allow_uzi", "1" );
 	setDvar( "weap_allow_ak74u", "1" );
 
-	// smg attachments
 	setDvar( "attach_allow_smg_none", "1" );
 	setDvar( "attach_allow_smg_silencer", "1" );
 
-	// shotguns
 	setDvar( "weap_allow_m1014", "1" );
 	setDvar( "weap_allow_winchester1200", "1" );
 
-	// sniper rifles
 	setDvar( "weap_allow_dragunov", "0" );
 	setDvar( "weap_allow_m40a3", "1" );
 	setDvar( "weap_allow_barrett", "0" );
 	setDvar( "weap_allow_remington700", "1" );
 	setDvar( "weap_allow_m21", "0" );
 
-	// pistols
 	setDvar( "weap_allow_beretta", "1" );
 	setDvar( "weap_allow_colt45", "1" );
 	setDvar( "weap_allow_usp", "1" );
 	setDvar( "weap_allow_deserteagle", "1" );
 	setDvar( "weap_allow_deserteaglegold", "1" );
 
-	// pistol attachments
 	setDvar( "attach_allow_pistol_none", "1" );
 	setDvar( "attach_allow_pistol_silencer", "1" );
 
-	// assault class default loadout
 	setDvar( "class_assault_primary", "ak47" );
 	setDvar( "class_assault_primary_attachment", "none" );
 	setDvar( "class_assault_secondary", "deserteagle" );
 	setDvar( "class_assault_secondary_attachment", "none" );
 	setDvar( "class_assault_camo", "camo_none" );
 
-	// specops class default loadout
 	setDvar( "class_specops_primary", "ak74u" );
 	setDvar( "class_specops_primary_attachment", "none" );
 	setDvar( "class_specops_secondary", "deserteagle" );
 	setDvar( "class_specops_secondary_attachment", "none" );
 	setDvar( "class_specops_camo", "camo_none" );
 
-	// demolitions class default loadout
 	setDvar( "class_demolitions_primary", "winchester1200" );
 	setDvar( "class_demolitions_primary_attachment", "none" );
 	setDvar( "class_demolitions_secondary", "deserteagle" );
 	setDvar( "class_demolitions_secondary_attachment", "none" );
 	setDvar( "class_demolitions_camo", "camo_none" );
 
-	// sniper class default loadout
 	setDvar( "class_sniper_primary", "m40a3" );
 	setDvar( "class_sniper_primary_attachment", "none" );
 	setDvar( "class_sniper_secondary", "deserteagle" );
@@ -439,7 +439,7 @@ Monitor_Promod_Mode()
 
 				wait 1;
 
-				promod\map_restart::main();
+				map_restart( false );
 				return;
 			}
 			else
@@ -449,7 +449,7 @@ Monitor_Promod_Mode()
 				iPrintLN("^5Error Changing To Mode: ^1" + promod_mode);
 				iPrintLN("^5Valid Modes: knockout/match_mr[x], knockout/match_hc_mr[x], knockout/lan_mr[x], knockout/lan_hc_mr[x],");
 				iPrintLN("^5knockout/1v1_mr[x], knockout/1v1_hc_mr[x], knockout/2v2_mr[x], knockout/2v2_hc_mr[x], match, match_hc,");
-				iPrintLN("^5comp_public, comp_public_hc, custom_public, strat");
+				iPrintLN("^5lan, lan_hc, comp_public, comp_public_hc, custom_public, strat");
 
 				setDvar("promod_mode", old_promod_mode);
 			}
@@ -459,7 +459,7 @@ Monitor_Promod_Mode()
 
 Is_Valid_Promod_Mode( mode )
 {
-	if ( mode == "match" || mode == "match_hc" || mode == "comp_public" || mode == "comp_public_hc" || mode == "custom_public" || mode == "strat" )
+	if ( mode == "match" || mode == "match_hc" || mode == "lan" || mode == "lan_hc" || mode == "comp_public" || mode == "comp_public_hc" || mode == "custom_public" || mode == "strat" )
 		return true;
 
 	if ( !isSubStr( mode, "1" ) && !isSubStr( mode, "2" ) && !isSubStr( mode, "3" ) && !isSubStr( mode, "4" ) && !isSubStr( mode, "5" ) && !isSubStr( mode, "6" ) && !isSubStr( mode, "7" ) && !isSubStr( mode, "8" ) && !isSubStr( mode, "9" ) )

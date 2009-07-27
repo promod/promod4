@@ -12,7 +12,7 @@ init()
 {
 	precacheShader("overlay_low_health");
 
-	level.healthOverlayCutoff = 0.55; // getting the dvar value directly doesn't work right because it's a client dvar getdvarfloat("hud_healthoverlay_pulseStart");
+	level.healthOverlayCutoff = 0.55;
 
 	regenTime = 5;
 
@@ -43,10 +43,6 @@ onJoinedTeam()
 	for(;;)
 	{
 		self waittill("joined_team");
-		if( self.pers["team"] == "allies" )
-			self setClientDvar( "mapTeam", "allies" );
-		else if( self.pers["team"] == "axis" )
-			self setClientDvar( "mapTeam", "axis" );
 		self notify("end_healthregen");
 	}
 }
@@ -105,7 +101,7 @@ playerHealthRegen()
 	player = self;
 	health_add = 0;
 
-	regenRate = 0.1; // 0.017;
+	regenRate = 0.1;
 	veryHurt = false;
 
 	player.breathingStopTime = -10000;
@@ -169,7 +165,6 @@ playerHealthRegen()
 
 			if (newHealth <= 0)
 			{
-				// Player is dead
 				return;
 			}
 
@@ -199,7 +194,6 @@ playerBreathingSound(healthcap)
 		if (player.health <= 0)
 			return;
 
-		// Player still has a lot of health so no breathing sound
 		if (player.health >= healthcap)
 			continue;
 

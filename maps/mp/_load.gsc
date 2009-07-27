@@ -25,9 +25,7 @@ main( bScriptgened, bCSVgened, bsgenabled )
 		level.flags_lock = [];
 	}
 
-
-	if (getDvar("scr_RequiredMapAspectratio") == "")
-		setDvar("scr_RequiredMapAspectratio", "1");
+	setDvar("scr_RequiredMapAspectratio", "1");
 
 	thread maps\mp\gametypes\_tweakables::init();
 	thread maps\mp\_minefields::minefields();
@@ -36,10 +34,10 @@ main( bScriptgened, bCSVgened, bsgenabled )
 
 	VisionSetNight( "default_night" );
 
-	level.createFX_enabled = ( getdvar( "createfx" ) != "" );
+	level.createFX_enabled = 0;
+
 	setupExploders();
 
-	// Do various things on triggers
 	for ( p = 0;p < 6;p ++ )
 	{
 		switch( p )
@@ -100,10 +98,8 @@ exploder_load( trigger )
 	level notify( "killexplodertridgers" + trigger.script_exploder );
 }
 
-
 setupExploders()
 {
-	// Hide exploder models.
 	ents = getentarray( "script_brushmodel", "classname" );
 	smodels = getentarray( "script_model", "classname" );
 	for ( i = 0;i < smodels.size;i ++ )
@@ -122,15 +118,11 @@ setupExploders()
 			{
 				ents[ i ] hide();
 				ents[ i ] notsolid();
-				//if ( isdefined( ents[ i ].script_disconnectpaths ) )
-					//ents[ i ] connectpaths();
 			}
 			else if ( ( isdefined( ents[ i ].targetname ) ) && ( ents[ i ].targetname == "exploderchunk" ) )
 			{
 				ents[ i ] hide();
 				ents[ i ] notsolid();
-				//if ( isdefined( ents[ i ].spawnflags ) && ( ents[ i ].spawnflags & 1 ) )
-					//ents[ i ] connectpaths();
 			}
 		}
 	}
@@ -213,7 +205,6 @@ setupExploders()
 			ent.v[ "angles" ] = vectortoangles( org - ent.v[ "origin" ] );
 		}
 
-		// this basically determines if its a brush / model exploder or not
 		if ( exploder.classname == "script_brushmodel" || isdefined( exploder.model ) )
 		{
 			ent.model = exploder;
@@ -229,27 +220,6 @@ setupExploders()
 	}
 }
 
-lanterns()
-{
-
-}
-
-script_gen_dump_checksaved()
-{
-
-}
-
 script_gen_dump()
 {
-
-}
-
-script_gen_csvdumpprintln( file, signature )
-{
-
-}
-
-script_gen_dumpprintln( file, string )
-{
-
 }

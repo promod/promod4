@@ -110,7 +110,6 @@ setPoint( point, relativePoint, xOffset, yOffset, moveTime )
 		self.vertAlign = element.vertAlign;
 	}
 
-
 	if ( relativeX == element.alignX )
 	{
 		offsetX = 0;

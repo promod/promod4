@@ -179,7 +179,8 @@ use_config()
 
 	if ( self.pers["PROMOD_CACHE_FIRSTTIME"] == 0 )
 	{
-		self setClientDvar( "cg_voiceIconSize", 1 );
+		self setClientDvars("cg_voiceIconSize", 1,
+							"cl_maxpackets", 100 );
 		self.pers["PROMOD_CACHE_FIRSTTIME"] = 1;
 		self set_config( "PROMOD_FIRSTTIME", 1 );
 	}

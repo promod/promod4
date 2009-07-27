@@ -106,7 +106,6 @@ onRoundSwitch()
 	else
 	{
 		level.halftimeType = "halftime";
-		//game["switchedsides"] = !game["switchedsides"];
 	}
 }
 
@@ -442,7 +441,6 @@ onPickup( player )
 
 	player.isBombCarrier = true;
 
-	// recovered the bomb before abandonment timer elapsed
 	if ( team == self maps\mp\gametypes\_gameobjects::getOwnerTeam() )
 	{
 		printOnTeamArg( &"MP_EXPLOSIVES_RECOVERED_BY", team, player );
@@ -472,7 +470,7 @@ onDrop( player )
 		if ( isDefined( player ) )
 			printOnTeamArg( &"MP_EXPLOSIVES_DROPPED_BY", self maps\mp\gametypes\_gameobjects::getOwnerTeam(), player );
 
-		if (level.scorebot && isDefined( player ) && isDefined( player.name ))
+		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
 			game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
 
 		playSoundOnPlayers( game["bomb_dropped_sound"], self maps\mp\gametypes\_gameobjects::getOwnerTeam() );
@@ -516,7 +514,7 @@ onUse( player )
 {
 	team = player.pers["team"];
 	otherTeam = level.otherTeam[team];
-	// planted the bomb
+
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
 		player notify ( "bomb_planted" );
@@ -547,7 +545,7 @@ onUse( player )
 
 		self setUpForDefusing();
 	}
-	else // defused the bomb
+	else
 	{
 		player notify ( "bomb_defused" );
 		player logString( "bomb defused" );
@@ -594,7 +592,6 @@ bombPlanted( destroyedObj, team )
 	level.timeLimitOverride = true;
 	setDvar( "ui_bomb_timer", 1 );
 
-	// communicate timer information to menus
 	setGameEndTime( int( getTime() + (level.bombTimer * 1000) ) );
 
 	destroyedObj.visuals[0] thread maps\mp\gametypes\_globallogic::playTickingSound();
@@ -632,9 +629,6 @@ bombPlanted( destroyedObj, team )
 
 	thread playSoundinSpace( "exp_suitcase_bomb_main", explosionOrigin );
 
-	//if ( isDefined( destroyedObj.exploderIndex ) )
-	//	exploder( destroyedObj.exploderIndex );
-
 	[[level._setTeamScore]]( team, [[level._getTeamScore]]( team ) + 1 );
 
 	setGameEndTime( 0 );
@@ -646,7 +640,6 @@ bombPlanted( destroyedObj, team )
 		level.players[i] playLocalSound("promod_destroyed");
 	}
 
-	// end the round without resetting the timer
 	thread maps\mp\gametypes\_globallogic::endGame( team, game["strings"]["target_destroyed"] );
 }
 
@@ -655,7 +648,7 @@ playSoundinSpace( alias, origin )
 	org = spawn( "script_origin", origin );
 	org.origin = origin;
 	org playSound( alias );
-	wait 10; // MP doesn't have "sounddone" notifies =(
+	wait 10;
 	org delete();
 }
 
@@ -673,9 +666,7 @@ resetBombsite()
 	self maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_PLANT_EXPLOSIVES" );
 	self maps\mp\gametypes\_gameobjects::setKeyObject( level.sabBomb );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "friendly", "compass_waypoint_defend" );
-	//self maps\mp\gametypes\_gameobjects::set3DIcon( "friendly", "waypoint_defend" );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_target" );
-	//self maps\mp\gametypes\_gameobjects::set3DIcon( "enemy", "waypoint_target" );
 	self maps\mp\gametypes\_gameobjects::setVisibleTeam( "none" );
 }
 
@@ -687,9 +678,7 @@ setUpForDefusing()
 	self maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_DEFUSE_EXPLOSIVES" );
 	self maps\mp\gametypes\_gameobjects::setKeyObject( undefined );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "friendly", "compass_waypoint_defuse" );
-	//self maps\mp\gametypes\_gameobjects::set3DIcon( "friendly", "waypoint_defuse" );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_defend" );
-	//self maps\mp\gametypes\_gameobjects::set3DIcon( "enemy", "waypoint_defend" );
 	self maps\mp\gametypes\_gameobjects::setVisibleTeam( "any" );
 }
 

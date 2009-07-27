@@ -59,8 +59,6 @@ onMenuResponse()
 	{
 		self waittill("menuresponse", menu, response);
 
-		println( self getEntityNumber() + " menuresponse: " + menu + " " + response );
-
 		if ( response == "back" )
 		{
 			if (self.team == "none")
@@ -121,41 +119,25 @@ onMenuResponse()
 			switch(response)
 			{
 				case "allies":
-					self setClientDvars(	"g_compassShowEnemies", "0",
-											"r_contrast", "1",
-											"r_brightness", "0" );
-
 					self [[level.allies]]();
 					break;
 
 				case "axis":
-					self setClientDvars(	"g_compassShowEnemies", "0",
-											"r_contrast", "1",
-											"r_brightness", "0" );
-
 					self [[level.axis]]();
 					break;
 
 				case "autoassign":
-					self setClientDvars(	"g_compassShowEnemies", "0",
-											"r_contrast", "1",
-											"r_brightness", "0" );
-
 					self [[level.autoassign]]();
 					break;
 
 				case "shoutcast":
-					self setClientDvars(	"g_compassShowEnemies", "1",
-											"r_contrast", "1",
-											"r_brightness", "0" );
-
 					self [[level.spectator]]();
 					break;
 			}
-		}	// the only responses remain are change class events
+		}
 		else if( menu == game["menu_changeclass_allies"] || menu == game["menu_changeclass_axis"] )
 		{
-			if (response != "assault" && response != "specops" && response != "demolitions" && response != "sniper")
+			if ( response != "assault" && response != "specops" && response != "demolitions" && response != "sniper" )
 				continue;
 
 			if ( !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )

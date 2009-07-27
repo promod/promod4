@@ -8,6 +8,7 @@
 
 rawfile,maps/mp/_destructible.gsc
 rawfile,maps/mp/_destructible_types.gsc
+rawfile,maps/mp/_explosive_barrels.gsc
 rawfile,maps/mp/_flashgrenades.gsc
 rawfile,maps/mp/_load.gsc
 
@@ -42,7 +43,6 @@ rawfile,maps/mp/gametypes/war.gsc
 rawfile,maps/mp/gametypes/_class.gsc
 rawfile,maps/mp/gametypes/_gameobjects.gsc
 rawfile,maps/mp/gametypes/_globallogic.gsc
-rawfile,maps/mp/gametypes/_hardpoints.gsc
 rawfile,maps/mp/gametypes/_healthoverlay.gsc
 rawfile,maps/mp/gametypes/_hud.gsc
 rawfile,maps/mp/gametypes/_hud_message.gsc
@@ -80,18 +80,15 @@ rawfile,maps/createfx/mp_showdown_fx.gsc
 rawfile,maps/createfx/mp_strike_fx.gsc
 rawfile,maps/createfx/mp_vacant_fx.gsc
 
-rawfile,promod/welcomecenter.gsc
 rawfile,promod/hud_website.gsc
 rawfile,promod/messagecenter.gsc
 rawfile,promod/header.gsc
 rawfile,promod/strat_time.gsc
 rawfile,promod/readyup.gsc
 rawfile,promod/set_variables.gsc
-rawfile,promod/map_restart.gsc
 rawfile,promod/rules/comp.gsc
 rawfile,promod/timeout.gsc
 rawfile,promod/bombdrop.gsc
-rawfile,promod/statlog.gsc
 rawfile,promod/servercheck.gsc
 rawfile,promod/promod_client_dvars.gsc
 rawfile,promod/promod_modes.gsc

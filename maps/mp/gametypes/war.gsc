@@ -55,13 +55,9 @@ onStartGameType()
 
 	allowed[0] = "war";
 
-	if ( getDvarInt( "scr_oldHardpoints" ) > 0 )
-		allowed[1] = "hardpoint";
-
 	level.displayRoundEndText = false;
 	maps\mp\gametypes\_gameobjects::main(allowed);
 
-	// elimination style
 	if ( level.roundLimit != 1 && level.numLives )
 	{
 		level.overrideTeamScore = true;

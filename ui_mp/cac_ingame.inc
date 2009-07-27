@@ -36,7 +36,7 @@
 		{
 			style			WINDOW_STYLE_FILLED
 			rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
-			backcolor		0 0 0 0.75 //0 0.05 0.15 0.5
+			backcolor		0 0 0 0.75
 			visible			1
 			decoration
 		}
@@ -122,7 +122,6 @@
 		#include "ui/safearea.menu"
 	}
 
-	// close all 2nd and 3rd layer popups on end action
 	#define PREPROC_ATTACH_CLOSEALL \
 	close "ocd_popup_cac_primary"; \
 	close "ocd_popup_cac_secondary"; \
@@ -135,7 +134,6 @@
 	close "ocd_attachment_popup_pistol"; \
 	close "ocd_popup_cac_camo"; \
 
-	// including weapon data
 	#include "ui_mp/weaponinfo.menu"
 
 #include "ui_mp/popupstyle.inc"
@@ -150,17 +148,12 @@
 #undef NEW_Y_OFFSET
 #define NEW_Y_OFFSET	(0-2)
 
-	// primary weapon selection
 	#define LOCAL_WEAPON_INFO_WINDOW( highlight_dvar ) \
-		/* weapon information side frame*/ \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH-6) -4 280 CHOICE_POPUP_HEIGHT( 7 ) CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "white", CHOICE_POPUP_BORDER_COLOR, 1, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" && dvarString(ui_inside_popup) != "camo" ); ) \
 		LOADOUT_PLATING_RAW( CHOICE_POPUP_WIDTH 8, -2, 0, 280, (CHOICE_POPUP_HEIGHT( 7 )-4), CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN visible when( dvarString(ui_inside_popup) != "attachment" && dvarString(ui_inside_popup) != "camo" );, 0, 0 )\
-		/* weapon image*/ \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+6) 30 256 48 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "gradient_bottom", 1 1 1 0.3, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" && dvarString(ui_inside_popup) != "camo" ); ) \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+72) -6 180 90 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, tablelookup("mp/statsTable.csv",4,dvarString(highlight_dvar),6), 1 1 1 1, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" && dvarString(ui_inside_popup) != "camo" ); ) \
-		/* weapon title*/ \
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 58 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/statstable.csv",4,dvarString(highlight_dvar),3), TEXTSIZE_DEFAULT, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarString(ui_inside_popup) != "attachment" && dvarString(ui_inside_popup) != "camo" ); ) \
-		/* weapon desc unlocked*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 80 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/statstable.csv",4,dvarString(highlight_dvar),7), TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, CHOICE_TEXTCOLOR ) \
 
 	#define LOCAL_PRIMARY_WEAPON_ACTION( suffix, weapClass, weapRef ) \
@@ -180,11 +173,10 @@
 		WI_FOCUS_ACTION( weaponRef ), ;, when( dvarBool( "weap_allow_"weaponRef ) );, \
 		dvarBool( "weap_allow_"weaponRef ) ) \
 
-	// primary weapon class dropdown
 	menuDef
 	{
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_popup_cac_primary", 5, (CHOICE_X( 1 )-2), (CHOICE_Y( 1 )-4), ;, execnow "set ui_inside_popup weapon_class; set ui_show_preview 1";, 1 )
-		onClose{	execnow "set ui_show_preview 0; set ui_primary_highlighted 0; set ui_attachment_highlighted 0";	}
+		onClose{ execnow "set ui_show_preview 0; set ui_primary_highlighted 0; set ui_attachment_highlighted 0"; }
 
 		#define LOCAL_WEAPON_CLASS( itemNum, ptext, plabel ) \
 			CHOICE_BUTTON_EX( itemNum, plabel, play "mouse_click"; execnow "set selected_weapon_class "ptext"; set ui_weapon_class_selected "plabel; open "ocd_popup_cac_"ptext;, name ptext )
@@ -195,11 +187,9 @@
 		LOCAL_WEAPON_CLASS( 5, "sniper", "@MPUI_SNIPER_RIFLES" )
 	}
 
-	// hackaround to work for PC's floating mouse unfocusing
 	#undef  UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_primary_highlighted"
 
-	// primary weapon items
 	#define LOCAL_MASTER_WEAPON_GROUP( suffix, pos, y_offset )\
 	menuDef	{\
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_popup_cac_assault"suffix, 7, (CHOICE_X( pos )-2), (CHOICE_Y( pos )-28+y_offset), ;, execnow "set "UI_FOCUSFIRST" "REF_AK47"; set ui_inside_popup assault";, 0 )\
@@ -246,20 +236,15 @@
 		execKey "2" { LOCAL_PRIMARY_WEAPON_ACTION( suffix, "sniper", REF_REMINGTON700 ); }\
 	}
 
-	// primary and second primary weapon selection popup menus
 	LOCAL_MASTER_WEAPON_GROUP( "", 1, 0 )
 
-	// primary and second primary attachment selection
 	#define LOCAL_ATTACHMENT_INFO_WINDOW( parentDvar ) \
-		/* attachment information side frame*/ \
+		\
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH-6) -4 280 CHOICE_POPUP_HEIGHT( 6 ) CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "white", CHOICE_POPUP_BORDER_COLOR, 1, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "camo" ); ) \
 		LOADOUT_PLATING_RAW( CHOICE_POPUP_WIDTH 8, -2, 0, 280, (CHOICE_POPUP_HEIGHT( 6 )-4), CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN visible when( dvarString(ui_inside_popup) != "camo" );, 0, 0 ) \
-		/* attachment image*/ \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+6) 30 256 48 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "gradient_bottom", 1 1 1 0.3, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "camo" ); ) \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+182) 6 64 64 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, tablelookup("mp/attachmentTable.csv",4,dvarString(ui_attachment_highlighted),6), 1 1 1 1, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "camo" ); ) \
-		/* attachment title*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 58 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/attachmentTable.csv",4,dvarString(ui_attachment_highlighted),3), TEXTSIZE_DEFAULT, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarString(ui_inside_popup) != "camo" ); ) \
-		/* attachment desc unlocked*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 80 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/attachmentTable.csv",4,dvarString(ui_attachment_highlighted),7), TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, CHOICE_TEXTCOLOR )\
 
 	#define LOCAL_ATTACHMENT_ACTION( attachmentDvar, attachmentName, paction, groupArg ) \
@@ -281,13 +266,11 @@
 		CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, AI_FOCUS_ACTION(groupArg,pname), ;, when( !dvarBool( "attach_allow_"groupArg"_"pname ) ); ) \
 		CHOICE_DBUTTON_VIS( itemNum, "@"+tablelookup("mp/attachmentTable.csv",4,pname,3), when( !dvarBool( "attach_allow_"groupArg"_"pname ) ); )
 
-	// hackaround to work for PC's floating mouse unfocusing
 	#undef  UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_attachment_highlighted"
 
-	// primary and second primary attachment items
 	#define LOCAL_MASTER_ATTACHMENT_GROUP( stat_slot, suffix, pos, ptype, y_offset, statDvar )\
-	menuDef { /* assault attachments*/ \
+	menuDef { \
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_attachment_popup_assault"suffix, 6, (CHOICE_X( pos )-2), (CHOICE_Y( pos )+26+y_offset), ;, execnow "set "UI_FOCUSFIRST" "REF_ATTACHMENT_NONE"; set ui_inside_popup attachment";, 0 )\
 		onClose{execnow "set ui_inside_popup 0";} \
 		LOCAL_ATTACHMENT_INFO_WINDOW( "loadout_"ptype )\
@@ -296,7 +279,7 @@
 		execKey "1" { LOCAL_ATTACHMENT_ACTION( 1, "none", 1, "assault" ); }\
 		execKey "2" { LOCAL_ATTACHMENT_ACTION( 2, "silencer", 1, "assault" ); }\
 	}\
-	menuDef	{ /* SMG attachments*/\
+	menuDef	{ \
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_attachment_popup_SMG"suffix, 6, (CHOICE_X( pos )-2), (CHOICE_Y( pos )+26+y_offset), ;, execnow "set "UI_FOCUSFIRST" "REF_ATTACHMENT_NONE"; set ui_inside_popup attachment";, 0 )\
 		onClose{execnow "set ui_inside_popup 0";} \
 		LOCAL_ATTACHMENT_INFO_WINDOW( "loadout_"ptype )\
@@ -305,7 +288,7 @@
 		execKey "1" { LOCAL_ATTACHMENT_ACTION( 1, "none", 1, "smg" ); }\
 		execKey "2" { LOCAL_ATTACHMENT_ACTION( 2, "silencer", 1, "smg" ); }\
 	}
-	menuDef	{ /* pistol attachments*/
+	menuDef	{
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_attachment_popup_pistol", 6, (CHOICE_X( 2 )-2), (CHOICE_Y( 2 )), ;, execnow "set "UI_FOCUSFIRST" "REF_ATTACHMENT_NONE"; set ui_inside_popup attachment";, 0 )
 		onClose{execnow "set ui_inside_popup 0";}
 		LOCAL_ATTACHMENT_INFO_WINDOW( "loadout_secondary" )
@@ -315,19 +298,15 @@
 		execKey "2" { LOCAL_ATTACHMENT_ACTION2( 2, "silencer", 1, "pistol" ); }
 	}
 
-	// primary and second primary attachment popup menus
 	LOCAL_MASTER_ATTACHMENT_GROUP( CAC_PRIMARY_ATTACHMENT, "", 1, "primary", -30, "loadout_primary_attachment" )
 
 	#define LOCAL_SIDEARM_INFO_WINDOW( highlight_dvar ) \
-		/* sidearm information side frame*/ \
+		\
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH-6) -4 280 CHOICE_POPUP_HEIGHT( 6 ) CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "white", CHOICE_POPUP_BORDER_COLOR, 1, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" ); ) \
 		LOADOUT_PLATING_RAW( CHOICE_POPUP_WIDTH 8, -2, 0, 280, (CHOICE_POPUP_HEIGHT( 6 )-4), CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN visible when( dvarString(ui_inside_popup) != "attachment" );, 0, 0 )\
-		/* sidearm image*/ \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+6) 30 256 48 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "gradient_bottom", 1 1 1 0.3, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" ); ) \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+138) -12 90 90 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, tablelookup("mp/statsTable.csv",4,dvarString(highlight_dvar),6), 1 1 1 1, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" ); ) \
-		/* sidearm title*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 58 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/statstable.csv",4,dvarString(highlight_dvar),3), TEXTSIZE_DEFAULT, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarString(ui_inside_popup) != "attachment" ); ) \
-		/* sidearm desc unlocked*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 80 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/statstable.csv",4,dvarString(highlight_dvar),7), TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, CHOICE_TEXTCOLOR )\
 
 	#define LOCAL_SIDEARM_ACTION( pstat, weaponRef ) \
@@ -357,7 +336,6 @@
 		CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, SI_FOCUS_ACTION( weaponRef ), ;, when( !dvarBool( "weap_allow_"weaponRef ) ); ) \
 		CHOICE_DBUTTON_VIS( itemNum, weaponName, when( !dvarBool( "weap_allow_"weaponRef ) ); )
 
-	// hackaround to work for PC's floating mouse unfocusing
 	#undef  UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_sidearm_highlighted"
 
@@ -380,15 +358,12 @@
 	}
 
 	#define LOCAL_SGRENADE_INFO_WINDOW( highlight_dvar ) \
-		/* special grenade information side frame*/ \
+		\
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH-6) -4 280 CHOICE_POPUP_HEIGHT(5) CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "white", CHOICE_POPUP_BORDER_COLOR, 1, 2, CHOICE_POPUP_BORDER_COLOR ) \
 		LOADOUT_PLATING_RAW( CHOICE_POPUP_WIDTH 8, -2, 0, 280, (CHOICE_POPUP_HEIGHT( 5 )-4), CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN visible when( dvarString(ui_inside_popup) != "attachment" );, 0, 0 )\
-		/* special grenade image*/ \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+6) 6 256 48 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "gradient_bottom", 1 1 1 0.3, 0, 2, CHOICE_POPUP_BORDER_COLOR visible when( dvarString(ui_inside_popup) != "attachment" ); ) \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+178) -6 64 64 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, tablelookup("mp/statsTable.csv",4,dvarString(highlight_dvar),6), 1 1 1 1, 0, 2, CHOICE_POPUP_BORDER_COLOR ) \
-		/* special grenade title*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 34 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/statstable.csv",4,dvarString(highlight_dvar),3), TEXTSIZE_DEFAULT, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE ) \
-		/* special grenade desc unlocked*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 56 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/statstable.csv",4,dvarString(highlight_dvar),7), TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, CHOICE_TEXTCOLOR )
 
 	#define LOCAL_SGRENADE_ACTION( weaponRef ) \
@@ -401,11 +376,9 @@
 		CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SGRENADE_ACTION( weaponRef ), execnow "set "highlight_dvar" "weaponRef, ;, when( dvarBool("weap_allow_"weaponRef) );, dvarBool("weap_allow_"weaponRef) ) \
 		CHOICE_DBUTTON_VIS( itemNum, weaponName, when( !dvarBool("weap_allow_"weaponRef) ); )
 
-	// hackaround to work for PC's floating mouse unfocusing
 	#undef  UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_sgrenade_highlighted"
 
-	// special grenade selection popup menus
 	menuDef
 	{
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_popup_cac_extra", 5, (CHOICE_X( 3 )-2), (CHOICE_Y( 3 )+4), ;, execnow "set "UI_FOCUSFIRST" "REF_FLASH_X1"; set ui_inside_popup sgrenade";, 0 )
@@ -418,15 +391,12 @@
 	}
 
 		#define LOCAL_CAMO_INFO_WINDOW( highlight_dvar ) \
-		/* camo information side frame*/ \
+		\
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH-6) -4 280 CHOICE_POPUP_HEIGHT( 7 ) CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "white", CHOICE_POPUP_BORDER_COLOR, 1, 2, CHOICE_POPUP_BORDER_COLOR ) \
 		LOADOUT_PLATING_RAW( CHOICE_POPUP_WIDTH 8, -2, 0, 280, (CHOICE_POPUP_HEIGHT( 7 )-4), CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0, 0 )\
-		/* camo image*/ \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+6) 30 256 48 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "gradient_bottom", 1 1 1 0.3, 0, 2, CHOICE_POPUP_BORDER_COLOR ) \
 		PREPROC_SHADER_DRAW_ALIGNED( (CHOICE_POPUP_WIDTH+184) 0 64 64 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, tablelookup("mp/attachmentTable.csv",4,dvarString(highlight_dvar),6), 1 1 1 0.75, 1, 7, 0.2 0.2 0.225 1 ) \
-		/* camo title*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 58 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/attachmenttable.csv",4,dvarString(highlight_dvar),3), TEXTSIZE_DEFAULT, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE ) \
-		/* camo desc unlocked*/\
 		PREPROC_TEXT_DRAW_ALIGNED_EXP( (CHOICE_POPUP_WIDTH+10) 80 256 20 CHOICE_HORIZONTAL_ALIGN CHOICE_VERTICAL_ALIGN, 0 0, "@"+tablelookup("mp/attachmenttable.csv",4,dvarString(highlight_dvar),7), TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, CHOICE_TEXTCOLOR )\
 
 	#define LOCAL_CAMO_ACTION( camoRef ) \
@@ -442,11 +412,9 @@
 		CHOICE_BUTTON_FOCUS_VIS( itemNum, camoName, LOCAL_CAMO_ACTION( camoRef );, execnow "set "highlight_dvar" "camoRef;, ;, when( dvarString( loadout_primary ) == "ak47" || dvarString( loadout_primary ) == "uzi" || dvarString( loadout_primary ) == "m1014" ) ) \
 		CHOICE_DBUTTON_VIS( itemNum, camoName, when( dvarString( loadout_primary ) != "ak47" && dvarString( loadout_primary ) != "uzi" && dvarString( loadout_primary ) != "m1014" ) )
 
-	// hackaround to work for PC's floating mouse unfocusing
 	#undef  UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_camo_highlighted"
 
-	// camo skin selection for primary weapon popup menu
 	#define LOCAL_CAMO_GROUP( prefix, onLeave )\
 	menuDef	\
 	{\
@@ -469,5 +437,4 @@
 		execKey "7" { LOCAL_CAMO_ACTION(REF_GOLDEN); }\
 	}
 
-	// camo skin selection for primary weapon popup menu
 	LOCAL_CAMO_GROUP( "", execnow "set ui_inside_popup attachment" )

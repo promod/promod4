@@ -93,7 +93,9 @@ Timeout_Call()
 
 	game["promod_timeout_called_by"] = self.name;
 	iprintln("^3Timeout called by " + game["promod_timeout_called_by"]);
-	if( isDefined( level.scorebot ) && level.scorebot ) {
+
+	if ( isDefined( level.scorebot ) && level.scorebot )
+	{
 		timeout_team = "";
 		if ( self.pers["team"] == game["attackers"] )
 			timeout_team = "attack";
@@ -102,7 +104,6 @@ Timeout_Call()
 
 		game["promod_scorebot_ticker_buffer"] += "timeout_called" + timeout_team + "" + self.name;
 	}
-
 
 	if ( level.gametype == "sd" )
 		game[self.pers["team"] + "_timeout_called"] = 1;

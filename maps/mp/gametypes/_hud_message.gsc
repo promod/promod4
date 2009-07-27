@@ -33,7 +33,6 @@ init()
 	level thread onPlayerConnect();
 }
 
-
 onPlayerConnect()
 {
 	for(;;)
@@ -47,7 +46,6 @@ onPlayerConnect()
 	}
 }
 
-
 hintMessage( hintText )
 {
 	notifyData = spawnstruct();
@@ -57,7 +55,6 @@ hintMessage( hintText )
 
 	notifyMessage( notifyData );
 }
-
 
 initNotifyMessage()
 {
@@ -134,7 +131,6 @@ notifyMessage( notifyData )
 
 	self.notifyQueue[ self.notifyQueue.size ] = notifyData;
 }
-
 
 showNotifyMessage( notifyData )
 {
@@ -246,7 +242,6 @@ showNotifyMessage( notifyData )
 	}
 }
 
-// waits for waitTime, plus any time required to let flashbangs go away.
 waitRequireVisibility( waitTime )
 {
 	interval = .05;
@@ -262,7 +257,6 @@ waitRequireVisibility( waitTime )
 	}
 }
 
-
 canReadText()
 {
 	if ( self maps\mp\_flashgrenades::isFlashbanged() )
@@ -270,7 +264,6 @@ canReadText()
 
 	return true;
 }
-
 
 resetOnDeath()
 {
@@ -281,7 +274,6 @@ resetOnDeath()
 
 	resetNotify();
 }
-
 
 resetOnCancel()
 {
@@ -295,7 +287,6 @@ resetOnCancel()
 	resetNotify();
 }
 
-
 resetNotify()
 {
 	self.notifyTitle.alpha = 0;
@@ -303,7 +294,6 @@ resetNotify()
 	self.notifyIcon.alpha = 0;
 	self.doingNotify = false;
 }
-
 
 hintMessageDeathThink()
 {
@@ -336,7 +326,7 @@ lowerMessageThink()
 	self.lowerTimer.archived = false;
 }
 
-teamOutcomeNotify( winner, isRound, endReasonText )
+teamOutcomeNotify( winner, isRound, endReasonText, delay )
 {
 	self endon ( "disconnect" );
 	self notify ( "reset_outcome" );
@@ -345,9 +335,11 @@ teamOutcomeNotify( winner, isRound, endReasonText )
 	if ( !isDefined( team ) || (team != "allies" && team != "axis") )
 		team = "allies";
 
-	// wait for notifies to finish
 	while ( self.doingNotify )
 		wait 0.05;
+
+	if ( isDefined ( delay ) )
+		wait delay;
 
 	self endon ( "reset_outcome" );
 
@@ -506,15 +498,16 @@ teamOutcomeNotify( winner, isRound, endReasonText )
 	self thread resetTeamOutcomeNotify( outcomeTitle, outcomeText, leftIcon, rightIcon, leftScore, rightScore, matchBonus );
 }
 
-
-outcomeNotify( winner, endReasonText )
+outcomeNotify( winner, endReasonText, delay )
 {
 	self endon ( "disconnect" );
 	self notify ( "reset_outcome" );
 
-	// wait for notifies to finish
 	while ( self.doingNotify )
 		wait 0.05;
+
+	if ( isDefined ( delay ) )
+		wait delay;
 
 	self endon ( "reset_outcome" );
 
@@ -624,7 +617,6 @@ outcomeNotify( winner, endReasonText )
 	self thread resetOutcomeNotify( outcomeTitle, outcomeText, firstTitle, secondTitle, thirdTitle, matchBonus );
 }
 
-
 resetOutcomeNotify( outcomeTitle, outcomeText, firstTitle, secondTitle, thirdTitle, matchBonus )
 {
 	self endon ( "disconnect" );
@@ -664,7 +656,6 @@ resetTeamOutcomeNotify( outcomeTitle, outcomeText, leftIcon, rightIcon, LeftScor
 	if ( isDefined( matchBonus ) )
 		matchBonus destroyElem();
 }
-
 
 updateOutcome( firstTitle, secondTitle, thirdTitle )
 {

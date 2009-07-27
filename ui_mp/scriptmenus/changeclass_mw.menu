@@ -11,7 +11,6 @@
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
 
-// custom class stats allocation numbers
 #define CAC_CLASS					200
 #define CAC_PRIMARY					201
 #define CAC_PRIMARY_ATTACHMENT		202
@@ -23,7 +22,6 @@
 #define CAC_SPECIAL_GRENADE			208
 #define CAC_CAMO					209
 
-// custom class stats allocation numbers in string
 #define CAC_S_CLASS					"200"
 #define CAC_S_PRIMARY				"201"
 #define CAC_S_PRIMARY_ATTACHMENT	"202"
@@ -35,7 +33,6 @@
 #define CAC_S_SPECIAL_GRENADE		"208"
 #define CAC_S_CAMO					"209"
 
-// custom class name, this will change according which class is being edited
 #define CAC_MENU_NAME				"changeclass_mw"
 #define CAC_PREFIX					"mw_"
 #define CAC_CUSTOM_NAME				"customclass1"

@@ -13,10 +13,16 @@ main()
 	if ( getdvar( "promod_enable_scorebot" ) == "" )
 		setDvar( "promod_enable_scorebot", "0" );
 
-	if ( !getDvarInt( "promod_enable_scorebot" ) )
+	if ( !getDvarInt( "promod_enable_scorebot" ) || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" || !level.teambased )
 	{
 		level.scorebot = false;
-		game["promod_scorebot_ticker_buffer"] = "";
+		game["promod_scorebot_ticker_buffer"] = -1;
+		game["promod_scorebot_attack_ticker_buffer"] = -1;
+		game["promod_scorebot_defence_ticker_buffer"] = -1;
+
+		setDvar( "__promod_ticker", game["promod_scorebot_ticker_buffer"] );
+		setDvar( "__promod_attack_score", game["promod_scorebot_attack_ticker_buffer"] );
+		setDvar( "__promod_defence_score", game["promod_scorebot_defence_ticker_buffer"] );
 		return;
 	}
 
@@ -58,6 +64,8 @@ Action_Ticker()
 	wait .5;
 
 	setDvar( "__promod_ticker", game["promod_scorebot_ticker_buffer"] );
+	setDvar( "__promod_attack_score", game["promod_scorebot_attack_ticker_buffer"] );
+	setDvar( "__promod_defence_score", game["promod_scorebot_defence_ticker_buffer"] );
 
 	while ( 1 )
 	{
@@ -73,8 +81,11 @@ Action_Ticker()
 
 		waittillframeend;
 
-		if (isDefined(game["promod_scorebot_ticker_buffer"])) {
+		if ( isDefined( game["promod_scorebot_ticker_buffer"] ) )
+		{
 			setDvar( "__promod_ticker", game["promod_scorebot_ticker_buffer"] );
+			setDvar( "__promod_attack_score", game["promod_scorebot_attack_ticker_buffer"] );
+			setDvar( "__promod_defence_score", game["promod_scorebot_defence_ticker_buffer"] );
 			game["promod_scorebot_ticker_buffer"] = getDvar( "promod_scorebot_ticker_num" );
 		}
 	}

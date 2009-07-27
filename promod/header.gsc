@@ -10,6 +10,9 @@
 
 create()
 {
+	if ( isDefined( game["state"] ) && game["state"] == "postgame" )
+		wait 0.75;
+
 	level.prover_hud = newHudElem();
 	level.prover_hud.x = -7;
 	level.prover_hud.y = 35;

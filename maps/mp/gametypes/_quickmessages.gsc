@@ -230,16 +230,11 @@ quickpromod(response)
 			self suicide();
 			break;
 
-		case "4":
-			if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
-				self thread promod\statlog::selfsenddata();
-			break;
-
 		case "silencer":
 			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
 				return;
 
-			if ( !self.hasSpawned )
+			if ( !isDefined( self.pers["class"] ) )
 				return;
 
 			classType = self.pers["class"];
@@ -248,46 +243,18 @@ quickpromod(response)
 			if ( getDvar( "attach_allow_" + classType + "_silencer" ) == "0" )
 				return;
 
-			if ( primaryWeap == "mp44" || classType == "sniper" || classType == "demolitions")
+			if ( primaryWeap == "mp44" || classType == "sniper" || classType == "demolitions" )
 				return;
 
 			if ( self.pers[classType]["loadout_primary_attachment"] != "silencer" )
 			{
 				self.pers[classType]["loadout_primary_attachment"] = "silencer";
-
-				if ( self.sessionstate == "playing" )
-				{
-					if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
-					{
-						self iprintln("Silencer attached");
-					}
-					else
-					{
-						self iprintln("Silencer attached");
-						self iPrintLnBold( game["strings"]["change_class"] );
-					}
-				}
-				else
-					self iprintln("Silencer attached");
+				self iprintln("Silencer attached");
 			}
 			else
 			{
 				self.pers[classType]["loadout_primary_attachment"] = "none";
-
-				if ( self.sessionstate == "playing" )
-				{
-					if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
-					{
-						self iprintln("Silencer detached");
-					}
-					else
-					{
-						self iprintln("Silencer detached");
-						self iPrintLnBold( game["strings"]["change_class"] );
-					}
-				}
-				else
-					self iprintln("Silencer detached");
+				self iprintln("Silencer detached");
 			}
 
 			self classBind( classType );
@@ -297,7 +264,7 @@ quickpromod(response)
 			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
 				return;
 
-			if ( !self.hasSpawned )
+			if ( !isDefined( self.pers["class"] ) )
 				return;
 
 			classType = self.pers["class"];
@@ -308,21 +275,7 @@ quickpromod(response)
 					return;
 
 				self.pers[classType]["loadout_grenade"] = "flash_grenade";
-
-				if ( self.sessionstate == "playing" )
-				{
-					if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
-					{
-						self iprintln("Flash selected");
-					}
-					else
-					{
-						self iprintln("Flash selected");
-						self iPrintLnBold( game["strings"]["change_class"] );
-					}
-				}
-				else
-					self iprintln("Flash selected");
+				self iprintln("Flash selected");
 			}
 			else if ( self.pers[classType]["loadout_grenade"] == "flash_grenade" )
 			{
@@ -330,21 +283,7 @@ quickpromod(response)
 					return;
 
 				self.pers[classType]["loadout_grenade"] = "smoke_grenade";
-
-				if ( self.sessionstate == "playing" )
-				{
-					if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
-					{
-						self iprintln("Smoke selected");
-					}
-					else
-					{
-						self iprintln("Smoke selected");
-						self iPrintLnBold( game["strings"]["change_class"] );
-					}
-				}
-				else
-					self iprintln("Smoke selected");
+				self iprintln("Smoke selected");
 			}
 			else
 				return;
@@ -353,30 +292,18 @@ quickpromod(response)
 			break;
 
 		case "assault":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-				return;
-
 			self classBind( "assault" );
 			break;
 
 		case "specops":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-				return;
-
 			self classBind( "specops" );
 			break;
 
 		case "demolitions":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-				return;
-
 			self classBind( "demolitions" );
 			break;
 
 		case "sniper":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-				return;
-
 			self classBind( "sniper" );
 			break;
 
@@ -422,11 +349,17 @@ quickpromodgfx(response)
 
 classBind( response )
 {
-	if ( !self.hasSpawned )
+	if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
+		return;
+
+	if ( !isDefined( self.pers["class"] ) )
 		return;
 
 	if ( !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
+	{
+		self iprintln("Class is unavailable");
 		return;
+	}
 
 	self.oldClass = self.pers["class"];
 

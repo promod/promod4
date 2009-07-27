@@ -17,11 +17,9 @@ main()
 Server_DVAR_Monitor()
 {
 	o_fftype = getDvarInt("scr_team_fftype");
-	o_player_numlives = getDvarInt("scr_player_numlives");
-	o_bg_fallDamageMinHeight = getDvarInt("bg_fallDamageMinHeight");
-	o_bg_fallDamageMaxHeight = getDvarInt("bg_fallDamageMaxHeight");
+	o_falldamageminheight = getDvarInt("bg_falldamageminheight");
+	o_falldamagemaxheight = getDvarInt("bg_falldamagemaxheight");
 	o_hiticon = getDvarInt("scr_enable_hiticon");
-	o_forceuav = getDvarInt("scr_game_forceuav");
 	o_assault_allowdrop = getDvarInt("class_assault_allowdrop");
 	o_assault_limit = getDvarInt("class_assault_limit");
 	o_demolitions_allowdrop = getDvarInt("class_demolitions_allowdrop");
@@ -35,7 +33,6 @@ Server_DVAR_Monitor()
 	o_spectatetype = getDvarInt("scr_game_spectatetype");
 	o_timelimit = getDvarFloat("scr_" + level.gametype + "_timelimit");
 	o_numlives = getDvarFloat("scr_" + level.gametype + "_numlives");
-	o_playernumlives = getDvarInt("scr_player_numlives");
 	o_playerrespawndelay = getDvarFloat("scr_" + level.gametype + "_playerrespawndelay");
 	o_roundlimit = getDvarFloat("scr_" + level.gametype + "_roundlimit");
 	o_scorelimit = getDvarFloat("scr_" + level.gametype + "_scorelimit");
@@ -50,25 +47,17 @@ Server_DVAR_Monitor()
 		if (o_fftype != fftype)
 			o_fftype = dVar_Changed("scr_team_fftype", fftype);
 
-		player_numlives = getDvarInt("scr_player_numlives");
-		if (o_player_numlives != player_numlives)
-			o_player_numlives = dVar_Changed("scr_player_numlives", player_numlives);
+		falldamageminheight = getDvarInt("bg_falldamageminheight");
+		if (o_falldamageminheight != falldamageminheight)
+			o_falldamageminheight = dVar_Changed("bg_falldamageminheight", falldamageminheight);
 
-		bg_fallDamageMinHeight = getDvarInt("bg_fallDamageMinHeight");
-		if (o_bg_fallDamageMinHeight != bg_fallDamageMinHeight)
-			o_bg_fallDamageMinHeight = dVar_Changed("bg_fallDamageMinHeight", bg_fallDamageMinHeight);
-
-		bg_fallDamageMaxHeight = getDvarInt("bg_fallDamageMaxHeight");
-		if (o_bg_fallDamageMaxHeight != bg_fallDamageMaxHeight)
-			o_bg_fallDamageMaxHeight = dVar_Changed("bg_fallDamageMaxHeight", bg_fallDamageMaxHeight);
+		fallDamagemaxheight = getDvarInt("bg_falldamagemaxheight");
+		if (o_fallDamagemaxheight != falldamagemaxheight)
+			o_falldamagemaxheight = dVar_Changed("bg_falldamagemaxheight", falldamagemaxheight);
 
 		hiticon = getDvarInt("scr_enable_hiticon");
 		if (o_hiticon != hiticon)
 			o_hiticon = dVar_Changed("scr_enable_hiticon", hiticon);
-
-		forceuav = getDvarInt("scr_game_forceuav");
-		if (o_forceuav != forceuav)
-			o_forceuav = dVar_Changed("scr_game_forceuav", forceuav);
 
 		assault_allowdrop = getDvarInt("class_assault_allowdrop");
 		if (o_assault_allowdrop != assault_allowdrop)
@@ -122,10 +111,6 @@ Server_DVAR_Monitor()
 		if (o_numlives != numlives)
 			o_numlives = dVar_Changed("scr_" + level.gametype + "_numlives", numlives);
 
-		playernumlives = getDvarInt("scr_player_numlives");
-		if (o_playernumlives != playernumlives)
-			o_playernumlives = dVar_Changed("scr_player_numlives", playernumlives);
-
 		playerrespawndelay = getDvarFloat("scr_" + level.gametype + "_playerrespawndelay");
 		if (o_playerrespawndelay != playerrespawndelay)
 			o_playerrespawndelay = dVar_Changed("scr_" + level.gametype + "_playerrespawndelay", playerrespawndelay);
@@ -153,11 +138,11 @@ Gametype_DVAR_Monitors()
 	switch (level.gametype)
 	{
 		case "sd":
-			thread SD_DVAR_Monitor(); thread BOMB_DVAR_MONITOR(); thread RoundSwitch_DVAR_Monitor(); break;
+			thread SD_DVAR_Monitor(); thread BOMB_DVAR_Monitor(); thread RoundSwitch_DVAR_Monitor(); break;
 		case "war":
 			thread RoundSwitch_DVAR_Monitor(); break;
 		case "sab":
-			thread SAB_DVAR_Monitor(); thread BOMB_DVAR_MONITOR(); thread RoundSwitch_DVAR_Monitor(); break;
+			thread SAB_DVAR_Monitor(); thread BOMB_DVAR_Monitor(); thread RoundSwitch_DVAR_Monitor(); break;
 		case "koth":
 			thread KOTH_DVAR_Monitor(); thread RoundSwitch_DVAR_Monitor(); break;
 	}
@@ -191,7 +176,7 @@ SAB_DVAR_Monitor()
 	}
 }
 
-BOMB_DVAR_MONITOR()
+BOMB_DVAR_Monitor()
 {
 	o_bombtimer = getDvarFloat("scr_" + level.gametype + "_bombtimer");
 	o_defusetime = getDvarFloat("scr_" + level.gametype + "_defusetime");
@@ -221,7 +206,6 @@ KOTH_DVAR_Monitor()
 	o_capturetime = getDvarFloat("koth_capturetime");
 	o_delayplayer = getDvarFloat("koth_delayplayer");
 	o_destroytime = getDvarFloat("koth_destroytime");
-	o_kothmode = getDvarFloat("koth_kothmode");
 	o_spawndelay = getDvarFloat("koth_spawnDelay");
 	o_spawntime = getDvarFloat("koth_spawntime");
 
@@ -244,10 +228,6 @@ KOTH_DVAR_Monitor()
 		destroytime = getDvarFloat("koth_destroytime");
 		if (o_destroytime != destroytime)
 			o_destroytime = dVar_Changed("koth_destroytime", destroytime);
-
-		kothmode = getDvarFloat("koth_kothmode");
-		if (o_kothmode != kothmode)
-			o_kothmode = dVar_Changed("koth_kothmode", kothmode);
 
 		spawndelay = getDvarFloat("koth_spawnDelay");
 		if (o_spawndelay != spawndelay)

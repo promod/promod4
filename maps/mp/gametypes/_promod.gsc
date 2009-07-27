@@ -16,7 +16,6 @@ init()
 {
 	level.serverDvars = [];
 
-	// classes
 	setServerDvarDefault( "class_assault_limit", 64, 0, 64 );
 	setServerDvarDefault( "class_specops_limit", 2, 0, 64 );
 	setServerDvarDefault( "class_demolitions_limit", 1, 0, 64 );
@@ -27,7 +26,6 @@ init()
 	setDvarDefault( "class_demolitions_allowdrop", 0, 0, 1 );
 	setDvarDefault( "class_sniper_allowdrop", 0, 0, 1 );
 
-	// assault rifles
 	setDvarDefault( "weap_allow_m16", 1, 0, 1 );
 	setDvarDefault( "weap_allow_ak47", 1, 0, 1 );
 	setDvarDefault( "weap_allow_m4", 1, 0, 1 );
@@ -36,44 +34,35 @@ init()
 	setDvarDefault( "weap_allow_m14", 1, 0, 1 );
 	setDvarDefault( "weap_allow_mp44", 1, 0, 1 );
 
-	// assault attachments
 	setDvarDefault( "attach_allow_assault_none", 1, 0, 1 );
 	setDvarDefault( "attach_allow_assault_silencer", 1, 0, 1 );
 
-	// smgs
 	setDvarDefault( "weap_allow_mp5", 1, 0, 1 );
 	setDvarDefault( "weap_allow_uzi", 1, 0, 1 );
 	setDvarDefault( "weap_allow_ak74u", 1, 0, 1 );
 
-	// smg attachments
 	setDvarDefault( "attach_allow_smg_none", 1, 0, 1 );
 	setDvarDefault( "attach_allow_smg_silencer", 1, 0, 1 );
 
-	// shotguns
 	setDvarDefault( "weap_allow_m1014", 1, 0, 1 );
 	setDvarDefault( "weap_allow_winchester1200", 1, 0, 1 );
 
-	// sniper rifles
 	setDvarDefault( "weap_allow_m40a3", 1, 0, 1 );
 	setDvarDefault( "weap_allow_remington700", 1, 0, 1 );
 
-	// pistols
 	setServerDvarDefault( "weap_allow_beretta", 1, 0, 1 );
 	setServerDvarDefault( "weap_allow_colt45", 1, 0, 1 );
 	setServerDvarDefault( "weap_allow_usp", 1, 0, 1 );
 	setServerDvarDefault( "weap_allow_deserteagle", 1, 0, 1 );
 	setServerDvarDefault( "weap_allow_deserteaglegold", 1, 0, 1 );
 
-	// pistol attachments
 	setServerDvarDefault( "attach_allow_pistol_none", 1, 0, 1 );
 	setServerDvarDefault( "attach_allow_pistol_silencer", 1, 0, 1 );
 
-	// grenades
 	setServerDvarDefault( "weap_allow_frag_grenade", 1, 0, 1 );
 	setServerDvarDefault( "weap_allow_flash_grenade", 1, 0, 1 );
 	setServerDvarDefault( "weap_allow_smoke_grenade", 1, 0, 1 );
 
-	// client menu only
 	setServerDvarDefault( "allies_allow_assault", 1, 0, 1 );
 	setServerDvarDefault( "allies_allow_specops", 1, 0, 1 );
 	setServerDvarDefault( "allies_allow_demolitions", 1, 0, 1 );
@@ -83,7 +72,6 @@ init()
 	setServerDvarDefault( "axis_allow_demolitions", 1, 0, 1 );
 	setServerDvarDefault( "axis_allow_sniper", 1, 0, 1 );
 
-	// assault class default loadout
 	setDvarDefault( "class_assault_primary", "ak47" );
 	setDvarDefault( "class_assault_primary_attachment", "none" );
 	setDvarDefault( "class_assault_secondary", "deserteagle" );
@@ -91,7 +79,6 @@ init()
 	setDvarDefault( "class_assault_grenade", "smoke_grenade" );
 	setDvarDefault( "class_assault_camo", "camo_none" );
 
-	// specops class default loadout
 	setDvarDefault( "class_specops_primary", "ak74u" );
 	setDvarDefault( "class_specops_primary_attachment", "none" );
 	setDvarDefault( "class_specops_secondary", "deserteagle" );
@@ -99,7 +86,6 @@ init()
 	setDvarDefault( "class_specops_grenade", "smoke_grenade" );
 	setDvarDefault( "class_specops_camo", "camo_none" );
 
-	// demolitions class default loadout
 	setDvarDefault( "class_demolitions_primary", "winchester1200" );
 	setDvarDefault( "class_demolitions_primary_attachment", "none" );
 	setDvarDefault( "class_demolitions_secondary", "deserteagle" );
@@ -107,7 +93,6 @@ init()
 	setDvarDefault( "class_demolitions_grenade", "smoke_grenade" );
 	setDvarDefault( "class_demolitions_camo", "camo_none" );
 
-	// sniper class default loadout
 	setDvarDefault( "class_sniper_primary", "m40a3" );
 	setDvarDefault( "class_sniper_primary_attachment", "none" );
 	setDvarDefault( "class_sniper_secondary", "deserteagle" );
@@ -174,7 +159,6 @@ setClassChoice( classType )
 	}
 
 	thread updateClassAvailability( self.pers["team"] );
-	self thread maps\mp\gametypes\_class::preserveClass( classType );
 }
 
 setDvarWrapper( dvarName, setVal )
@@ -191,7 +175,6 @@ setDvarWrapper( dvarName, setVal )
 
 setDvarDefault( dvarName, setVal, minVal, maxVal )
 {
-	// no value set
 	if ( getDvar( dvarName ) != "" )
 	{
 		if ( isString( setVal ) )
@@ -371,7 +354,6 @@ processLoadoutResponse( respString )
 				}
 				else
 				{
-					// invalid selection, so reset them to their class default
 					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
 				}
 				break;
@@ -393,7 +375,6 @@ processLoadoutResponse( respString )
 				}
 				else
 				{
-					// invalid selection, so reset them to their class default
 					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
 				}
 				break;
@@ -409,7 +390,6 @@ processLoadoutResponse( respString )
 				}
 				else
 				{
-					// invalid selection, so reset them to their class default
 					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
 				}
 				break;
@@ -492,6 +472,9 @@ verifyClassChoice( teamName, classType )
 
 updateClassAvailability( teamName )
 {
+	if ( teamName != "allies" && teamName != "axis" )
+		return;
+
 	game[teamName + "_assault_count"] = 0;
 	game[teamName + "_specops_count"] = 0;
 	game[teamName + "_demolitions_count"] = 0;
@@ -525,11 +508,9 @@ menuAcceptClass()
 {
 	self maps\mp\gametypes\_globallogic::closeMenus();
 
-	// this should probably be an assert
 	if(!isDefined(self.pers["team"]) || (self.pers["team"] != "allies" && self.pers["team"] != "axis"))
 		return;
 
-	// already playing
 	if ( self.sessionstate == "playing" )
 	{
 		self.pers["primary"] = undefined;
@@ -541,13 +522,12 @@ menuAcceptClass()
 		}
 		else
 		{
-			if ( isDefined( self.oldClass ) && self.oldClass != self.pers["class"] )
-			{
-				self iPrintLnBold( game["strings"]["change_class"] );
-				self setClientDvar( "loadout_curclass", self.pers["class"] );
-				self.curClass = self.pers["class"];
-			}
+			self iPrintLnBold( game["strings"]["change_class"] );
+			self setClientDvar( "loadout_curclass", self.pers["class"] );
+			self.curClass = self.pers["class"];
 		}
+
+		self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
 	}
 	else
 	{
@@ -556,6 +536,7 @@ menuAcceptClass()
 
 		self setClientDvar( "loadout_curclass", self.pers["class"] );
 		self.curClass = self.pers["class"];
+		self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
 
 		if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 			return;
@@ -564,7 +545,6 @@ menuAcceptClass()
 			self thread [[level.spawnClient]]();
 	}
 
-	//level thread maps\mp\gametypes\_globallogic::updateTeamStatus();
 	self thread maps\mp\gametypes\_spectating::setSpectatePermissions();
 }
 

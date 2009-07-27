@@ -59,9 +59,8 @@ addSpawnPoints( team, spawnPointName )
 
 	if ( !level.teamSpawnPoints[team].size )
 	{
-		println( "^1No " + spawnPointName + " spawnpoints found in level!" );
 		maps\mp\gametypes\_callbacksetup::AbortLevel();
-		wait 1; // so we don't try to abort more than once before the frame ends
+		wait 1;
 		return;
 	}
 
@@ -83,7 +82,6 @@ addSpawnPoints( team, spawnPointName )
 	{
 		origin = oldSpawnPoints[index].origin;
 
-		// are these 2 lines necessary? we already did it in spawnPointInit
 		level.spawnMins = expandMins( level.spawnMins, origin );
 		level.spawnMaxs = expandMaxs( level.spawnMaxs, origin );
 
@@ -97,9 +95,8 @@ placeSpawnPoints( spawnPointName )
 
 	if ( !spawnPoints.size )
 	{
-		println( "^1No " + spawnPointName + " spawnpoints found in level!" );
 		maps\mp\gametypes\_callbacksetup::AbortLevel();
-		wait 1; // so we don't try to abort more than once before the frame ends
+		wait 1;
 		return;
 	}
 
@@ -131,7 +128,7 @@ getTeamSpawnPoints( team )
 
 getSpawnpoint_Final( spawnpoints, useweights )
 {
-	prof_begin( " spawn_final" );
+	prof_begin( "spawn_final" );
 
 	bestspawnpoint = undefined;
 
@@ -143,14 +140,10 @@ getSpawnpoint_Final( spawnpoints, useweights )
 
 	if ( useweights )
 	{
-		// choose spawnpoint with best weight
-		// (if a tie, choose randomly from the best)
 		bestspawnpoint = getBestWeightedSpawnpoint( spawnpoints );
 	}
 	else
 	{
-		// (only place we actually get here from is getSpawnpoint_Random() )
-		// no weights. prefer spawnpoints toward beginning of array
 		for ( i = 0; i < spawnpoints.size; i++ )
 		{
 			if( isdefined( self.lastspawnpoint ) && self.lastspawnpoint == spawnpoints[i] )
@@ -164,11 +157,8 @@ getSpawnpoint_Final( spawnpoints, useweights )
 		}
 		if ( !isdefined( bestspawnpoint ) )
 		{
-			// Couldn't find a useable spawnpoint. All spawnpoints either telefragged or were our last spawnpoint
-			// Our only hope is our last spawnpoint - unless it too will telefrag...
 			if ( isdefined( self.lastspawnpoint ) && !positionWouldTelefrag( self.lastspawnpoint.origin ) )
 			{
-				// (make sure our last spawnpoint is in the valid array of spawnpoints to use)
 				for ( i = 0; i < spawnpoints.size; i++ )
 				{
 					if ( spawnpoints[i] == self.lastspawnpoint )
@@ -183,10 +173,8 @@ getSpawnpoint_Final( spawnpoints, useweights )
 
 	if ( !isdefined( bestspawnpoint ) )
 	{
-		// couldn't find a useable spawnpoint! all will telefrag.
 		if ( useweights )
 		{
-			// at this point, forget about weights. just take a random one.
 			bestspawnpoint = spawnpoints[randomint(spawnpoints.size)];
 		}
 		else
@@ -202,7 +190,7 @@ getSpawnpoint_Final( spawnpoints, useweights )
 	bestspawnpoint.lastspawnedplayer = self;
 	bestspawnpoint.lastspawntime = time;
 
-	prof_end( " spawn_final" );
+	prof_end( "spawn_final" );
 
 	return bestspawnpoint;
 }
@@ -237,7 +225,6 @@ getBestWeightedSpawnpoint( spawnpoints )
 		if ( bestspawnpoints.size == 0 )
 			return undefined;
 
-		// pick randomly from the available spawnpoints with the best weight
 		bestspawnpoint = bestspawnpoints[randomint( bestspawnpoints.size )];
 
 		if ( try == maxSightTracedSpawnpoints )
@@ -259,13 +246,9 @@ getBestWeightedSpawnpoint( spawnpoints )
 
 getSpawnpoint_Random(spawnpoints)
 {
-//	level endon("game_ended");
-
-	// There are no valid spawnpoints in the map
 	if(!isdefined(spawnpoints))
 		return undefined;
 
-	// randomize order
 	for(i = 0; i < spawnpoints.size; i++)
 	{
 		j = randomInt(spawnpoints.size);
@@ -281,7 +264,6 @@ getAllOtherPlayers()
 {
 	aliveplayers = [];
 
-	// Make a list of fully connected, non-spectating, alive players
 	for(i = 0; i < level.players.size; i++)
 	{
 		if ( !isdefined( level.players[i] ) )
@@ -319,7 +301,6 @@ getAllAlliedAndEnemyPlayers( obj )
 	}
 }
 
-// weight array manipulation code
 initWeights(spawnpoints)
 {
 	for (i = 0; i < spawnpoints.size; i++)
@@ -328,7 +309,6 @@ initWeights(spawnpoints)
 
 getSpawnpoint_NearTeam( spawnpoints, favoredspawnpoints )
 {
-	// There are no valid spawnpoints in the map
 	if(!isdefined(spawnpoints))
 		return undefined;
 
@@ -336,16 +316,16 @@ getSpawnpoint_NearTeam( spawnpoints, favoredspawnpoints )
 
 	initWeights(spawnpoints);
 
-	prof_begin(" getteams");
+	prof_begin("getteams");
 	obj = spawnstruct();
 	getAllAlliedAndEnemyPlayers(obj);
-	prof_end(" getteams");
+	prof_end("getteams");
 
 	numplayers = obj.allies.size + obj.enemies.size;
 
 	alliedDistanceWeight = 2;
 
-	prof_begin(" sumdists");
+	prof_begin("sumdists");
 	myTeam = self.pers["team"];
 	enemyTeam = getOtherTeam( myTeam );
 	for (i = 0; i < spawnpoints.size; i++)
@@ -357,7 +337,6 @@ getSpawnpoint_NearTeam( spawnpoints, favoredspawnpoints )
 			allyDistSum = spawnpoint.distSum[ myTeam ];
 			enemyDistSum = spawnpoint.distSum[ enemyTeam ];
 
-			// high enemy distance is good, high ally distance is bad
 			spawnpoint.weight = (enemyDistSum - alliedDistanceWeight*allyDistSum) / spawnpoint.numPlayersAtLastUpdate;
 		}
 		else
@@ -365,7 +344,7 @@ getSpawnpoint_NearTeam( spawnpoints, favoredspawnpoints )
 			spawnpoint.weight = 0;
 		}
 	}
-	prof_end(" sumdists");
+	prof_end("sumdists");
 
 	if (isdefined(favoredspawnpoints))
 	{
@@ -392,9 +371,6 @@ getSpawnpoint_NearTeam( spawnpoints, favoredspawnpoints )
 
 getSpawnpoint_DM(spawnpoints)
 {
-//	level endon("game_ended");
-
-	// There are no valid spawnpoints in the map
 	if(!isdefined(spawnpoints))
 		return undefined;
 
@@ -402,8 +378,6 @@ getSpawnpoint_DM(spawnpoints)
 
 	aliveplayers = getAllOtherPlayers();
 
-	// new logic: we want most players near idealDist units away.
-	// players closer than badDist units will be considered negatively
 	idealDist = 1600;
 	badDist = 1200;
 
@@ -426,11 +400,6 @@ getSpawnpoint_DM(spawnpoints)
 			avgDistFromIdeal = totalDistFromIdeal / aliveplayers.size;
 
 			wellDistancedAmount = (idealDist - avgDistFromIdeal) / idealDist;
-			// if (wellDistancedAmount < 0) wellDistancedAmount = 0;
-
-			// wellDistancedAmount is between -inf and 1, 1 being best (likely around 0 to 1)
-			// nearbyBadAmount is between 0 and inf,
-			// and it is very important that we get a bad weight if we have a high nearbyBadAmount.
 
 			spawnpoints[i].weight = wellDistancedAmount - nearbyBadAmount * 2 + randomfloat(.2);
 		}
@@ -444,10 +413,8 @@ getSpawnpoint_DM(spawnpoints)
 	return getSpawnpoint_Final(spawnpoints);
 }
 
-// called once at start of game
 init()
 {
-	// start keeping track of deaths
 	level.spawnlogic_deaths = [];
 
 	level.players = [];
@@ -460,15 +427,14 @@ init()
 
 updateDeathInfo()
 {
-	prof_begin(" updateDeathInfo");
+	prof_begin("updateDeathInfo");
 
 	time = getTime();
 	for (i = 0; i < level.spawnlogic_deaths.size; i++)
 	{
-		// if the killer has walked away or enough time has passed, get rid of this death information
 		deathInfo = level.spawnlogic_deaths[i];
 
-		if (time - deathInfo.time > 1000*90 || // if 90 seconds have passed
+		if (time - deathInfo.time > 1000*90 ||
 			!isdefined(deathInfo.killer) ||
 			!isalive(deathInfo.killer) ||
 			(deathInfo.killer.pers["team"] != "axis" && deathInfo.killer.pers["team"] != "allies") ||
@@ -477,11 +443,9 @@ updateDeathInfo()
 		}
 	}
 
-	// remove all deaths with remove set
 	oldarray = level.spawnlogic_deaths;
 	level.spawnlogic_deaths = [];
 
-	// never keep more than the 1024 most recent entries in the array
 	start = 0;
 	if (oldarray.size - 1024 > 0) start = oldarray.size - 1024;
 
@@ -491,7 +455,7 @@ updateDeathInfo()
 			level.spawnlogic_deaths[level.spawnlogic_deaths.size] = oldarray[i];
 	}
 
-	prof_end(" updateDeathInfo");
+	prof_end("updateDeathInfo");
 }
 
 trackGrenades()
@@ -503,7 +467,6 @@ trackGrenades()
 	}
 }
 
-// used by spawning; needs to be fast.
 isPointVulnerable(playerorigin)
 {
 	pos = self.origin + level.claymoremodelcenteroffset;
@@ -525,13 +488,7 @@ isPointVulnerable(playerorigin)
 
 avoidWeaponDamage(spawnpoints)
 {
-	prof_begin(" spawn_grenade");
-
-	weaponDamagePenalty = 100000;
-	if (getdvar("scr_spawnpointweaponpenalty") != "" && getdvar("scr_spawnpointweaponpenalty") != "0")
-		weaponDamagePenalty = getdvarfloat("scr_spawnpointweaponpenalty");
-
-	mingrenadedistsquared = 250*250; // (actual grenade radius is 220, 250 includes a safety area of 30 units)
+	prof_begin("spawn_grenade");
 
 	for (i = 0; i < spawnpoints.size; i++)
 	{
@@ -540,20 +497,8 @@ avoidWeaponDamage(spawnpoints)
 			if ( !isdefined( level.grenades[j] ) )
 				continue;
 
-			// could also do a sight check to see if it's really dangerous.
-			if (distancesquared(spawnpoints[i].origin, level.grenades[j].origin) < mingrenadedistsquared)
-				spawnpoints[i].weight -= weaponDamagePenalty;
-		}
-
-		if ( !isDefined( level.artilleryDangerCenters ) )
-			continue;
-
-		airstrikeDanger = maps\mp\gametypes\_hardpoints::getAirstrikeDanger( spawnpoints[i].origin ); // 0 = none, 1 = full, might be > 1 for more than 1 airstrike
-
-		if ( airstrikeDanger > 0 )
-		{
-			worsen = airstrikeDanger * weaponDamagePenalty;
-			spawnpoints[i].weight -= worsen;
+			if (distancesquared(spawnpoints[i].origin, level.grenades[j].origin) < 62500)
+				spawnpoints[i].weight -= 100000;
 		}
 	}
 
@@ -564,8 +509,6 @@ spawnPerFrameUpdate()
 {
 	spawnpointindex = 0;
 
-	// each frame, do sight checks against a spawnpoint
-
 	prevspawnpoint = undefined;
 
 	while(1)
@@ -573,8 +516,6 @@ spawnPerFrameUpdate()
 		wait .05;
 
 		prof_begin("spawn_sight_checks");
-
-		//time = gettime();
 
 		if ( !isDefined( level.spawnPoints ) )
 			return;
@@ -613,7 +554,7 @@ spawnPerFrameUpdate()
 				continue;
 
 			diff = player.origin - spawnpoint.origin;
-			dist = length( diff ); // needs to be actual distance for distSum value
+			dist = length( diff );
 
 			team = "all";
 			if ( level.teambased )
@@ -629,9 +570,8 @@ spawnPerFrameUpdate()
 
 			pdir = anglestoforward(player.angles);
 			if (vectordot(spawnpointdir, diff) < 0 && vectordot(pdir, diff) > 0)
-				continue; // player and spawnpoint are looking in opposite directions
+				continue;
 
-			// do sight check
 			losExists = bullettracepassed(player.origin + (0,0,50), spawnpoint.sightTracePoint, false, undefined);
 
 			spawnpoint.lastSightTraceTime = gettime();
@@ -651,14 +591,12 @@ spawnPerFrameUpdate()
 
 getLosPenalty()
 {
-	if (getdvar("scr_spawnpointlospenalty") != "" && getdvar("scr_spawnpointlospenalty") != "0")
-		return getdvarfloat("scr_spawnpointlospenalty");
 	return 100000;
 }
 
 lastMinuteSightTraces( spawnpoint )
 {
-	prof_begin(" spawn_lastminutesc");
+	prof_begin("spawn_lastminutesc");
 
 	team = "all";
 	if ( level.teambased )
@@ -746,7 +684,7 @@ avoidVisibleEnemies(spawnpoints, teambased)
 
 avoidSpawnReuse(spawnpoints, teambased)
 {
-	prof_begin(" spawn_reuse");
+	prof_begin("spawn_reuse");
 
 	time = getTime();
 
@@ -774,18 +712,18 @@ avoidSpawnReuse(spawnpoints, teambased)
 				spawnpoints[i].weight -= worsen;
 			}
 			else
-				spawnpoints[i].lastspawnedplayer = undefined; // don't worry any more about this spawnpoint
+				spawnpoints[i].lastspawnedplayer = undefined;
 		}
 		else
-			spawnpoints[i].lastspawnedplayer = undefined; // don't worry any more about this spawnpoint
+			spawnpoints[i].lastspawnedplayer = undefined;
 	}
 
-	prof_end(" spawn_reuse");
+	prof_end("spawn_reuse");
 }
 
 avoidSameSpawn(spawnpoints)
 {
-	prof_begin(" spawn_samespwn");
+	prof_begin("spawn_samespwn");
 
 	if (!isdefined(self.lastspawnpoint))
 		return;
@@ -794,10 +732,10 @@ avoidSameSpawn(spawnpoints)
 	{
 		if (spawnpoints[i] == self.lastspawnpoint)
 		{
-			spawnpoints[i].weight -= 50000; // (half as bad as a likely spawn kill)
+			spawnpoints[i].weight -= 50000;
 			break;
 		}
 	}
 
-	prof_end(" spawn_samespwn");
+	prof_end("spawn_samespwn");
 }

@@ -70,7 +70,7 @@
 		itemDef
 		{
 			name oldtitle
-			text "Current Promod Version: LIVE V2.01"
+			text "Current Promod Version: LIVE V2.03"
 			style 0
 			textscale .25
 			textstyle 3

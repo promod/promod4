@@ -33,30 +33,24 @@ init()
 	level.hud["allies"] = spawnstruct();
 	level.hud["axis"] = spawnstruct();
 
-	// we can, of course, separate out the following constants for splitscreen.
-	// primary progress bars are for things like capturing flags or planting bombs - big, important things that happen as you play a gametype
-	level.primaryProgressBarY = -61; // from center
+	level.primaryProgressBarY = -61;
 	level.primaryProgressBarX = 0;
-	level.primaryProgressBarHeight = 8; //28; // this is the height and width of the whole progress bar, including the outline. the part that actually moves is 2 pixels smaller.
+	level.primaryProgressBarHeight = 8;
 	level.primaryProgressBarWidth = 120;
 	level.primaryProgressBarTextY = -75;
 	level.primaryProgressBarTextX = 0;
 	level.primaryProgressBarFontSize = 1.4;
 
-	level.teamProgressBarY = 32; // 205;
+	level.teamProgressBarY = 32;
 	level.teamProgressBarHeight = 14;
 	level.teamProgressBarWidth = 192;
-	level.teamProgressBarTextY = 8; // 155;
+	level.teamProgressBarTextY = 8;
 	level.teamProgressBarFontSize = 1.65;
-
-	if ( getDvar( "ui_score_bar" ) == "" )
-		setDvar( "ui_score_bar", 0 );
 
 	level.lowerTextYAlign = "CENTER";
 	level.lowerTextY = 70;
 	level.lowerTextFontSize = 2;
 }
-
 
 fontPulseInit()
 {
@@ -65,7 +59,6 @@ fontPulseInit()
 	self.inFrames = 3;
 	self.outFrames = 5;
 }
-
 
 fontPulse(player)
 {

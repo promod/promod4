@@ -156,9 +156,6 @@ Fly(player)
 
 	wait 0.1;
 
-	//if ( !isDefined( self ) )
-	//	return;
-
 	player.hilfsObjekt unlink();
 
 	if( !use_button_pressed )
@@ -241,7 +238,6 @@ deleteHudElementByName(hud_element_name)
 	while(isDefined(self.globalLevelHUDChange)) wait 0.1;
 	self.globalLevelHUDChange = true;
 
-	// * HUD-Elemente entfernen *
 	if(isDefined(self.hud) && self.hud.size > 0) {
 
 		for(i=0;i<self.hud.size;i++) {

@@ -19,7 +19,7 @@ main()
 		sb_text = "2nd_half_ready_up";
 	else
 		sb_text = "timeout_ready_up";
-	if ( isDefined( level.scorebot ) && level.scorebot)
+	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "" + sb_text;
 
 	level.timeLimitOverride = true;
@@ -34,11 +34,8 @@ main()
 	readyup_text = Get_Readyup_Period();
 	thread Period_Announce( readyup_text );
 
-	// Extra Ready Up HUD systems not essential to it working
-	thread Password_Check();
 	thread Waiting_On_Players_HUD_Loop();
 
-	level thread [[level.promod_hud_header_create]]();
 	Ready_Up_Monitor_Loop();
 
 	thread Kill_HUD_Stuff();
@@ -50,7 +47,6 @@ main()
 	game["promod_do_readyup"] = false;
 	game["promod_first_readyup_done"] = 1;
 
-	level notify ( "restarting" );
 	game["state"] = "playing";
 	map_restart( true );
 }
@@ -74,7 +70,6 @@ Ready_Up_Monitor_Loop()
 
 		players = getentarray("player", "classname");
 
-		// See if there are any players on the server
 		if (players.size < 1)
 		{
 			all_players_ready = false;
@@ -82,12 +77,10 @@ Ready_Up_Monitor_Loop()
 			continue;
 		}
 
-		// Go through all the players
 		for(i = 0; i < players.size; i++)
 		{
 			player = players[i];
 
-			//Check to see if player is scanning
 			if ( !isDefined(player.looped) )
 			{
 				player.looped = true;
@@ -120,7 +113,6 @@ Player_Ready_Up_Loop()
 
 	self endon("disconnect");
 
-	// Secondary catch all to prevent looping players TWICE
 	if (isDefined(self.in_ready_up_loop))
 		return;
 
@@ -128,7 +120,6 @@ Player_Ready_Up_Loop()
 
 	self thread on_Spawn();
 
-	// Players Current Status HUD Elements
 	status = newClientHudElem(self);
 	status.x = -40;
 	status.y = 145;
@@ -201,7 +192,6 @@ Player_Ready_Up_Loop()
 			if (self.ready)
 			{
 				self.statusicon = "compassping_friendlyfiring_mp";
-				// change players hud to indicate player ready
 
 				readyhud.color = (.73, .99, .73);
 				readyhud setText("Ready");
@@ -209,7 +199,6 @@ Player_Ready_Up_Loop()
 			else
 			{
 				self.statusicon = "compassping_enemy";
-				// change players hud to indicate player not ready
 
 				readyhud.color = (1, .66, .66);
 				readyhud setText("Not Ready");
@@ -300,7 +289,6 @@ Waiting_On_Players_HUD_Loop()
 		wait .1;
 	}
 
-	// Let it go to zero since we are no longer waiting
 	level.notreadyhud setValue(0);
 
 	level waittill("kill_ru_huds");
@@ -323,7 +311,6 @@ on_Spawn()
 		self iprintlnbold("Press ^3[{+activate}] ^7to Ready-Up");
 	}
 }
-
 
 Ready_up_matchStartTimer()
 {
@@ -362,28 +349,6 @@ Ready_up_matchStartTimer()
 	matchStartText destroyElem();
 	matchStartText2 destroyElem();
 	matchStartTimer destroyElem();
-}
-
-Password_Check()
-{
-	if (getDvar("g_password") != "")
-		return;
-
-	no_pass = newHudElem();
-	no_pass.x = 320;
-	no_pass.y = 80;
-	no_pass.alignX = "center";
-	no_pass.alignY = "top";
-	no_pass.fontScale = 1.4;
-	no_pass.color = (1, 1, 0);
-	no_pass.hidewheninmenu = true;
-	no_pass setText("Warning: No Server Password Set");
-
-	while ( getDvar("g_password") == "" )
-		wait .75;
-
-	if ( isDefined(no_pass) )
-		no_pass destroy();
 }
 
 Kill_HUD_Stuff()

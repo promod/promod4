@@ -45,32 +45,12 @@ main()
 
 	precacheString( &"MP_WAITING_FOR_HQ" );
 
-	if ( getdvar("koth_autodestroytime") == "" )
-		setdvar("koth_autodestroytime", "60");
 	level.hqAutoDestroyTime = getdvarint("koth_autodestroytime");
-
-	if ( getdvar("koth_spawntime") == "" )
-		setdvar("koth_spawntime", "0");
 	level.hqSpawnTime = getdvarint("koth_spawntime");
-
-	if ( getdvar("koth_kothmode") == "" )
-		setdvar("koth_kothmode", "1");
 	level.kothMode = getdvarint("koth_kothmode");
-
-	if ( getdvar("koth_captureTime") == "" )
-		setdvar("koth_captureTime", "20");
 	level.captureTime = getdvarint("koth_captureTime");
-
-	if ( getdvar("koth_destroyTime") == "" )
-		setdvar("koth_destroyTime", "10");
 	level.destroyTime = getdvarint("koth_destroyTime");
-
-	if ( getdvar("koth_delayPlayer") == "" )
-		setdvar("koth_delayPlayer", 1);
 	level.delayPlayer = getdvarint("koth_delayPlayer");
-
-	if ( getdvar("koth_spawnDelay") == "" )
-		setdvar("koth_spawnDelay", 0);
 	level.spawnDelay = getdvarint("koth_spawnDelay");
 
 	level.iconoffset = (0,0,32);
@@ -128,7 +108,6 @@ getRespawnDelay()
 
 onStartGameType()
 {
-	// TODO: HQ objective text
 	maps\mp\gametypes\_globallogic::setObjectiveText( "allies", &"OBJECTIVES_KOTH" );
 	maps\mp\gametypes\_globallogic::setObjectiveText( "axis", &"OBJECTIVES_KOTH" );
 	maps\mp\gametypes\_globallogic::setObjectiveScoreText( "allies", &"OBJECTIVES_KOTH_SCORE" );
@@ -154,7 +133,6 @@ onStartGameType()
 
 	setClientNameMode("auto_change");
 
-	// TODO: HQ spawnpoints
 	level.spawnMins = ( 0, 0, 0 );
 	level.spawnMaxs = ( 0, 0, 0 );
 	maps\mp\gametypes\_spawnlogic::addSpawnPoints( "allies", "mp_tdm_spawn" );
@@ -166,7 +144,6 @@ onStartGameType()
 	level.spawn_all = getentarray( "mp_tdm_spawn", "classname" );
 	if ( !level.spawn_all.size )
 	{
-		println("^1No mp_tdm_spawn spawnpoints in level!");
 		maps\mp\gametypes\_callbacksetup::AbortLevel();
 		return;
 	}
@@ -557,47 +534,21 @@ onSpawnPlayer()
 
 SetupRadios()
 {
-	maperrors = [];
-
 	radios = getentarray( "hq_hardpoint", "targetname" );
-
-	if ( radios.size < 2 )
-	{
-		maperrors[maperrors.size] = "There are not at least 2 entities with targetname \"radio\"";
-	}
 
 	trigs = getentarray("radiotrigger", "targetname");
 	for ( i = 0; i < radios.size; i++ )
 	{
-		errored = false;
-
 		radio = radios[i];
 		radio.trig = undefined;
 		for ( j = 0; j < trigs.size; j++ )
 		{
 			if ( radio istouching( trigs[j] ) )
 			{
-				if ( isdefined( radio.trig ) )
-				{
-					maperrors[maperrors.size] = "Radio at " + radio.origin + " is touching more than one \"radiotrigger\" trigger";
-					errored = true;
-					break;
-				}
 				radio.trig = trigs[j];
 				break;
 			}
 		}
-
-		if ( !isdefined( radio.trig ) )
-		{
-			if ( !errored )
-			{
-				maperrors[maperrors.size] = "Radio at " + radio.origin + " is not inside any \"radiotrigger\" trigger";
-				continue;
-			}
-		}
-
-		assert( !errored );
 
 		radio.trigorigin = radio.trig.origin;
 
@@ -618,19 +569,6 @@ SetupRadios()
 		radio setUpNearbySpawns();
 	}
 
-	if (maperrors.size > 0)
-	{
-		println("^1------------ Map Errors ------------");
-		for(i = 0; i < maperrors.size; i++)
-			println(maperrors[i]);
-		println("^1------------------------------------");
-
-		maps\mp\_utility::error("Map errors. See above");
-		maps\mp\gametypes\_callbacksetup::AbortLevel();
-
-		return;
-	}
-
 	level.radios = radios;
 
 	level.prevradio = undefined;
@@ -648,7 +586,6 @@ setUpNearbySpawns()
 		spawns[i].distsq = distanceSquared( spawns[i].origin, self.origin );
 	}
 
-	// sort by distsq
 	for ( i = 1; i < spawns.size; i++ )
 	{
 		thespawn = spawns[i];
@@ -702,7 +639,7 @@ PickRadioToSpawn()
 	if ( num["allies"] == 0 || num["axis"] == 0 )
 	{
 		radio = level.radios[ randomint( level.radios.size) ];
-		while ( isDefined( level.prevradio ) && radio == level.prevradio ) // so lazy
+		while ( isDefined( level.prevradio ) && radio == level.prevradio )
 			radio = level.radios[ randomint( level.radios.size) ];
 
 		level.prevradio2 = level.prevradio;
@@ -720,7 +657,6 @@ PickRadioToSpawn()
 	{
 		radio = level.radios[i];
 
-		// (purposefully using distance instead of distanceSquared)
 		cost = abs( distance( radio.origin, avgpos["allies"] ) - distance( radio.origin, avgpos["axis"] ) );
 
 		if ( isdefined( level.prevradio ) && radio == level.prevradio )

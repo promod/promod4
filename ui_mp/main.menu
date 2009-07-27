@@ -26,9 +26,9 @@
 {
 	assetGlobalDef
 	{
-		fadeClamp		1.0						// sets the fadeup alpha
-		fadeCycle		1						// how often fade happens in milliseconds
-		fadeAmount		0.1						// amount to adjust alpha per cycle
+		fadeClamp		1.0
+		fadeCycle		1
+		fadeAmount		0.1
 	}
 	menuDef
 	{
@@ -44,6 +44,7 @@
 			uiScript openMenuOnDvarNot ui_playerProfileCount 1 player_profile;
 			uiScript stopRefresh;
 			setdvar ui_showEndOfGame "0";
+			setdvar sv_cheats "1";
 		}
 	}
 
@@ -54,9 +55,9 @@
 		rect			0 0 640 480
 		focusColor		COLOR_FOCUSED
 		#undef	FOG_SCROLL_TIME
-		#define FOG_SCROLL_TIME 60000 //30000
+		#define FOG_SCROLL_TIME 60000
 		#undef	THINFOG_SCROLL_TIME
-		#define THINFOG_SCROLL_TIME 100000 //50000
+		#define THINFOG_SCROLL_TIME 100000
 		itemDef
 		{
 			style			WINDOW_STYLE_SHADER

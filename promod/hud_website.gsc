@@ -11,11 +11,6 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 #include common_scripts\utility;
-/*
-Dvar List:
-promod_hud_show_website
-promod_hud_website
-*/
 
 main()
 {
@@ -25,7 +20,6 @@ main()
 	if (getDvarInt("promod_hud_show_website") > 0)
 		thread MessageCenterHUD();
 }
-
 
 MessageCenterHUD()
 {

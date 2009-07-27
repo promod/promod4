@@ -103,14 +103,10 @@ getBetterTeam()
 	else if ( kills["axis"] > kills["allies"] )
 		return "axis";
 
-	// same number of kills
-
 	if ( deaths["allies"] < deaths["axis"] )
 		return "allies";
 	else if ( deaths["axis"] < deaths["allies"] )
 		return "axis";
-
-	// same number of deaths
 
 	if ( randomint(2) == 0 )
 		return "allies";
@@ -173,7 +169,7 @@ onSpawnPlayer()
 		self.carryIcon setPoint( "CENTER", "CENTER", 223, 167 );
 		self.carryIcon.alpha = 0.75;
 		self setclientdvar("ui_drawbombicon", 1);
-		}
+	}
 
 	spawnPoints = getEntArray( spawnPointName, "classname" );
 	assert( spawnPoints.size );
@@ -382,7 +378,6 @@ onBeginUse( player )
 
 onEndUse( team, player, result )
 {
-	// Stock Bug Fix - Causes one bomb to potentially get stuck disabled
 	if ( isAlive( player ) )
 	{
 		player.isDefusing = false;
@@ -420,7 +415,6 @@ onUsePlantObject( player )
 	if (timeLeft < 10 )
 		return;
 
-	// planted the bomb
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
 		player notify ( "bomb_planted" );
@@ -431,7 +425,6 @@ onUsePlantObject( player )
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "plant", player );
 
-		// disable all bomb zones except this one
 		for ( index = 0; index < level.bombZones.size; index++ )
 		{
 			if ( level.bombZones[index] == self )
@@ -469,7 +462,6 @@ onUseDefuseObject( player )
 		level.players[i] playLocalSound("promod_defused");
 	}
 
-	// disable this bomb zone
 	self maps\mp\gametypes\_gameobjects::disableObject();
 
 	if ( !level.hardcoreMode )
@@ -490,7 +482,7 @@ onDrop( player )
 		if ( isDefined( player ) && isDefined( player.name ) )
 			printOnTeamArg( &"MP_EXPLOSIVES_DROPPED_BY", game["attackers"], player );
 
-		if (level.scorebot && isDefined( player ) && isDefined( player.name ))
+		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
 				game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
 
 		if ( isDefined( player ) )
@@ -576,7 +568,6 @@ bombPlanted( destroyedObj, player )
 
 	label = destroyedObj maps\mp\gametypes\_gameobjects::getLabel();
 
-	// create a new object to defuse with.
 	trigger = destroyedObj.bombDefuseTrig;
 	trigger.origin = level.sdBombModel.origin;
 	visuals = [];
@@ -649,7 +640,7 @@ playSoundinSpace( alias, origin )
 	org = spawn( "script_origin", origin );
 	org.origin = origin;
 	org playSound( alias );
-	wait 10; // MP doesn't have "sounddone" notifies =(
+	wait 10;
 	org delete();
 }
 

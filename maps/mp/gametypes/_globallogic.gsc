@@ -14,7 +14,6 @@
 
 init()
 {
-	// hack to allow maps with no scripts to run correctly
 	if ( !isDefined( level.tweakablesInitialized ) )
 		maps\mp\gametypes\_tweakables::init();
 
@@ -62,7 +61,7 @@ init()
 	level.placement["axis"] = [];
 	level.placement["all"] = [];
 
-	level.postRoundTime = 8.0;
+	level.postRoundTime = 5.0;
 
 	level.inOvertime = false;
 
@@ -147,8 +146,6 @@ SetupCallbacks()
 	level.axis = ::menuAxis;
 }
 
-// to be used with things that are slow.
-// unfortunately, it can only be used with things that aren't time critical.
 WaitTillSlowProcessAllowed()
 {
 	while ( level.lastSlowProcessFrame == gettime() )
@@ -237,7 +234,6 @@ default_onTimeLimit()
 			logString( "time limit, tie" );
 	}
 
-	// i think these two lines are obsolete
 	makeDvarServerInfo( "ui_text_endreason", game["strings"]["time_limit_reached"] );
 	setDvar( "ui_text_endreason", game["strings"]["time_limit_reached"] );
 
@@ -273,7 +269,7 @@ default_onScoreLimit()
 	makeDvarServerInfo( "ui_text_endreason", game["strings"]["score_limit_reached"] );
 	setDvar( "ui_text_endreason", game["strings"]["score_limit_reached"] );
 
-	level.forcedEnd = true; // no more rounds if scorelimit is hit
+	level.forcedEnd = true;
 	thread endGame( winner, game["strings"]["score_limit_reached"] );
 }
 
@@ -287,35 +283,30 @@ updateGameEvents()
 
 	if ( level.teamBased )
 	{
-		// if both allies and axis were alive and now they are both dead in the same instance
 		if ( level.everExisted["allies"] && !level.aliveCount["allies"] && level.everExisted["axis"] && !level.aliveCount["axis"] && !level.playerLives["allies"] && !level.playerLives["axis"] )
 		{
 			[[level.onDeadEvent]]( "all" );
 			return;
 		}
 
-		// if allies were alive and now they are not
 		if ( level.everExisted["allies"] && !level.aliveCount["allies"] && !level.playerLives["allies"] )
 		{
 			[[level.onDeadEvent]]( "allies" );
 			return;
 		}
 
-		// if axis were alive and now they are not
 		if ( level.everExisted["axis"] && !level.aliveCount["axis"] && !level.playerLives["axis"] )
 		{
 			[[level.onDeadEvent]]( "axis" );
 			return;
 		}
 
-		// one ally left
 		if ( level.lastAliveCount["allies"] > 1 && level.aliveCount["allies"] == 1 && level.playerLives["allies"] == 1 )
 		{
 			[[level.onOneLeftEvent]]( "allies" );
 			return;
 		}
 
-		// one axis left
 		if ( level.lastAliveCount["axis"] > 1 && level.aliveCount["axis"] == 1 && level.playerLives["axis"] == 1 )
 		{
 			[[level.onOneLeftEvent]]( "axis" );
@@ -324,14 +315,12 @@ updateGameEvents()
 	}
 	else
 	{
-		// everyone is dead
 		if ( (!level.aliveCount["allies"] && !level.aliveCount["axis"]) && (!level.playerLives["allies"] && !level.playerLives["axis"]) && level.maxPlayerCount > 1 )
 		{
 			[[level.onDeadEvent]]( "all" );
 			return;
 		}
 
-		// last man standing
 		if ( (level.aliveCount["allies"] + level.aliveCount["axis"] == 1) && (level.playerLives["allies"] + level.playerLives["axis"] == 1) && level.maxPlayerCount > 1 )
 		{
 			[[level.onOneLeftEvent]]( "all" );
@@ -388,7 +377,6 @@ spawnPlayer()
 
 	self setSpawnVariables();
 
-	// progress bar
 	if ( isDefined( self.proxBar ) )
 		self.proxBar destroyElem();
 	if ( isDefined( self.proxBarText ) )
@@ -476,7 +464,6 @@ spawnPlayer()
 	if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 	{
 		assert( !level.intermission );
-		// We're in the victory screen, but before intermission
 		self freezePlayerForRoundEnd();
 	}
 
@@ -511,19 +498,15 @@ spawnSpectator( origin, angles )
 	in_spawnSpectator( origin, angles );
 }
 
-// spawnSpectator clone without notifies for spawning between respawn delays
 respawn_asSpectator( origin, angles )
 {
 	in_spawnSpectator( origin, angles );
 }
 
-// spawnSpectator helper
 in_spawnSpectator( origin, angles )
 {
 	self setSpawnVariables();
 
-	// don't clear lower message if not actually a spectator,
-	// because it probably has important information like when we'll spawn
 	if ( self.pers["team"] == "spectator" )
 		self clearLowerMessage();
 
@@ -625,7 +608,6 @@ default_onSpawnIntermission()
 {
 	spawnpointname = "mp_global_intermission";
 	spawnpoints = getentarray(spawnpointname, "classname");
-//	spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random(spawnpoints);
 	spawnpoint = spawnPoints[0];
 
 	if( isDefined( spawnpoint ) )
@@ -634,8 +616,6 @@ default_onSpawnIntermission()
 		maps\mp\_utility::error("NO " + spawnpointname + " SPAWNPOINTS IN MAP");
 }
 
-// returns the best guess of the exact time until the scoreboard will be displayed and player control will be lost.
-// returns undefined if time is not known
 timeUntilRoundEnd()
 {
 	if ( level.gameEnded )
@@ -671,15 +651,11 @@ freezePlayerForRoundEnd()
 
 freeGameplayHudElems()
 {
-	// free up some hud elems so we have enough for other things.
-
-	// lower message
 	if ( isDefined( self.lowerMessage ) )
 		self.lowerMessage destroyElem();
 	if ( isDefined( self.lowerTimer ) )
 		self.lowerTimer destroyElem();
 
-	// progress bar
 	if ( isDefined( self.proxBar ) )
 		self.proxBar destroyElem();
 	if ( isDefined( self.proxBarText ) )
@@ -688,16 +664,11 @@ freeGameplayHudElems()
 
 endGame( winner, endReasonText )
 {
-	// return if already ending via host quit or victory
 	if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 		return;
 
-	level thread [[level.promod_hud_header_create]]();
-
 	if ( isDefined( level.onEndGame ) )
 		[[level.onEndGame]]( winner );
-
-	//visionSetNaked( "mpOutro", 2.0 );
 
 	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" )
 		setDvar( "g_deadChat", "1" );
@@ -707,15 +678,12 @@ endGame( winner, endReasonText )
 	level.gameEnded = true;
 	level.inGracePeriod = false;
 
-	wait 0.05;
-
 	level notify ( "game_ended" );
 
-	setGameEndTime( 0 ); // stop/hide the timers
+	setGameEndTime( 0 );
 
 	updatePlacement();
 
-	// freeze players
 	players = level.players;
 	for ( index = 0; index < players.size; index++ )
 	{
@@ -726,31 +694,32 @@ endGame( winner, endReasonText )
 		player freeGameplayHudElems();
 	}
 
-	if ( winner == "allies" )
-	{
-		if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			winners = "attack";
-		else
-			winners = "defence";
-	}
-	else if ( winner == "axis" )
-	{
-		if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
-			winners = "defence";
-		else
-			winners = "attack";
-	}
-	else
-		winners = "tie";
-
-	// scorebot
-	attack_score = game["teamScores"]["allies"];
-	defence_score = game["teamScores"]["axis"];
-
 	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] += "round_winner" + winners + "" + attack_score + "" + defence_score;
+	{
+		winners = "";
+		if ( winner == "allies" )
+		{
+			if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
+				winners = "attack";
+			else
+				winners = "defence";
+		}
+		else if ( winner == "axis" )
+		{
+			if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
+				winners = "defence";
+			else
+				winners = "attack";
+		}
+		else
+			winners = "tie";
 
-	// end round
+		attack_score = game["teamScores"]["allies"];
+		defence_score = game["teamScores"]["axis"];
+
+		game["promod_scorebot_ticker_buffer"] += "round_winner" + winners + "" + attack_score + "" + defence_score;
+	}
+
 	if ( (level.roundLimit > 1 || (!level.roundLimit && level.scoreLimit != 1)) && !level.forcedEnd )
 	{
 		if ( level.displayRoundEndText )
@@ -761,9 +730,9 @@ endGame( winner, endReasonText )
 				player = players[index];
 
 				if ( level.teamBased )
-					player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, true, endReasonText );
+					player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, true, endReasonText, 0.75 );
 				else
-					player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
+					player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText, 0.75 );
 
 				if ( isDefined( player.pers["team"] ) && player.pers["team"] == "spectator" )
 					continue;
@@ -772,6 +741,8 @@ endGame( winner, endReasonText )
 										"cg_drawSpectatorMessages", 0,
 										"g_compassShowEnemies", 0 );
 			}
+
+			level thread [[level.promod_hud_header_create]]();
 
 			if ( hitRoundLimit() || hitScoreLimit() )
 				roundEndWait( level.roundEndDelay / 2 );
@@ -787,6 +758,13 @@ endGame( winner, endReasonText )
 		if ( roundSwitching && level.teamBased )
 		{
 			level.swap_score = true;
+
+			old_score = game["teamScores"]["allies"];
+			game["teamScores"]["allies"] = game["teamScores"]["axis"];
+			game["teamScores"]["axis"] = old_score;
+
+			game["allies_timeout_called"] = 0;
+			game["axis_timeout_called"] = 0;
 
 			players = level.players;
 			for ( index = 0; index < players.size; index++ )
@@ -826,6 +804,17 @@ endGame( winner, endReasonText )
 
 				player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( switchType, true, level.halftimeSubCaption );
 				player setClientDvar( "ui_hud_hardcore", 1 );
+
+				if ( player.pers["team"] == "axis" )
+				{
+					player.switching = true;
+					player menuAllies();
+				}
+				else if( player.pers["team"] == "allies" )
+				{
+					player.switching = true;
+					player menuAxis();
+				}
 			}
 
 			roundEndWait( level.halftimeRoundEndDelay );
@@ -873,30 +862,6 @@ endGame( winner, endReasonText )
 
 		if ( !hitRoundLimit() && !hitScoreLimit() )
 		{
-			if ( isDefined( level.swap_score ) && level.swap_score )
-			{
-				// Score
-				old_score = game["teamScores"]["allies"];
-				game["teamScores"]["allies"] = game["teamScores"]["axis"];
-				game["teamScores"]["axis"] = old_score;
-
-				// Timeouts
-				game["allies_timeout_called"] = 0;
-				game["axis_timeout_called"] = 0;
-
-				players = level.players;
-				for ( index = 0; index < players.size; index++ )
-				{
-					player = players[index];
-
-					if (isDefined(player.pers["team"]) && player.pers["team"] != "spectator")
-					{
-						player.pers["team"] = level.otherTeam[player.pers["team"]];
-						player.pers["savedmodel"] = undefined;
-					}
-				}
-			}
-
 			level notify ( "restarting" );
 			game["state"] = "playing";
 			map_restart( true );
@@ -911,22 +876,22 @@ endGame( winner, endReasonText )
 			endReasonText = game["strings"]["time_limit_reached"];
 	}
 
-	// scorebot
-	if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-	{
-		attack_score = game["teamScores"]["allies"];
-		defence_score = game["teamScores"]["axis"];
-	}
-	else
-	{
-		attack_score = game["teamScores"]["axis"];
-		defence_score = game["teamScores"]["allies"];
-	}
-
 	if ( isDefined( level.scorebot ) && level.scorebot )
-		game["promod_scorebot_ticker_buffer"] += "map_completeattack" + attack_score + "defence" + defence_score;
+	{
+		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
+		{
+			attack_score = game["teamScores"]["allies"];
+			defence_score = game["teamScores"]["axis"];
+		}
+		else
+		{
+			attack_score = game["teamScores"]["axis"];
+			defence_score = game["teamScores"]["allies"];
+		}
 
-	// catching gametype, since DM forceEnd sends winner as player entity, instead of string
+		game["promod_scorebot_ticker_buffer"] += "map_completeattack" + attack_score + "defence" + defence_score;
+	}
+
 	players = level.players;
 	for ( index = 0; index < players.size; index++ )
 	{
@@ -942,7 +907,6 @@ endGame( winner, endReasonText )
 
 		if ( level.teamBased )
 		{
-			// Stock Bug Fix
 			winner = getWinningTeam();
 
 			player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, false, endReasonText );
@@ -957,14 +921,10 @@ endGame( winner, endReasonText )
 								"g_compassShowEnemies", 0 );
 	}
 
-	if ( level.teamBased )
-		promod\statlog::senddata();
-
 	roundEndWait( level.postRoundTime );
 
 	level.intermission = true;
 
-	//regain players array since some might've disconnected during the wait above
 	players = level.players;
 	for ( index = 0; index < players.size; index++ )
 	{
@@ -979,11 +939,11 @@ endGame( winner, endReasonText )
 
 	logString( "game ended" );
 
-	wait 4; //scoreboard time 4 sec
+	wait 4;
 
 	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" )
 	{
-		thread promod\map_restart::main();
+		map_restart( false );
 		return;
 	}
 
@@ -1086,7 +1046,6 @@ checkTimeLimit()
 
 	timeLeft = getTimeRemaining();
 
-	// want this accurate to the millisecond
 	setGameEndTime( getTime() + int(timeLeft) );
 
 	if ( timeLeft > 0 )
@@ -1285,7 +1244,6 @@ updateGameTypeDvars()
 		}
 		thread checkScoreLimit();
 
-		// make sure we check time limit right when game ends
 		if ( isdefined( level.startTime ) )
 		{
 			if ( getTimeRemaining() < 3000 )
@@ -1310,7 +1268,6 @@ menuAutoAssign()
 	{
 		playerCounts = self maps\mp\gametypes\_teams::CountPlayers();
 
-		// if teams are equal return the team with the lowest score
 		if ( playerCounts["allies"] == playerCounts["axis"] )
 		{
 			if( getTeamScore( "allies" ) == getTeamScore( "axis" ) )
@@ -1350,6 +1307,7 @@ menuAutoAssign()
 	self.class = undefined;
 	self.pers["team"] = assignment;
 	self.team = assignment;
+	self.pers["teamTime"] = getTime();
 	self.pers["weapon"] = undefined;
 	self.pers["savedmodel"] = undefined;
 	self setClientDvar(	"loadout_curclass", "" );
@@ -1389,6 +1347,10 @@ menuAutoAssign()
 	if ( oldTeam != self.pers["team"] && ( self.pers["team"] == "allies" || self.pers["team"] == "axis" ) )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
 
+	self setClientDvars(	"g_compassShowEnemies", "0",
+							"r_contrast", "1",
+							"r_brightness", "0" );
+
 	self beginClassChoice();
 
 	self setclientdvar( "g_scriptMainMenu", game[ "menu_class_" + self.pers["team"] ] );
@@ -1426,40 +1388,28 @@ beginClassChoice( forceNewChoice )
 	self openMenu( game[ "menu_changeclass_" + team ] );
 }
 
-showMainMenuForTeam()
-{
-	if ( self.pers["team"] == "none" )
-	{
-		self openMenu( game[ "menu_team"] );
-		return;
-	}
-
-	assert( self.pers["team"] == "axis" || self.pers["team"] == "allies" );
-
-	team = self.pers["team"];
-	self openMenu( game[ "menu_class_" + team ] );
-}
-
 menuAllies()
 {
 	self closeMenus();
 
-	if(self.pers["team"] != "allies")
+	if ( !isDefined( self.switching ) )
+		self.switching = false;
+
+	if ( self.pers["team"] != "allies" )
 	{
-		if ( !isDefined( game["promod_match_mode"] ) || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
+		if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
 		{
-			if( level.teamBased && !maps\mp\gametypes\_teams::getJoinTeamPermissions( "allies" ) )
+			if ( level.teamBased && !self.switching && !maps\mp\gametypes\_teams::getJoinTeamPermissions( "allies" ) )
 			{
 				self openMenu(game["menu_team"]);
 				return;
 			}
 		}
 
-		// allow respawn when switching teams during grace period.
 		if ( level.inGracePeriod && (!isdefined(self.hasDoneCombat) || !self.hasDoneCombat) )
 			self.hasSpawned = false;
 
-		if(self.sessionstate == "playing")
+		if( self.sessionstate == "playing" && !self.switching )
 		{
 			self.switching_teams = true;
 			self.joining_team = "allies";
@@ -1469,13 +1419,22 @@ menuAllies()
 
 		oldTeam = self.pers["team"];
 
-		self.pers["class"] = undefined;
-		self.class = undefined;
-		self.pers["team"] = "allies";
-		self.team = "allies";
-		self.pers["weapon"] = undefined;
-		self.pers["savedmodel"] = undefined;
-		self setClientDvar(	"loadout_curclass", "" );
+		if ( self.switching )
+		{
+			self.pers["team"] = "allies";
+			self.team = "allies";
+		}
+		else
+		{
+			self.pers["class"] = undefined;
+			self.class = undefined;
+			self.pers["team"] = "allies";
+			self.team = "allies";
+			self.pers["teamTime"] = getTime();
+			self.pers["weapon"] = undefined;
+			self.pers["savedmodel"] = undefined;
+			self setClientDvar(	"loadout_curclass", "" );
+		}
 
 		self updateObjectiveText();
 
@@ -1489,9 +1448,9 @@ menuAllies()
 		self notify("joined_team");
 		self notify("end_respawn");
 
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
+		if( game["attackers"] == "allies" && game["defenders"] == "axis" && !self.switching )
 			iprintln(self.name + " Joined Attack");
-		else
+		else if ( !self.switching )
 			iprintln(self.name + " Joined Defence");
 
 		for( i = 0; i < level.players.size; i++ )
@@ -1505,31 +1464,40 @@ menuAllies()
 
 		if ( oldTeam == "axis" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
+
+		self setClientDvars(	"g_compassShowEnemies", "0",
+								"r_contrast", "1",
+								"r_brightness", "0" );
 	}
 
-	self beginClassChoice();
+	if ( !self.switching )
+		self beginClassChoice();
+
+	self.switching = false;
 }
 
 menuAxis()
 {
 	self closeMenus();
 
-	if(self.pers["team"] != "axis")
+	if ( !isDefined( self.switching ) )
+		self.switching = false;
+
+	if ( self.pers["team"] != "axis" )
 	{
-		if ( !isDefined( game["promod_match_mode"] ) || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
+		if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
 		{
-			if( level.teamBased && !maps\mp\gametypes\_teams::getJoinTeamPermissions( "allies" ) )
+			if ( level.teamBased && !self.switching && !maps\mp\gametypes\_teams::getJoinTeamPermissions( "allies" ) )
 			{
 				self openMenu(game["menu_team"]);
 				return;
 			}
 		}
 
-		// allow respawn when switching teams during grace period.
 		if ( level.inGracePeriod && (!isdefined(self.hasDoneCombat) || !self.hasDoneCombat) )
 			self.hasSpawned = false;
 
-		if(self.sessionstate == "playing")
+		if( self.sessionstate == "playing" && !self.switching )
 		{
 			self.switching_teams = true;
 			self.joining_team = "axis";
@@ -1539,13 +1507,22 @@ menuAxis()
 
 		oldTeam = self.pers["team"];
 
-		self.pers["class"] = undefined;
-		self.class = undefined;
-		self.pers["team"] = "axis";
-		self.team = "axis";
-		self.pers["weapon"] = undefined;
-		self.pers["savedmodel"] = undefined;
-		self setClientDvar(	"loadout_curclass", "" );
+		if ( self.switching )
+		{
+			self.pers["team"] = "axis";
+			self.team = "axis";
+		}
+		else
+		{
+			self.pers["class"] = undefined;
+			self.class = undefined;
+			self.pers["team"] = "axis";
+			self.team = "axis";
+			self.pers["teamTime"] = getTime();
+			self.pers["weapon"] = undefined;
+			self.pers["savedmodel"] = undefined;
+			self setClientDvar(	"loadout_curclass", "" );
+		}
 
 		self updateObjectiveText();
 
@@ -1559,9 +1536,9 @@ menuAxis()
 		self notify("joined_team");
 		self notify("end_respawn");
 
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
+		if( game["attackers"] == "allies" && game["defenders"] == "axis" && !self.switching )
 			iprintln(self.name + " Joined Defence");
-		else
+		else if ( !self.switching )
 			iprintln(self.name + " Joined Attack");
 
 		for( i = 0; i < level.players.size; i++ )
@@ -1575,9 +1552,16 @@ menuAxis()
 
 		if ( oldTeam == "allies" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
+
+		self setClientDvars(	"g_compassShowEnemies", "0",
+								"r_contrast", "1",
+								"r_brightness", "0" );
 	}
 
-	self beginClassChoice();
+	if ( !self.switching )
+		self beginClassChoice();
+
+	self.switching = false;
 }
 
 menuSpectator()
@@ -1600,6 +1584,7 @@ menuSpectator()
 		self.class = undefined;
 		self.pers["team"] = "spectator";
 		self.team = "spectator";
+		self.pers["teamTime"] = undefined;
 		self.pers["weapon"] = undefined;
 		self.pers["savedmodel"] = undefined;
 		self setClientDvar(	"loadout_curclass", "" );
@@ -1621,7 +1606,6 @@ menuSpectator()
 		}
 
 		self setclientdvar( "g_scriptMainMenu", game["menu_shoutcast"] );
-		//self openMenu( game["menu_shoutcast"] );
 
 		self notify("joined_spectators");
 		iprintln(self.name + " Joined Shoutcaster");
@@ -1637,6 +1621,10 @@ menuSpectator()
 
 		if ( oldTeam == "allies" || oldTeam == "axis" )
 			thread maps\mp\gametypes\_promod::updateClassAvailability( oldTeam );
+
+		self setClientDvars(	"g_compassShowEnemies", "1",
+								"r_contrast", "1",
+								"r_brightness", "0" );
 	}
 }
 
@@ -1866,25 +1854,6 @@ sendUpdatedTeamScores()
 		level.players[i] updateScores();
 	}
 
-	if ( isDefined( level.scorebot ) && level.scorebot )
-	{
-		if ( !isDefined( level.allies_team ) )
-			level.allies_team = "none";
-		if ( !isDefined( level.axis_team ) )
-			level.axis_team = "none";
-
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-		{
-			setDvar( "__promod_attack_score", game["teamScores"]["allies"] + level.allies_team );
-			setDvar( "__promod_defence_score", game["teamScores"]["axis"] + level.axis_team );
-		}
-		else
-		{
-			setDvar( "__promod_attack_score", game["teamScores"]["axis"] + "" + level.axis_team );
-			setDvar( "__promod_defence_score", game["teamScores"]["allies"] + "" + level.allies_team );
-		}
-	}
-
 	for( i = 0; i < level.players.size; i++ )
 	{
 		player = level.players[i];
@@ -1900,6 +1869,25 @@ sendUpdatedTeamScores()
 				player setClientDvars(	"shout_scores_attack", game["teamScores"]["axis"],
 										"shout_scores_defence", game["teamScores"]["allies"] );
 			}
+		}
+	}
+
+	if ( isDefined( level.scorebot ) && level.scorebot )
+	{
+		if ( !isDefined( level.allies_team ) )
+			level.allies_team = "none";
+		if ( !isDefined( level.axis_team ) )
+			level.axis_team = "none";
+
+		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
+		{
+			game["promod_scorebot_attack_ticker_buffer"] = game["teamScores"]["allies"] + level.allies_team;
+			game["promod_scorebot_defence_ticker_buffer"] = game["teamScores"]["axis"] + level.axis_team;
+		}
+		else
+		{
+			game["promod_scorebot_attack_ticker_buffer"] = game["teamScores"]["axis"] + level.axis_team;
+			game["promod_scorebot_defence_ticker_buffer"] = game["teamScores"]["allies"] + level.allies_team;
 		}
 	}
 }
@@ -1937,13 +1925,9 @@ incPersStat( dataName, increment )
 
 updateTeamStatus()
 {
-	// run only once per frame, at the end of the frame.
 	level notify("updating_team_status");
 	level endon("updating_team_status");
 	level endon ( "game_ended" );
-	waittillframeend;
-
-	wait 0; // Required for Callback_PlayerDisconnect to complete before updateTeamStatus can execute
 
 	if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 		return;
@@ -2023,10 +2007,24 @@ updateTeamStatus()
 		for(i = 0; i < players.size; i++)
 		{
 			player = players[i];
-			if ( player.pers["team"] == "axis" )
-				level.axis_team += "" + player.name + "" + player.kills + "" + player.assists + "" + player.deaths;
-			else if ( player.pers["team"] == "allies" )
-				level.allies_team += "" + player.name + "" + player.kills + "" + player.assists + "" + player.deaths;
+			if ( player.pers["team"] == "allies" )
+			{
+				if ( player.sessionstate == "playing" )
+					player_allies_alive = 1;
+				else
+					player_allies_alive = 0;
+
+				level.allies_team += "" + player.name + "" + player_allies_alive + "" + player.kills + "" + player.assists + "" + player.deaths;
+			}
+			else if ( player.pers["team"] == "axis" )
+			{
+				if ( player.sessionstate == "playing" )
+					player_axis_alive = 1;
+				else
+					player_axis_alive = 0;
+
+				level.axis_team += "" + player.name + "" + player_axis_alive + "" + player.kills + "" + player.assists + "" + player.deaths;
+			}
 		}
 
 		if ( level.allies_team == "" )
@@ -2039,13 +2037,13 @@ updateTeamStatus()
 
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
 		{
-			setDvar( "__promod_attack_score", level.allies_string );
-			setDvar( "__promod_defence_score", level.axis_string );
+			game["promod_scorebot_attack_ticker_buffer"] = level.allies_string;
+			game["promod_scorebot_defence_ticker_buffer"] = level.axis_string;
 		}
 		else
 		{
-			setDvar( "__promod_attack_score", level.axis_string );
-			setDvar( "__promod_defence_score", level.allies_string );
+			game["promod_scorebot_attack_ticker_buffer"] = level.axis_string;
+			game["promod_scorebot_defence_ticker_buffer"] = level.allies_string;
 		}
 	}
 
@@ -2090,7 +2088,7 @@ timeLimitClock()
 		if ( !level.timerStopped && level.timeLimit )
 		{
 			timeLeft = getTimeRemaining() / 1000;
-			timeLeftInt = int(timeLeft + 0.5); // adding .5 and flooring rounds it.
+			timeLeftInt = int(timeLeft + 0.5);
 
 			if ( timeLeftInt >= 30 && timeLeftInt <= 60 )
 				level notify ( "match_ending_soon" );
@@ -2098,14 +2096,13 @@ timeLimitClock()
 			if ( timeLeftInt <= 10 || (timeLeftInt <= 30 && timeLeftInt % 2 == 0) )
 			{
 				level notify ( "match_ending_very_soon" );
-				// don't play a tick at exactly 0 seconds, that's when something should be happening!
+
 				if ( timeLeftInt == 0 )
 					break;
 
 				clockObject playSound( "ui_mp_timer_countdown" );
 			}
 
-			// synchronize to be exactly on the second
 			if ( timeLeft - floor(timeLeft) >= .05 )
 				wait timeLeft - floor(timeLeft);
 		}
@@ -2135,7 +2132,6 @@ gameTimer()
 	{
 		if ( !level.timerStopped )
 		{
-			// the wait isn't always exactly 1 second. dunno why.
 			game["timepassed"] += gettime() - prevtime;
 		}
 		prevtime = gettime();
@@ -2175,6 +2171,8 @@ resumeTimer()
 
 startGame()
 {
+	level thread [[level.promod_hud_header_create]]();
+
 	thread gameTimer();
 	level.timerStopped = true;
 	thread maps\mp\gametypes\_spawnlogic::spawnPerFrameUpdate();
@@ -2187,15 +2185,13 @@ startGame()
 		return;
 	}
 
-	// Ready Up Sequence
 	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] )
 	{
 		thread promod\readyup::main();
 		return;
 	}
 
-	// Strat Time Sequence
-	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_strattime" ) && level.gametype == "sd" )
+	if ( ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_strattime" ) ) && level.gametype == "sd" )
 		promod\strat_time::main();
 
 	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
@@ -2208,12 +2204,13 @@ startGame()
 	else if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" )
 		setDvar( "g_deadChat", "0" );
 
+	if ( isDefined( level.timeout_over ) && !level.timeout_over )
+		return;
+
 	level.timerStopped = false;
 
 	level notify("prematch_over");
-
-	if ( isDefined( level.timeout_over ) && !level.timeout_over )
-		return;
+	level notify("header_destroy");
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 	{
@@ -2221,7 +2218,7 @@ startGame()
 
 		if ( game["roundsplayed"] == 0 && !game["promod_in_timeout"] )
 			sb_text = "1st_half_started";
-		else if ( level.roundswitch > 0 && game["roundsplayed"] % level.roundswitch == 0 && !game["promod_in_timeout"] )
+		else if ( isDefined( level.roundswitch ) && level.roundswitch > 0 && game["roundsplayed"] % level.roundswitch == 0 && !game["promod_in_timeout"] )
 			sb_text = "2nd_half_started";
 		else if ( game["promod_in_timeout"] )
 			sb_text = "match_resumed";
@@ -2267,8 +2264,7 @@ prematchPeriod()
 		level.players[index] thread maps\mp\gametypes\_hud_message::hintMessage( hintMessage );
 	}
 
-	if ( isDefined( game["state"] ) && game["state"] == "playing" )
-		setDvar( "ui_hud_hardcore", level.hardcoreMode );
+	setDvar( "ui_hud_hardcore", level.hardcoreMode );
 }
 
 gracePeriod()
@@ -2287,7 +2283,6 @@ gracePeriod()
 
 	if ( level.numLives )
 	{
-		// Players on a team but without a weapon show as dead since they can not get in this round
 		players = level.players;
 
 		for ( i = 0; i < players.size; i++ )
@@ -2304,20 +2299,17 @@ gracePeriod()
 
 TimeUntilWaveSpawn( minimumWait )
 {
-	// the time we'll spawn if we only wait the minimum wait.
 	earliestSpawnTime = gettime() + minimumWait * 1000;
 
 	lastWaveTime = level.lastWave[self.pers["team"]];
 	waveDelay = level.waveDelay[self.pers["team"]] * 1000;
 
-	// the number of waves that will have passed since the last wave happened, when the minimum wait is over.
 	numWavesPassedEarliestSpawnTime = (earliestSpawnTime - lastWaveTime) / waveDelay;
-	// rounded up
+
 	numWaves = ceil( numWavesPassedEarliestSpawnTime );
 
 	timeOfSpawn = lastWaveTime + numWaves * waveDelay;
 
-	// avoid spawning everyone on the same frame
 	if ( isdefined( self.waveSpawnIndex ) )
 		timeOfSpawn += 50 * self.waveSpawnIndex;
 
@@ -2389,7 +2381,6 @@ maySpawn()
 		}
 		else if ( gameHasStarted )
 		{
-			// disallow spawning for late comers
 			if ( !level.inGracePeriod && !self.hasSpawned )
 				return false;
 		}
@@ -2489,7 +2480,6 @@ waitAndSpawnClient( timeAlreadyPassed )
 
 	if ( timeUntilSpawn > 0 )
 	{
-		// spawn player into spectator on death during respawn delay, if he switches teams during this time, he will respawn next round
 		setLowerMessage( game["strings"]["waiting_to_spawn"], timeUntilSpawn );
 
 		if ( !spawnedAsSpectator )
@@ -2530,7 +2520,7 @@ removeSpawnMessageShortly( delay )
 {
 	self endon("disconnect");
 
-	waittillframeend; // so we don't endon the end_respawn from spawning as a spectator
+	waittillframeend;
 
 	self endon("end_respawn");
 
@@ -2545,10 +2535,10 @@ Callback_StartGameType()
 	level.prematchPeriodEnd = 0;
 
 	level.intermission = false;
+	game["state"] = "playing";
 
 	if ( !isDefined( game["gamestarted"] ) )
 	{
-		// defaults if not defined in level script
 		if ( !isDefined( game["allies"] ) )
 			game["allies"] = "marines";
 		if ( !isDefined( game["axis"] ) )
@@ -2585,6 +2575,7 @@ Callback_StartGameType()
 			game["strings"]["waiting_for_teams"] = &"MP_WAITING_FOR_PLAYERS";
 			game["strings"]["opponent_forfeiting_in"] = &"MP_OPPONENT_FORFEITING_IN";
 		}
+
 		game["strings"]["match_starting_in"] = &"MP_MATCH_STARTING_IN";
 		game["strings"]["spawn_next_round"] = &"MP_SPAWN_NEXT_ROUND";
 		game["strings"]["waiting_to_spawn"] = &"MP_WAITING_TO_SPAWN";
@@ -2600,7 +2591,6 @@ Callback_StartGameType()
 		game["strings"]["time_limit_reached"] = &"MP_TIME_LIMIT_REACHED";
 		game["strings"]["players_forfeited"] = &"MP_PLAYERS_FORFEITED";
 
-		// promod localization
 		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
 		{
 			game["strings"]["allies_name"] = &"PROMOD_ATTACK_NAME";
@@ -2677,17 +2667,15 @@ Callback_StartGameType()
 		game["teamScores"]["allies"] = 0;
 		game["teamScores"]["axis"] = 0;
 
-		// first round, so set up prematch
 		level.prematchPeriod = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "playerwaittime" );
 		level.prematchPeriodEnd = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "matchstarttime" );
 
 		thread promod\set_variables::main();
 
-		// scorebot
 		if ( !isDefined( game["promod_scorebot_ticker_buffer"] ) )
 		{
 			setDvar( "promod_scorebot_ticker_num", -1 );
-			game["promod_scorebot_ticker_buffer"] = getDvar( "promod_scorebot_ticker_num" );
+			game["promod_scorebot_ticker_buffer"] = -1;
 		}
 
 		mapname = getDvar("mapname");
@@ -2714,12 +2702,10 @@ Callback_StartGameType()
 	level.objIDStart = 0;
 	level.forcedEnd = false;
 
-	// this gets set to false when someone takes damage or a gametype-specific event happens.
 	level.useStartSpawns = true;
 
-	// set to 0 to disable
 	setdvar( "scr_teamKillPunishCount", "0" );
-	level.minimumAllowedTeamKills = getdvarint( "scr_teamKillPunishCount" ) - 1; // punishment starts at the next one
+	level.minimumAllowedTeamKills = getdvarint( "scr_teamKillPunishCount" ) - 1;
 
 	thread maps\mp\gametypes\_promod::init();
 	thread maps\mp\gametypes\_class::init();
@@ -2816,7 +2802,6 @@ Callback_StartGameType()
 
 	[[level.onStartGameType]]();
 
-	// Header
 	level.promod_hud_header_create = promod\header::create;
 
 	thread promod\messagecenter::main();
@@ -2831,10 +2816,6 @@ Callback_StartGameType()
 
 initialDMScoreUpdate()
 {
-	// the first time we call updateDMScores on a player, we have to send them the whole scoreboard.
-	// by calling updateDMScores on each player one at a time,
-	// we can avoid having to send the entire scoreboard to every single player
-	// the first time someone kills someone else.
 	wait .2;
 	numSent = 0;
 	while(1)
@@ -2860,7 +2841,7 @@ initialDMScoreUpdate()
 		}
 
 		if ( !didAny )
-			wait 3; // let more players connect
+			wait 3;
 	}
 }
 
@@ -2903,7 +2884,6 @@ Callback_PlayerConnect()
 
 	level notify( "connected", self );
 
-	// only print that we connected if we haven't connected in a previous round
 	if( !isdefined( self.pers["score"] ) )
 		iPrintLn( &"MP_CONNECTED", self.name );
 
@@ -2914,9 +2894,6 @@ Callback_PlayerConnect()
 	self setClientDvars( "cg_drawSpectatorMessages", 1,
 						 "fx_drawClouds", 0,
 						 "ui_hud_hardcore", getDvar( "ui_hud_hardcore" ) );
-
-	if ( !isDefined( self.pers["team"] ) || isDefined( self.pers["team"] ) && self.pers["team"] != "spectator" )
-		self setClientDvar( "g_compassShowEnemies", getDvar( "scr_game_forceuav" ) );
 
 	if ( level.hardcoreMode )
 	{
@@ -2989,8 +2966,6 @@ Callback_PlayerConnect()
 
 	if ( !isDefined( self.pers["team"] ) )
 	{
-		// Don't set .sessionteam until we've gotten the assigned team from code,
-		// because it overrides the assigned team.
 		self.pers["team"] = "none";
 		self.team = "none";
 		self.sessionstate = "dead";
@@ -3009,10 +2984,8 @@ Callback_PlayerConnect()
 		self setclientdvar( "g_scriptMainMenu", game["menu_team"] );
 		self openMenu( game["menu_team"] );
 
-
 		if ( level.teamBased )
 		{
-			// set team and spectate permissions so the map shows waypoint info on connect
 			self.sessionteam = self.pers["team"];
 
 			if ( !isAlive( self ) )
@@ -3040,10 +3013,6 @@ Callback_PlayerConnect()
 		if ( isValidClass( self.pers["class"] ) )
 		{
 			self thread [[level.spawnClient]]();
-		}
-		else
-		{
-			self showMainMenuForTeam();
 		}
 
 		self thread maps\mp\gametypes\_spectating::setSpectatePermissions();
@@ -3093,7 +3062,8 @@ Callback_PlayerDisconnect()
 		}
 	}
 
-	thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
+	if ( isDefined( self.pers["team"] ) && ( self.pers["team"] == "allies" || self.pers["team"] == "axis" ) )
+		thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
 
 	level thread updateTeamStatus();
 }
@@ -3125,7 +3095,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if (!isDefined( level.rdyup ) )
 		level.rdyup = false;
 
-	// create a class specialty checks; CAC:bulletdamage, CAC:armorvest
 	iDamage = maps\mp\gametypes\_class::cac_modified_damage( self, eAttacker, iDamage, sMeansOfDeath );
 	self.iDFlags = iDFlags;
 	self.iDFlagsTime = getTime();
@@ -3171,7 +3140,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( isDefined( level.ready_up_over ) && level.ready_up_over || isDefined( level.strat_over ) && !level.strat_over || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] )
 		return;
 
-	// Don't do knockback if the damage direction was not specified
 	if( !isDefined( vDir ) )
 		iDFlags |= level.iDFLAGS_NO_KNOCKBACK;
 
@@ -3186,7 +3154,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( isHeadShot( sWeapon, sHitLoc, sMeansOfDeath ) )
 		sMeansOfDeath = "MOD_HEAD_SHOT";
 
-	// explosive barrel/car detection
 	if ( sWeapon == "none" && isDefined( eInflictor ) )
 	{
 		if ( isDefined( eInflictor.targetname ) && eInflictor.targetname == "explodable_barrel" )
@@ -3197,45 +3164,38 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 
 	prof_end( "Callback_PlayerDamage flags/tweaks" );
 
-	if ( isDefined( eAttacker ) && isPlayer( eAttacker ) && isDefined( sWeapon ) )
-	{
-		if ( level.teamBased && isDefined ( eAttacker ) && self.pers["team"] != eAttacker.pers["team"] || !level.teamBased )
-			eAttacker maps\mp\gametypes\_weapons::checkHit( sWeapon );
-	}
-
-	// check for completely getting out of the damage
 	if( !(iDFlags & level.iDFLAGS_NO_PROTECTION) )
 	{
 		if ( (isSubStr( sMeansOfDeath, "MOD_GRENADE" ) || isSubStr( sMeansOfDeath, "MOD_EXPLOSIVE" ) || isSubStr( sMeansOfDeath, "MOD_PROJECTILE" )) && isDefined( eInflictor ) )
 		{
-			// protect players from spawnkill grenades
-			if ( eInflictor.classname == "grenade" && (self.lastSpawnTime + 3500) > getTime() && distance( eInflictor.origin, self.lastSpawnPoint.origin ) < 250 )
+			if ( game["promod_match_mode"] != "match" )
 			{
-				prof_end( "Callback_PlayerDamage player" );
-				return;
+				if ( eInflictor.classname == "grenade" && ( ( self.lastSpawnTime + 3500) > getTime() && distance( eInflictor.origin, self.lastSpawnPoint.origin ) < 250 || !isDefined ( eAttacker.pers["class"] ) ) )
+				{
+					prof_end( "Callback_PlayerDamage player" );
+					return;
+				}
 			}
 		}
 
 		if ( level.teamBased && isPlayer( eAttacker ) && (self != eAttacker) && (self.pers["team"] == eAttacker.pers["team"]) )
 		{
-			prof_begin( "Callback_PlayerDamage player" ); // profs automatically end when the function returns
-			if ( level.friendlyfire == 0 ) // no one takes damage
+			prof_begin( "Callback_PlayerDamage player" );
+			if ( level.friendlyfire == 0 )
 			{
 				return;
 			}
-			else if ( level.friendlyfire == 1 ) // the friendly takes damage
+			else if ( level.friendlyfire == 1 )
 			{
-				// Make sure at least one point of damage is done
 				if ( iDamage < 1 )
 					iDamage = 1;
 
 				self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
 			}
-			else if ( level.friendlyfire == 2 && isAlive( eAttacker ) ) // only the attacker takes damage
+			else if ( level.friendlyfire == 2 && isAlive( eAttacker ) )
 			{
 				iDamage = int(iDamage * .5);
 
-				// Make sure at least one point of damage is done
 				if(iDamage < 1)
 					iDamage = 1;
 
@@ -3243,11 +3203,10 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 				eAttacker finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
 				eAttacker.friendlydamage = undefined;
 			}
-			else if ( level.friendlyfire == 3 && isAlive( eAttacker ) ) // both friendly and attacker take damage
+			else if ( level.friendlyfire == 3 && isAlive( eAttacker ) )
 			{
 				iDamage = int(iDamage * .5);
 
-				// Make sure at least one point of damage is done
 				if ( iDamage < 1 )
 					iDamage = 1;
 
@@ -3262,7 +3221,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 		else
 		{
 			prof_begin( "Callback_PlayerDamage world" );
-			// Make sure at least one point of damage is done
+
 			if(iDamage < 1)
 				iDamage = 1;
 
@@ -3360,21 +3319,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 		metrestring = unitstring / 50 * 1.27;
 	}
 
-	if ( isDefined( eAttacker ) && isPlayer( eAttacker ) )
-	{
-		if ( !isDefined( eAttacker.pers["fdamagedone"] ) )
-			eAttacker.pers["fdamagedone"] = 0;
-
-		if ( !isDefined( eAttacker.pers["damagedone"] ) )
-			eAttacker.pers["damagedone"] = 0;
-
-		if ( !isDefined( self.pers["fdamagetaken"] ) )
-			 self.pers["fdamagetaken"] = 0;
-
-		if ( !isDefined( self.pers["damagetaken"] ) )
-			self.pers["damagetaken"] = 0;
-	}
-
 	if ( isDefined( eAttacker ) )
 	{
 		if ( isPlayer( eAttacker ) )
@@ -3397,29 +3341,6 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 				if ( isDefined( sHitLoc ) && sHitLoc == "none" )
 				{
 					self iprintln("You did ^1" + iDamage + "^7 damage to yourself");
-				}
-			}
-		}
-
-		if ( isDefined( friendly ) && friendly == true )
-		{
-				if (!level.rdyup)
-				{
-					if ( isPlayer( eAttacker ) )
-					{
-						eAttacker.pers["fdamagedone"]+=iDamage;
-						self.pers["fdamagetaken"]+=iDamage;
-					}
-				}
-		}
-		else
-		{
-			if (!level.rdyup)
-			{
-				if ( isPlayer( eAttacker ) )
-				{
-					eAttacker.pers["damagedone"]+=iDamage;
-					self.pers["damagetaken"]+=iDamage;
 				}
 			}
 		}
@@ -3467,7 +3388,7 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 	if ( self.sessionteam == "spectator" )
 		return;
 
-	if ( isDefined( game["state"] ) && game["state"] == "postgame" && !isDefined( self.switching_teams ) )
+	if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 		return;
 
 	prof_begin( "PlayerKilled pre constants" );
@@ -3478,18 +3399,13 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 	if( attacker.classname == "script_vehicle" && isDefined( attacker.owner ) )
 		attacker = attacker.owner;
 
-	// send out an obituary message to all clients about the kill
 	if( level.teamBased && isDefined( attacker.pers ) && self.team == attacker.team && sMeansOfDeath == "MOD_GRENADE" && level.friendlyfire == 0 )
 		obituary(self, self, sWeapon, sMeansOfDeath);
 	else
 		obituary(self, attacker, sWeapon, sMeansOfDeath);
 
-	//self maps\mp\gametypes\_weapons::updateWeaponUsageStats();
 	if ( !level.inGracePeriod )
-	{
 		self maps\mp\gametypes\_weapons::dropWeaponForDeath( attacker );
-		self maps\mp\gametypes\_weapons::dropOffhand();
-	}
 
 	self.sessionstate = "dead";
 
@@ -3535,15 +3451,10 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 		lpattackGuid = attacker getGuid();
 		lpattackname = attacker.name;
 
-		if ( attacker == self ) // killed himself
+		if ( attacker == self )
 		{
 			doKillcam = false;
 
-			// suicide kill cam
-			//lpattacknum = attacker getEntityNumber();
-			//doKillcam = true;
-
-			// switching teams
 			if ( isDefined( self.switching_teams ) )
 			{
 				if ( !level.teamBased && ((self.leaving_team == "allies" && self.joining_team == "axis") || (self.leaving_team == "axis" && self.joining_team == "allies")) )
@@ -3594,7 +3505,7 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 			if ( level.teamBased && self.pers["team"] == attacker.pers["team"] && sMeansOfDeath == "MOD_GRENADE" && level.friendlyfire == 0 )
 			{
 			}
-			else if ( level.teamBased && self.pers["team"] == attacker.pers["team"] ) // killed by a friendly
+			else if ( level.teamBased && self.pers["team"] == attacker.pers["team"] )
 			{
 				if (!level.rdyup)
 				{
@@ -3628,22 +3539,18 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 					value = maps\mp\gametypes\_rank::getScoreInfoValue( "kill" );
 					attacker thread maps\mp\gametypes\_rank::giveRankXP( "kill", value );
 				}
+
 				if (!level.rdyup)
 				{
 					attacker incPersStat( "kills", 1 );
 					attacker.kills = attacker getPersStat( "kills" );
 
-					if (!level.rdyup)
-					{
-						givePlayerScore( "kill", attacker, self );
+					givePlayerScore( "kill", attacker, self );
 
-						// to prevent spectator gain score for team-spectator after throwing a granade and killing someone before he switched
-						if ( level.teamBased && attacker.pers["team"] != "spectator")
-							giveTeamScore( "kill", attacker.pers["team"], attacker, self );
+					giveTeamScore( "kill", attacker.pers["team"], attacker, self );
 
-						scoreSub = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "deathpointloss" );
-						_setPlayerScore( self, _getPlayerScore( self ) - scoreSub );
-					}
+					scoreSub = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "deathpointloss" );
+					_setPlayerScore( self, _getPlayerScore( self ) - scoreSub );
 				}
 
 				prof_end( "pks1" );
@@ -3688,7 +3595,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 		lpattackname = "";
 		lpattackerteam = "world";
 
-		// even if the attacker isn't a player, it might be on a team
 		if ( isDefined( attacker ) && isDefined( attacker.team ) && (attacker.team == "axis" || attacker.team == "allies") )
 		{
 			if ( attacker.team != self.pers["team"] )
@@ -3722,11 +3628,11 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 	else
 		sHeadshot = 0;
 
-	if ( isDefined( level.scorebot ) && level.scorebot && ( !isDefined( level.rdyup ) || isDefined( level.rdyup ) && !level.rdyup ) )
+	if ( isDefined( level.scorebot ) && level.scorebot && !level.rdyup )
 		game["promod_scorebot_ticker_buffer"] += "kill" + lpattackname + "" + scWeapon + "" + lpselfname + "" + sHeadshot;
 
 	attackerString = "none";
-	if ( isPlayer( attacker ) ) // attacker can be the worldspawn if it's not a player
+	if ( isPlayer( attacker ) )
 		attackerString = attacker getXuid() + "(" + lpattackname + ")";
 	self logstring( "d " + sMeansOfDeath + "(" + sWeapon + ") a:" + attackerString + " d:" + iDamage + " l:" + sHitLoc + " @ " + int( self.origin[0] ) + " " + int( self.origin[1] ) + " " + int( self.origin[2] ) );
 
@@ -3749,8 +3655,7 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 
 	self.deathTime = getTime();
 
-	// let the player watch themselves die
-		wait ( 0.25 );
+	wait ( 0.25 );
 
 	self.cancelKillcam = false;
 	self thread cancelKillCamOnUse();
@@ -3788,7 +3693,6 @@ Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDi
 		return;
 	}
 
-	// class may be undefined if we have changed teams
 	if ( isValidClass( self.class ) )
 	{
 		timePassed = (gettime() - respawnTimerStartTime) / 1000;
@@ -3878,7 +3782,7 @@ processAssist( killedplayer )
 	self endon("disconnect");
 	killedplayer endon("disconnect");
 
-	wait .05; // don't ever run on the same frame as the playerkilled callback.
+	wait .05;
 	WaitTillSlowProcessAllowed();
 
 	if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
@@ -3893,8 +3797,10 @@ processAssist( killedplayer )
 
 	givePlayerScore( "assist", self, killedplayer );
 
-	// scorebot
-	if ( isDefined( level.scorebot ) && level.scorebot && ( !isDefined( level.rdyup ) || isDefined( level.rdyup ) && !level.rdyup) )
+	if (!isDefined( level.rdyup ) )
+		level.rdyup = false;
+
+	if ( isDefined( level.scorebot ) && level.scorebot && !level.rdyup )
 		game["promod_scorebot_ticker_buffer"] += "assist_by" + self.name;
 }
 
@@ -3906,7 +3812,6 @@ setSpawnVariables()
 {
 	resetTimeout();
 
-	// Stop shellshock and rumble
 	self StopShellshock();
 	self StopRumble( "damage_heavy" );
 }
@@ -3996,7 +3901,6 @@ delayStartRagdoll( ent, sHitLoc, vDir, sWeapon, eInflictor, sMeansOfDeath )
 
 	if ( isDefined( ent ) )
 	{
-		println( "Ragdolling after " + waitTime + " seconds" );
 		ent startragdoll( 1 );
 	}
 }

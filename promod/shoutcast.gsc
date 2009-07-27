@@ -70,7 +70,6 @@ resetShoutcast()
 							"shout_allieshealth4", "",
 							"shout_allieshealth5", "" );
 
-
 	self setClientDvars(	"shout_axis1", "",
 							"shout_axis2", "",
 							"shout_axis3", "",
@@ -82,6 +81,7 @@ resetShoutcast()
 							"shout_axishealth3", "",
 							"shout_axishealth4", "",
 							"shout_axishealth5", "" );
+
 	wait 0.05;
 
 	if ( isDefined( self ) )

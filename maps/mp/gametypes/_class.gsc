@@ -9,7 +9,6 @@
 */
 
 #include common_scripts\utility;
-// check if below includes are removable
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 
@@ -39,7 +38,7 @@ init()
 	weapon_class_register( "winchester1200_mp", "weapon_shotgun" );
 	weapon_class_register( "m1014_mp", "weapon_shotgun" );
 	weapon_class_register( "m40a3_mp", "weapon_sniper" );
-	weapon_class_register( "remington700", "weapon_sniper" );
+	weapon_class_register( "remington700_mp", "weapon_sniper" );
 
 	level thread onPlayerConnecting();
 }
@@ -117,7 +116,6 @@ giveLoadout( team, class )
 		self giveMaxAmmo( primaryWeapon );
 	}
 
-	// give frag grenade
 	if ( getDvarInt( "weap_allow_frag_grenade" ) && ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) ) )
 	{
 		if ( level.hardcoreMode )
@@ -134,15 +132,14 @@ giveLoadout( team, class )
 		}
 	}
 
-	// give special grenade
-	if ( self.pers[class]["loadout_grenade"] != "none" && getDvarInt( "weap_allow_flash_grenade" ) || getDvarInt( "weap_allow_smoke_grenade" ) )
+	if ( self.pers[class]["loadout_grenade"] != "none" && ( getDvarInt( "weap_allow_flash_grenade" ) || getDvarInt( "weap_allow_smoke_grenade" ) ) )
 	{
 		if ( self.pers[class]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
 			self setOffhandSecondaryClass("flash");
-		if ( self.pers[class]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
+		else if ( self.pers[class]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
 			self setOffhandSecondaryClass("smoke");
 
-		if (isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) )
+		if ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) )
 		{
 			self giveWeapon( self.pers[class]["loadout_grenade"] + "_mp" );
 			self setWeaponAmmoClip( self.pers[class]["loadout_grenade"] + "_mp", 1 );
@@ -216,7 +213,6 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
 		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
 		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
-
 	}
 	else if ( class == "demolitions" )
 	{
@@ -233,7 +229,6 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
 		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
 		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
-
 	}
 	else if ( class == "sniper" )
 	{
@@ -250,7 +245,6 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
 		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
 		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
-
 	}
 
 	self set_config( CLASS_PRIMARY, CLASS_PRIMARY_VALUE );
@@ -301,7 +295,6 @@ setClass( newClass )
 
 cac_modified_damage( victim, attacker, damage, meansofdeath )
 {
-	// skip conditions
 	if( !isdefined( victim) || !isdefined( attacker ) || !isplayer( attacker ) || !isplayer( victim ) )
 		return damage;
 	if( attacker.sessionstate != "playing" || !isdefined( damage ) || !isdefined( meansofdeath ) )
@@ -312,18 +305,14 @@ cac_modified_damage( victim, attacker, damage, meansofdeath )
 	old_damage = damage;
 	final_damage = damage;
 
-	// if attacker has bullet damage then increase bullet damage
 	if( isPrimaryDamage( meansofdeath ) )
-			final_damage = damage*1.4; //hardcoded
+			final_damage = damage*1.4;
 
-	// return unchanged damage
 	return int( final_damage );
 }
 
-// if primary weapon damage
 isPrimaryDamage( meansofdeath )
 {
-	// including pistols as well since sometimes they share ammo
 	if( meansofdeath == "MOD_RIFLE_BULLET" || meansofdeath == "MOD_PISTOL_BULLET" )
 		return true;
 	return false;
