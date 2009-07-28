@@ -20,7 +20,7 @@ main()
 	setDvar( "sv_maxRate", "25000" );
 	setDvar( "g_speed", "190" );
 	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ) );
-	setDvar( "__promod_version", "Promod LIVE V2.03" );
+	setDvar( "__promod_version", "Promod LIVE V2.04 EU" );
 
 	game["allies_assault_count"] = 0;
 	game["allies_specops_count"] = 0;

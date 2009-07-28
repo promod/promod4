@@ -212,6 +212,7 @@ main()
 	setDvar( "scr_enable_hiticon", "2" ); // [0-2] (disabled, hit icon on, hit icon on but not through walls)
 	setDvar( "scr_enable_scoretext", "1" ); // [0-1] (exp popups, +5 etc)
 	setDvar( "promod_allow_strattime", "0" ); // [0-1] (sd only)
+	setDvar( "promod_allow_readyup", "0" ); // [0-1]
 	setDvar( "g_maxDroppedWeapons", "16" ); // [2-32] (maximum number of dropped weapons before recycling)
 	setDvar( "scr_hardcore", "0" ); // [0-1]
 

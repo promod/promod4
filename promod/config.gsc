@@ -99,7 +99,7 @@ use_config()
 	if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 0 )
 	{
 		self setClientDvars( "r_lighttweaksunlight", 1.2,
-							 "sunlight", "1.2" );
+							 "sunlight", 1.2 );
 	}
 	else if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 1 )
 	{
@@ -148,7 +148,7 @@ use_config()
 		else
 			self setClientDvar( "r_lighttweaksunlight", 1 );
 
-		self setClientDvar("sunlight", "Stock");
+		self setClientDvar( "sunlight", "Stock" );
 	}
 	else
 		self setClientDvars( "r_lighttweaksunlight", 0,
@@ -179,9 +179,8 @@ use_config()
 
 	if ( self.pers["PROMOD_CACHE_FIRSTTIME"] == 0 )
 	{
-		self setClientDvars("cg_voiceIconSize", 1,
-							"cl_maxpackets", 100 );
 		self.pers["PROMOD_CACHE_FIRSTTIME"] = 1;
+		self setClientDvar( "cg_voiceIconSize", 1 );
 		self set_config( "PROMOD_FIRSTTIME", 1 );
 	}
 

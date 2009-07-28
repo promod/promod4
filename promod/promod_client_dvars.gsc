@@ -15,6 +15,7 @@ main()
 							"dynent_active", 0,
 							"snaps", 30,
 							"rate", 25000,
+							"cl_maxpackets", 100,
 							"cg_nopredict", 0 );
 
 	self setClientDvars(	"sm_enable", 0,

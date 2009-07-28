@@ -14,7 +14,7 @@ main()
 		return;
 
 	game["promod_mode_loaded"] = 1;
-	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.03";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.04 EU";
 
 	promod_mode = toLower(getDvar("promod_mode") );
 

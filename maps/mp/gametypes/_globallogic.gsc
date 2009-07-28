@@ -817,6 +817,9 @@ endGame( winner, endReasonText )
 				}
 			}
 
+			thread maps\mp\gametypes\_promod::updateClassAvailability( "allies" );
+			thread maps\mp\gametypes\_promod::updateClassAvailability( "axis" );
+
 			roundEndWait( level.halftimeRoundEndDelay );
 		}
 		else if ( !hitRoundLimit() && !hitScoreLimit() && !level.displayRoundEndText && level.teamBased )
@@ -2003,10 +2006,9 @@ updateTeamStatus()
 		level.allies_team = "";
 		level.axis_team = "";
 
-		players = getentarray("player", "classname");
-		for(i = 0; i < players.size; i++)
+		for( i = 0; i < level.players.size; i++ )
 		{
-			player = players[i];
+			player = level.players[i];
 			if ( player.pers["team"] == "allies" )
 			{
 				if ( player.sessionstate == "playing" )
@@ -2191,7 +2193,7 @@ startGame()
 		return;
 	}
 
-	if ( ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_strattime" ) ) && level.gametype == "sd" )
+	if ( ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] ) && level.gametype == "sd" )
 		promod\strat_time::main();
 
 	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
@@ -2691,8 +2693,8 @@ Callback_StartGameType()
 	if ( !isDefined( game["promod_do_readyup"] ) )
 		game["promod_do_readyup"] = false;
 
-	if ( isDefined( game["promod_match_mode"] ) )
-		if ( game["roundsplayed"] == 0 && !game["promod_first_readyup_done"] && game["promod_match_mode"] == "match" )
+	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_readyup" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] )
+		if ( game["roundsplayed"] == 0 && !game["promod_first_readyup_done"] )
 			game["promod_do_readyup"] = true;
 
 	level.gameEnded = false;
@@ -2856,7 +2858,7 @@ checkRoundSwitch()
 
 	if ( game["roundsplayed"] % level.roundswitch == 0 )
 	{
-		if ( game["promod_match_mode"] == "match" && game["promod_first_readyup_done"] )
+		if ( ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" || getDvarInt( "promod_allow_readyup" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] ) && game["promod_first_readyup_done"] )
 			game["promod_do_readyup"] = true;
 
 		game["promod_timeout_called"] = false;

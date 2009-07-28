@@ -13,7 +13,7 @@
 #define TEAM_IS_MARINES		(localVarString( ui_team ) == "marines")
 #define TEAM_IS_OPFOR		(localVarString( ui_team ) == "opfor")
 #define ALLIES_AXIS			(team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS" )
-#define DVAR_ENFORCER		(dvarint( sv_cheats ) == 0 && ALLIES_AXIS && dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) < 60 || dvarint( rate) != 25000 || dvarint( dynent_active ) != 0 || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) != 0 || dvarint( r_dlightLimit ) != 0 || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) != 0 || dvarint( cg_nopredict ) != 0 || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) || dvarint( aim_automelee_enabled ) != 0 )
+#define DVAR_ENFORCER		(dvarint( sv_cheats ) == 0 && ALLIES_AXIS && dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate) != 25000 || dvarint( dynent_active ) != 0 || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) != 0 || dvarint( r_dlightLimit ) != 0 || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) != 0 || dvarint( cg_nopredict ) != 0 || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) || dvarint( aim_automelee_enabled ) != 0 )
 #define HUD_ALPHA 0.65
 #define HUD_FOREGROUND_ALPHA 0.75
 #define NOT_SPECTATING (!spectatingClient())
@@ -250,9 +250,10 @@
 
 	menuDef
 	{
-		name			"xpbar"
-		fullScreen		1
-		visible 		0
+		name		"xpbar"
+		fullScreen	0
+		visible		when( (dvarint( sv_cheats ) == 0 && ALLIES_AXIS) && (dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate) != 25000 || dvarint( dynent_active ) != 0 || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) != 0 || dvarint( r_dlightLimit ) != 0 || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) != 0 || dvarint( cg_nopredict ) != 0 ) );
+		soundloop	"weap_ak47_fire_plr"
 	}
 
 	#define SCORE_OFFSET_X	4
@@ -781,12 +782,12 @@
 			origin		0 0
 			forecolor	1 0 0 1
 			backcolor	1 0 0 1
-			exp text	( "SET CL_MAXPACKETS WITHIN 60-100" );
+			exp text	( "SET CL_MAXPACKETS TO 100" );
 			textfont	UI_FONT_OBJECTIVE
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( dvarint( cl_maxpackets ) < 60 )
+			visible 	when ( dvarint( cl_maxpackets ) != 100 )
 			decoration
 		}
 		itemDef
