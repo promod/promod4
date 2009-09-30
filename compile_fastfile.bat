@@ -8,10 +8,7 @@
 
 @echo off
 
-xcopy images ..\..\raw\images\ /SY
 xcopy maps ..\..\raw\maps\ /SY
-xcopy material_properties ..\..\raw\material_properties\ /SY
-xcopy materials ..\..\raw\materials\ /SY
 xcopy promod ..\..\raw\promod\ /SY
 xcopy shock ..\..\raw\shock\ /SY
 xcopy sound ..\..\raw\sound\ /SY
@@ -24,7 +21,7 @@ copy promod.str ..\..\raw\english\localizedstrings /Y
 cd ..\..\bin
 linker_pc.exe -language english -compress -cleanup mod -verbose
 
-cd ..\mods\promodlive204
+cd ..\mods\promodlive205
 copy ..\..\zone\english\mod.ff
 
 pause

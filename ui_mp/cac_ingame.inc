@@ -28,9 +28,8 @@
 		focuscolor		COLOR_FOCUSED
 		style			WINDOW_STYLE_EMPTY
 		blurWorld		7.0
-		onClose {
-			scriptMenuResponse "go";
-		}
+		onOpen { scriptMenuResponse "apply"; }
+		onESC { scriptMenuResponse "back"; }
 
 		itemDef
 		{
@@ -107,7 +106,7 @@
 
 		#define CAC_SETUP_ACTIONGO \
 			play "mouse_click"; \
-			close self; \
+			scriptMenuResponse "go";
 
 		CHOICE_BUTTON( 6, "6. Start!", CAC_SETUP_ACTIONGO )
 		execKey "6" { CAC_SETUP_ACTIONGO; }
@@ -283,10 +282,10 @@
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_attachment_popup_SMG"suffix, 6, (CHOICE_X( pos )-2), (CHOICE_Y( pos )+26+y_offset), ;, execnow "set "UI_FOCUSFIRST" "REF_ATTACHMENT_NONE"; set ui_inside_popup attachment";, 0 )\
 		onClose{execnow "set ui_inside_popup 0";} \
 		LOCAL_ATTACHMENT_INFO_WINDOW( "loadout_"ptype )\
-		LOCAL_ATTACHMENT_ITEM( 1, stat_slot, "smg", NUM_NONE, "none", ;, ptype, statDvar, 0 )\
-		LOCAL_ATTACHMENT_ITEM( 2, stat_slot, "smg", NUM_SUPPRESSOR, "silencer", ;, ptype, statDvar, SILENCER_NEW_BITMASK )\
-		execKey "1" { LOCAL_ATTACHMENT_ACTION( 1, "none", 1, "smg" ); }\
-		execKey "2" { LOCAL_ATTACHMENT_ACTION( 2, "silencer", 1, "smg" ); }\
+		LOCAL_ATTACHMENT_ITEM( 1, stat_slot, "specops", NUM_NONE, "none", ;, ptype, statDvar, 0 )\
+		LOCAL_ATTACHMENT_ITEM( 2, stat_slot, "specops", NUM_SUPPRESSOR, "silencer", ;, ptype, statDvar, SILENCER_NEW_BITMASK )\
+		execKey "1" { LOCAL_ATTACHMENT_ACTION( 1, "none", 1, "specops" ); }\
+		execKey "2" { LOCAL_ATTACHMENT_ACTION( 2, "silencer", 1, "specops" ); }\
 	}
 	menuDef	{
 		IMPROVED_POPUP_SETUP_ONOPEN( "ocd_attachment_popup_pistol", 6, (CHOICE_X( 2 )-2), (CHOICE_Y( 2 )), ;, execnow "set "UI_FOCUSFIRST" "REF_ATTACHMENT_NONE"; set ui_inside_popup attachment";, 0 )

@@ -9,7 +9,6 @@
 */
 
 #include maps\mp\_utility;
-#include maps\mp\gametypes\_hud_util;
 
 main()
 {
@@ -22,12 +21,6 @@ main()
 
 	level.teamBased = true;
 	level.overrideTeamScore = true;
-
-	maps\mp\gametypes\_globallogic::registerRoundSwitchDvar( level.gameType, 0, 0, 999 );
-	maps\mp\gametypes\_globallogic::registerTimeLimitDvar( level.gameType, 10, 0, 1440 );
-	maps\mp\gametypes\_globallogic::registerScoreLimitDvar( level.gameType, 0, 0, 500 );
-	maps\mp\gametypes\_globallogic::registerRoundLimitDvar( level.gameType, 1, 0, 999 );
-	maps\mp\gametypes\_globallogic::registerNumLivesDvar( level.gameType, 0, 0, 10 );
 
 	if ( !game["tiebreaker"] )
 	{
@@ -46,8 +39,8 @@ main()
 		level.onEndGame = ::onEndGame;
 		level.endGameOnScoreLimit = false;
 
-		maps\mp\gametypes\_globallogic::registerNumLivesDvar( "tb", 1, 1, 1 );
-		maps\mp\gametypes\_globallogic::registerTimeLimitDvar( "tb", 0, 0, 0 );
+		level.numLives = 1;
+		level.timeLimit = 0;
 	}
 
 	badtrig = getent( "sab_bomb_defuse_allies", "targetname" );
@@ -94,9 +87,6 @@ onPrecacheGameType()
 
 onRoundSwitch()
 {
-	if ( !isdefined( game["switchedsides"] ) )
-		game["switchedsides"] = false;
-
 	if ( game["teamScores"]["allies"] == level.scorelimit - 1 && game["teamScores"]["axis"] == level.scorelimit - 1 )
 	{
 		level.halftimeType = "overtime";
@@ -111,9 +101,6 @@ onRoundSwitch()
 
 onStartGameType()
 {
-	if ( !isdefined( game["switchedsides"] ) )
-		game["switchedsides"] = false;
-
 	setClientNameMode("auto_change");
 
 	game["strings"]["target_destroyed"] = &"MP_TARGET_DESTROYED";
@@ -186,13 +173,7 @@ onOvertime()
 	{
 		level.players[index] notify("force_spawn");
 		level.players[index] thread maps\mp\gametypes\_hud_message::oldNotifyMessage( &"MP_SUDDEN_DEATH", &"MP_NO_RESPAWN", undefined, (1, 0, 0), "mp_last_stand" );
-
-		level.players[index] setClientDvars("cg_deadChatWithDead", 1,
-							"cg_deadChatWithTeam", 0,
-							"cg_deadHearTeamLiving", 0,
-							"cg_deadHearAllLiving", 0,
-							"cg_everyoneHearsEveryone", 0,
-							"g_compassShowEnemies", 1 );
+		level.players[index] setClientDvar( "g_compassShowEnemies", 1 );
 	}
 
 	waitTime = 0;
@@ -251,8 +232,6 @@ onSpawnPlayer()
 	self.isBombCarrier = false;
 
 	spawnteam = self.pers["team"];
-	if ( game["switchedsides"] )
-		spawnteam = getOtherTeam( spawnteam );
 
 	if ( level.useStartSpawns )
 	{
@@ -277,12 +256,7 @@ onSpawnPlayer()
 		if ( isDefined( hintMessage ) )
 			self thread maps\mp\gametypes\_hud_message::hintMessage( hintMessage );
 
-		self setClientDvars("cg_deadChatWithDead", 1,
-							"cg_deadChatWithTeam", 0,
-							"cg_deadHearTeamLiving", 0,
-							"cg_deadHearAllLiving", 0,
-							"cg_everyoneHearsEveryone", 0,
-							"g_compassShowEnemies", 1 );
+		self setClientDvar( "g_compassShowEnemies", 1 );
 	}
 
 	assert( isDefined(spawnpoint) );
@@ -307,22 +281,16 @@ sabotage()
 
 	trigger = getEnt( "sab_bomb_pickup_trig", "targetname" );
 	if ( !isDefined( trigger ) )
-	{
-		error( "No sab_bomb_pickup_trig trigger found in map." );
 		return;
-	}
 
 	visuals[0] = getEnt( "sab_bomb", "targetname" );
 	if ( !isDefined( visuals[0] ) )
-	{
-		error( "No sab_bomb script_model found in map." );
 		return;
-	}
 
 	precacheModel( "prop_suitcase_bomb" );
 	visuals[0] setModel( "prop_suitcase_bomb" );
 
-	if ( ( !isDefined( game["promod_do_readyup"] ) || isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] ) && ( !isDefined( game["promod_match_mode"] ) || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "strat" ) )
+	if ( ( !isDefined( game["promod_do_readyup"] ) || isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] ) && ( !isDefined( game["PROMOD_MATCH_MODE"] ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "strat" ) )
 	{
 		level.sabBomb = maps\mp\gametypes\_gameobjects::createCarryObject( "neutral", trigger, visuals, (0,0,32) );
 		level.sabBomb maps\mp\gametypes\_gameobjects::allowCarry( "any" );
@@ -347,27 +315,13 @@ sabotage()
 	}
 
 	if ( !isDefined( getEnt( "sab_bomb_axis", "targetname" ) ) )
-	{
-		error("No sab_bomb_axis trigger found in map.");
 		return;
-	}
 
 	if ( !isDefined( getEnt( "sab_bomb_allies", "targetname" ) ) )
-	{
-		error("No sab_bomb_allies trigger found in map.");
 		return;
-	}
 
-	if ( game["switchedsides"] )
-	{
-		level.bombZones["allies"] = createBombZone( "allies", getEnt( "sab_bomb_axis", "targetname" ) );
-		level.bombZones["axis"] = createBombZone( "axis", getEnt( "sab_bomb_allies", "targetname" ) );
-	}
-	else
-	{
-		level.bombZones["allies"] = createBombZone( "allies", getEnt( "sab_bomb_allies", "targetname" ) );
-		level.bombZones["axis"] = createBombZone( "axis", getEnt( "sab_bomb_axis", "targetname" ) );
-	}
+	level.bombZones["allies"] = createBombZone( "allies", getEnt( "sab_bomb_allies", "targetname" ) );
+	level.bombZones["axis"] = createBombZone( "axis", getEnt( "sab_bomb_axis", "targetname" ) );
 }
 
 createBombZone( team, trigger )
@@ -432,7 +386,6 @@ onPickup( player )
 		otherTeam = "allies";
 
 	player playLocalSound( "mp_suitcase_pickup" );
-	player logString( "bomb taken" );
 
 	if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
 		game["promod_scorebot_ticker_buffer"] += "pickup_bomb" + player.name;
@@ -474,10 +427,6 @@ onDrop( player )
 			game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
 
 		playSoundOnPlayers( game["bomb_dropped_sound"], self maps\mp\gametypes\_gameobjects::getOwnerTeam() );
-		if ( isDefined( player ) )
-			player logString( "bomb dropped" );
-		else
-			logString( "bomb dropped" );
 
 		thread abandonmentThink( 0.0 );
 	}
@@ -517,8 +466,7 @@ onUse( player )
 
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
-		player notify ( "bomb_planted" );
-		player logString( "bomb planted" );
+		level notify ( "bomb_planted" );
 
 		if ( !level.hardcoreMode )
 			iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
@@ -547,8 +495,7 @@ onUse( player )
 	}
 	else
 	{
-		player notify ( "bomb_defused" );
-		player logString( "bomb defused" );
+		level notify ( "bomb_defused" );
 
 		if ( !level.hardcoreMode )
 			iPrintLn( &"MP_EXPLOSIVES_DEFUSED_BY", player.name );
@@ -689,8 +636,6 @@ bombDefused( object )
 	level.bombPlanted = false;
 	if ( !level.inOvertime )
 		level.timeLimitOverride = false;
-
-	level notify("bomb_defused");
 }
 
 onEndGame( winningTeam )

@@ -10,8 +10,8 @@
 
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
-#define 	OPTIONS_STYLE			1
-#define 	CHOICE_SEP_1			23
+#define	OPTIONS_STYLE			1
+#define	CHOICE_SEP_1			23
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 
@@ -27,7 +27,7 @@
 		{
 			setLocalVarBool ui_hideBack 1;
 			exec "setfromdvar ui_name name";
-			exec "setfromdvar ui_fov cg_fov";
+			exec "setfromdvar ui_sensitivity sensitivity";
 
 			close options_look;
 			close options_move;
@@ -47,7 +47,7 @@
 		{
 			setLocalVarBool ui_hideBack 0;
 			exec "setfromdvar name ui_name";
-			exec "setfromdvar cg_fov ui_fov";
+			exec "setfromdvar ui_sensitivity sensitivity";
 		}
 		onESC
 		{
@@ -60,7 +60,7 @@
 
 		CHOICE_DVARYESNO( 22, "@MPUI_PUNKBUSTER", cl_punkbuster, ; )
 		CHOICE_DVARYESNO( 23, "@MENU_ALLOW_DOWNLOAD", cl_allowdownload, ; )
-		CHOICE_DVAREDIT_VIS( 24, "@MENU_PLAYER_NAME", ui_name, 15, 15, ;, 1 )
+		CHOICE_DVAREDIT( 24, "@MENU_PLAYER_NAME", ui_name, ; )
 		CHOICE_BUTTON( 25, "@MENU_ENTER_KEY_CODE", open cdkey_menu; )
 
 		CHOICE_SECTION_TITLE( 26, "Performance Settings" )
@@ -76,9 +76,10 @@
 
 		CHOICE_SECTION_TITLE( 35, "Visual Settings" )
 		CHOICE_DVARYESNO( 36, "Numerical Ammo Counter", cg_drawBreathHint, ; )
-		CHOICE_DVAREDIT( 37, "Field Of View", ui_fov, ; )
+		CHOICE_DVARFLOATLIST( 37, "Field Of View", cg_fov, { "65" 65 "80" 80 }, ;)
 		CHOICE_DVARFLOATLIST( 38, "Max FPS", com_maxfps, { "100 FPS" 100 "125 FPS" 125 "200 FPS" 200 "250 FPS" 250 }, ;)
-		CHOICE_DVARYESNO( 39, "Draw Scorebar", cg_voiceIconSize, ; )
+		CHOICE_DVARYESNO( 39, "Draw Mini-Scorebar", cg_voiceIconSize, ; )
+		CHOICE_DVAREDIT( 40, "Mouse Sensitivity", ui_sensitivity, ; )
 
 		CHOICE_KEYBINDHELP
 	}

@@ -73,7 +73,7 @@
 		forecolor		1 1 1 1
 		background		"compassping_enemy"
 		ownerdraw		CG_PLAYER_FULLMAP_ENEMIES
-		visible			when ( dvarbool( ui_hud_hardcore ) == 0 );
+		visible			when ( !dvarbool( ui_hud_hardcore ) );
 		decoration
 	}
 

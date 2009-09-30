@@ -20,12 +20,6 @@ main()
 	maps\mp\gametypes\_callbacksetup::SetupCallbacks();
 	maps\mp\gametypes\_globallogic::SetupCallbacks();
 
-	maps\mp\gametypes\_globallogic::registerRoundSwitchDvar( level.gameType, 0, 0, 1 );
-	maps\mp\gametypes\_globallogic::registerRoundLimitDvar( level.gameType, 1, 0, 2 );
-	maps\mp\gametypes\_globallogic::registerTimeLimitDvar( level.gameType, 30, 0, 1440 );
-	maps\mp\gametypes\_globallogic::registerScoreLimitDvar( level.gameType, 300, 0, 1000 );
-	maps\mp\gametypes\_globallogic::registerNumLivesDvar( level.gameType, 0, 0, 10 );
-
 	level.teamBased = true;
 	level.doPrematch = true;
 	level.overrideTeamScore = true;
@@ -185,7 +179,7 @@ HQMainLoop()
 	precacheString( &"MP_CAPTURING_HQ" );
 	precacheString( &"MP_DESTROYING_HQ" );
 
-	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] || game["promod_match_mode"] == "strat")
+	if ( isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"] || game["PROMOD_MATCH_MODE"] == "strat")
 		return;
 
 	while ( level.inPrematchPeriod )
@@ -224,7 +218,6 @@ HQMainLoop()
 
 		radioObject = radio.gameobject;
 		level.radioObject = radioObject;
-		logString( "radio spawned: " + radio.trigOrigin[0] + " " + radio.trigOrigin[1] + " " + radio.trigOrigin[2] );
 
 		radioObject maps\mp\gametypes\_gameobjects::setModelVisibility( true );
 
@@ -404,7 +397,6 @@ onRadioCapture( player )
 {
 	team = player.pers["team"];
 
-	player logString( "radio captured" );
 	player thread [[level.onXPEvent]]( "capture" );
 	maps\mp\gametypes\_globallogic::givePlayerScore( "capture", player );
 
@@ -438,7 +430,6 @@ onRadioDestroy( player )
 	if ( team == "axis" )
 		otherTeam = "allies";
 
-	player logString( "radio destroyed" );
 	player thread [[level.onXPEvent]]( "capture" );
 	maps\mp\gametypes\_globallogic::givePlayerScore( "capture", player );
 
@@ -636,7 +627,7 @@ PickRadioToSpawn()
 		}
 	}
 
-	if ( num["allies"] == 0 || num["axis"] == 0 )
+	if ( !num["allies"] || !num["axis"] )
 	{
 		radio = level.radios[ randomint( level.radios.size) ];
 		while ( isDefined( level.prevradio ) && radio == level.prevradio )

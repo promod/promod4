@@ -9,7 +9,6 @@
 */
 
 #include maps\mp\gametypes\_hud_util;
-#include maps\mp\_utility;
 
 main()
 {
@@ -25,9 +24,9 @@ main()
 	level.timeLimitOverride = true;
 	level.rdyup = 1;
 
-	disableBombsites();
+	thread disableBombsites();
 
-	setDvar( "g_deadChat", "1" );
+	setDvar( "g_deadChat", 1 );
 	setClientNameMode( "auto_change" );
 	setGameEndTime( 0 );
 
@@ -40,7 +39,9 @@ main()
 
 	thread Kill_HUD_Stuff();
 
-	wait .5;
+	game["state"] = "postgame";
+
+	wait 0.5;
 
 	Ready_up_matchStartTimer();
 
@@ -53,7 +54,7 @@ main()
 
 disableBombsites()
 {
-	if( level.gametype == "sd" && isDefined( level.bombZones ) )
+	if ( level.gametype == "sd" && isDefined( level.bombZones ) )
 		for ( j = 0; j < level.bombZones.size; j++ )
 			level.bombZones[j] maps\mp\gametypes\_gameobjects::disableObject();
 }
@@ -62,35 +63,34 @@ Ready_Up_Monitor_Loop()
 {
 	level.ready_up_over = false;
 
-	while (!level.ready_up_over)
+	while ( !level.ready_up_over )
 	{
-		wait .5;
+		wait 0.05;
+
 		all_players_ready = true;
 		not_ready_count = 0;
 
 		players = getentarray("player", "classname");
 
-		if (players.size < 1)
+		if ( players.size < 1 )
 		{
 			all_players_ready = false;
-			wait 2;
 			continue;
 		}
 
-		for(i = 0; i < players.size; i++)
+		for ( i = 0; i < players.size; i++ )
 		{
 			player = players[i];
 
-			if ( !isDefined(player.looped) )
+			if ( !isDefined( player.looped ) )
 			{
 				player.looped = true;
 				player.ready = false;
-				player.ruptally = -1;
 				player thread Player_Ready_Up_Loop();
 				all_players_ready = false;
 			}
 
-			if (!player.ready)
+			if ( !player.ready )
 			{
 				not_ready_count++;
 				all_players_ready = false;
@@ -99,24 +99,17 @@ Ready_Up_Monitor_Loop()
 
 		level.not_ready_count = not_ready_count;
 
-		if (all_players_ready)
+		if ( all_players_ready )
 			level.ready_up_over = true;
 	}
 
-	if(isdefined(level.waiting))
+	if ( isdefined( level.waiting ) )
 		level.waiting destroy();
 }
 
 Player_Ready_Up_Loop()
 {
-	self.pers["autoready"] = 0;
-
 	self endon("disconnect");
-
-	if (isDefined(self.in_ready_up_loop))
-		return;
-
-	self.in_ready_up_loop = true;
 
 	self thread on_Spawn();
 
@@ -172,133 +165,122 @@ Player_Ready_Up_Loop()
 	readytally.hidewheninmenu = true;
 	readytally setText("Disabled");
 
-	if (self.pers["autoready"] == 0) self.statusicon = "compassping_enemy";
+	self.statusicon = "compassping_enemy";
 
-	while (!level.ready_up_over)
+	while ( !level.ready_up_over )
 	{
-		wait .05;
+		wait 0.05;
 
-		if (self.ruptally >= 0)
+		if ( isDefined( self.ruptally ) && self.ruptally >= 0 )
 		{
 			killing setText("Kills");
 			readytally setValue(self.ruptally);
 			wait 0.1;
 		}
 
-		if(self useButtonPressed() == true)
+		if ( self useButtonPressed() )
 		{
 			self.ready = !self.ready;
 
-			if (self.ready)
+			if ( self.ready )
 			{
-				self.statusicon = "compassping_friendlyfiring_mp";
-
 				readyhud.color = (.73, .99, .73);
 				readyhud setText("Ready");
 			}
 			else
 			{
-				self.statusicon = "compassping_enemy";
-
 				readyhud.color = (1, .66, .66);
 				readyhud setText("Not Ready");
 			}
-
-			while (self useButtonPressed() == true)
-				wait .05;
 		}
+
+		if ( self.ready )
+			self.statusicon = "compassping_friendlyfiring_mp";
 		else
-		{
-			if (self.ready && self.statusicon != "compassping_friendlyfiring_mp" )
-			{
-				if (self.pers["autoready"] == 0) self.statusicon = "compassping_friendlyfiring_mp";
+			self.statusicon = "compassping_enemy";
 
-				readyhud.color = (.73, .99, .73);
-				readyhud setText("Ready");
-			}
-			else if (!self.ready && self.statusicon != "compassping_enemy" )
-			{
-				if (self.pers["autoready"] == 0) self.statusicon = "compassping_enemy";
-
-				readyhud.color = (1, .66, .66);
-				readyhud setText("Not Ready");
-			}
-		}
+		while ( self useButtonPressed() )
+			wait 0.05;
 	}
 
 	level waittill("kill_ru_huds");
 
-	if (self.pers["autoready"] == 0) self.statusicon = "";
+	self.statusicon = "";
 
-	if(isdefined(readyhud))
+	if ( isDefined( readyhud ) )
 		readyhud destroy();
-	if(isdefined(status))
+
+	if ( isDefined( status ) )
 		status destroy();
-	if(isdefined(killing))
+
+	if ( isDefined( killing ) )
 		killing destroy();
-	if(isdefined(readytally))
+
+	if ( isDefined( readytally ) )
 		readytally destroy();
 }
 
 Waiting_On_Players_HUD_Loop()
 {
-	while (!isDefined(level.not_ready_count))
+	while ( !isDefined( level.not_ready_count ) )
 		wait .1;
 
-	level.waitingon = newHudElem(self);
-	level.waitingon.x = -40;
-	level.waitingon.y = 80;
-	level.waitingon.horzAlign = "right";
-	level.waitingon.vertAlign = "top";
-	level.waitingon.alignX = "center";
-	level.waitingon.alignY = "middle";
-	level.waitingon.fontScale = 1.4;
-	level.waitingon.font = "default";
-	level.waitingon.color = (.8, 1, 1);
-	level.waitingon.hidewheninmenu = true;
-	level.waitingon setText("Waiting On");
+	waitingon = newHudElem();
+	waitingon.x = -40;
+	waitingon.y = 80;
+	waitingon.horzAlign = "right";
+	waitingon.vertAlign = "top";
+	waitingon.alignX = "center";
+	waitingon.alignY = "middle";
+	waitingon.fontScale = 1.4;
+	waitingon.font = "default";
+	waitingon.color = (.8, 1, 1);
+	waitingon.hidewheninmenu = true;
+	waitingon setText("Waiting On");
 
-	level.playerstext = newHudElem(self);
-	level.playerstext.x = -40;
-	level.playerstext.y = 120;
-	level.playerstext.horzAlign = "right";
-	level.playerstext.vertAlign = "top";
-	level.playerstext.alignX = "center";
-	level.playerstext.alignY = "middle";
-	level.playerstext.fontScale = 1.4;
-	level.playerstext.font = "default";
-	level.playerstext.color = (.8, 1, 1);
-	level.playerstext.hidewheninmenu = true;
-	level.playerstext setText("Players");
+	playerstext = newHudElem();
+	playerstext.x = -40;
+	playerstext.y = 120;
+	playerstext.horzAlign = "right";
+	playerstext.vertAlign = "top";
+	playerstext.alignX = "center";
+	playerstext.alignY = "middle";
+	playerstext.fontScale = 1.4;
+	playerstext.font = "default";
+	playerstext.color = (.8, 1, 1);
+	playerstext.hidewheninmenu = true;
+	playerstext setText("Players");
 
-	level.notreadyhud = newHudElem(self);
-	level.notreadyhud.x = -40;
-	level.notreadyhud.y = 100;
-	level.notreadyhud.horzAlign = "right";
-	level.notreadyhud.vertAlign = "top";
-	level.notreadyhud.alignX = "center";
-	level.notreadyhud.alignY = "middle";
-	level.notreadyhud.fontScale = 1.4;
-	level.notreadyhud.font = "default";
-	level.notreadyhud.color = (.98, .98, .60);
-	level.notreadyhud.hidewheninmenu = true;
+	notreadyhud = newHudElem();
+	notreadyhud.x = -40;
+	notreadyhud.y = 100;
+	notreadyhud.horzAlign = "right";
+	notreadyhud.vertAlign = "top";
+	notreadyhud.alignX = "center";
+	notreadyhud.alignY = "middle";
+	notreadyhud.fontScale = 1.4;
+	notreadyhud.font = "default";
+	notreadyhud.color = (.98, .98, .60);
+	notreadyhud.hidewheninmenu = true;
 
-	while(!level.ready_up_over)
+	while ( !level.ready_up_over )
 	{
-		level.notreadyhud setValue(level.not_ready_count);
-		wait .1;
+		notreadyhud setValue( level.not_ready_count );
+		wait 0.05;
 	}
 
-	level.notreadyhud setValue(0);
+	notreadyhud setValue(0);
 
 	level waittill("kill_ru_huds");
 
-	if(isdefined(level.notreadyhud))
-		level.notreadyhud destroy();
-	if(isdefined(level.waitingon))
-		level.waitingon destroy();
-	if(isdefined(level.playerstext))
-		level.playerstext destroy();
+	if ( isDefined( notreadyhud ) )
+		notreadyhud destroy();
+
+	if ( isDefined( waitingon ) )
+		waitingon destroy();
+
+	if ( isDefined( playerstext ) )
+		playerstext destroy();
 }
 
 on_Spawn()
@@ -344,7 +326,7 @@ Ready_up_matchStartTimer()
 
 	wait timer;
 
-	visionSetNaked( getDvar( "mapname" ), 2.0 );
+	visionSetNaked( getDvar( "mapname" ), 1 );
 
 	matchStartText destroyElem();
 	matchStartText2 destroyElem();
@@ -382,6 +364,6 @@ Period_Announce( text )
 
 	level waittill("kill_ru_period");
 
-	if(isdefined(RU_Period))
+	if ( isdefined( RU_Period ) )
 		RU_Period destroy();
 }

@@ -42,6 +42,7 @@ flashRumbleLoop( duration )
 monitorFlash()
 {
 	self endon("disconnect");
+
 	self.flashEndTime = 0;
 	while(1)
 	{
@@ -72,13 +73,8 @@ monitorFlash()
 		assert(isdefined(self.pers["team"]));
 		if (level.teamBased && isdefined(attacker) && isdefined(attacker.pers["team"]) && attacker.pers["team"] == self.pers["team"] && attacker != self)
 		{
-			if(level.friendlyfire == 0)
-			{
+			if(!level.friendlyfire)
 				continue;
-			}
-			else if(level.friendlyfire == 1)
-			{
-			}
 			else if(level.friendlyfire == 2)
 			{
 				duration = duration * .5;

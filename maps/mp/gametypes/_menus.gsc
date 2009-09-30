@@ -53,6 +53,7 @@ onPlayerConnect()
 
 onMenuResponse()
 {
+	level endon("restarting");
 	self endon("disconnect");
 
 	for(;;)
@@ -150,9 +151,7 @@ onMenuResponse()
 			continue;
 		}
 		else if( menu == game["menu_changeclass"] )
-		{
-			self maps\mp\gametypes\_promod::menuAcceptClass();
-		}
+			self maps\mp\gametypes\_promod::menuAcceptClass( response );
 
 		if( menu == game["menu_quickcommands"] )
 			maps\mp\gametypes\_quickmessages::quickcommands(response);

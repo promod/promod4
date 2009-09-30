@@ -240,7 +240,7 @@ quickpromod(response)
 			classType = self.pers["class"];
 			primaryWeap = self.pers[classType]["loadout_primary"];
 
-			if ( getDvar( "attach_allow_" + classType + "_silencer" ) == "0" )
+			if ( !getDvarInt( "attach_allow_" + classType + "_silencer" ) )
 				return;
 
 			if ( primaryWeap == "mp44" || classType == "sniper" || classType == "demolitions" )
@@ -271,7 +271,7 @@ quickpromod(response)
 
 			if ( self.pers[classType]["loadout_grenade"] == "smoke_grenade" )
 			{
-				if ( getDvar( "weap_allow_flash_grenade" ) == "0" )
+				if ( !getDvarInt( "weap_allow_flash_grenade" ) )
 					return;
 
 				self.pers[classType]["loadout_grenade"] = "flash_grenade";
@@ -279,7 +279,7 @@ quickpromod(response)
 			}
 			else if ( self.pers[classType]["loadout_grenade"] == "flash_grenade" )
 			{
-				if ( getDvar( "weap_allow_smoke_grenade" ) == "0" )
+				if ( !getDvarInt( "weap_allow_smoke_grenade" ) )
 					return;
 
 				self.pers[classType]["loadout_grenade"] = "smoke_grenade";
@@ -322,27 +322,27 @@ quickpromodgfx(response)
 	switch(response)
 	{
 		case "1":
-			self thread promod\config::toggle_sunlight();
+			self thread promod\client::toggle_sunlight();
 			break;
 
 		case "2":
-			self thread promod\config::toggle_filmtweak();
+			self thread promod\client::toggle_filmtweak();
 			break;
 
 		case "3":
-			self thread promod\config::toggle_texture();
+			self thread promod\client::toggle_texture();
 			break;
 
 		case "4":
-			self thread promod\config::toggle_normalmap();
+			self thread promod\client::toggle_normalmap();
 			break;
 
 		case "5":
-			self thread promod\config::toggle_fovscale();
+			self thread promod\client::toggle_fovscale();
 			break;
 
 		case "6":
-			self thread promod\config::toggle_gfxblur();
+			self thread promod\client::toggle_gfxblur();
 			break;
 	}
 }

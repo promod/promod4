@@ -8,9 +8,6 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-#include common_scripts\utility;
-#include maps\mp\_utility;
-
 init()
 {
 	precacheItem( "ak47_mp" );
@@ -74,28 +71,6 @@ onPlayerSpawned()
 
 		self.hasDoneCombat = false;
 		self thread watchGrenadeUsage();
-		self thread watchWeaponChange();
-
-		self.droppedDeathWeapon = undefined;
-	}
-}
-
-watchWeaponChange()
-{
-	self endon("death");
-	self endon("disconnect");
-
-	self.lastDroppableWeapon = undefined;
-
-	if ( mayDropWeapon( self getCurrentWeapon() ) )
-		self.lastDroppableWeapon = self getCurrentWeapon();
-
-	while(1)
-	{
-		self waittill( "weapon_change", newWeapon );
-
-		if ( mayDropWeapon( newWeapon ) )
-			self.lastDroppableWeapon = newWeapon;
 	}
 }
 
@@ -107,20 +82,15 @@ isHackWeapon( weapon )
 	return false;
 }
 
-mayDropWeapon( weapon )
+dropWeaponForDeath( attacker )
 {
-	if ( weapon == "none" )
-		return false;
+	weapon = self getCurrentWeapon();
 
-	if ( isHackWeapon( weapon ) )
-		return false;
+	if ( !isDefined( weapon ) )
+		return;
 
-	invType = WeaponInventoryType( weapon );
-	if ( invType != "primary" )
-		return false;
-
-	if ( weapon == "none" )
-		return false;
+	if ( !self hasWeapon( weapon ) )
+		return;
 
 	if ( !isPrimaryWeapon( weapon ) )
 		return false;
@@ -128,35 +98,25 @@ mayDropWeapon( weapon )
 	switch ( level.primary_weapon_array[weapon] )
 	{
 		case "weapon_assault":
-			return ( getDvarInt( "class_assault_allowdrop" ) );
+			if ( !getDvarInt( "class_assault_allowdrop" ) )
+				return;
+			break;
 		case "weapon_smg":
-			return ( getDvarInt( "class_specops_allowdrop" ) );
+			if ( !getDvarInt( "class_specops_allowdrop" ) )
+				return;
+			break;
 		case "weapon_sniper":
-			return ( getDvarInt( "class_sniper_allowdrop" ) );
+			if ( !getDvarInt( "class_sniper_allowdrop" ) )
+				return;
+			break;
 		case "weapon_shotgun":
-			return ( getDvarInt( "class_demolitions_allowdrop" ) );
+			if ( !getDvarInt( "class_demolitions_allowdrop" ) )
+				return;
+			break;
+
+		default:
+			return;
 	}
-	return false;
-}
-
-dropWeaponForDeath( attacker )
-{
-	weapon = self.lastDroppableWeapon;
-
-	if ( isdefined( self.droppedDeathWeapon ) )
-		return;
-
-	if ( !isdefined( weapon ) )
-		return;
-
-	if ( weapon == "none" )
-		return;
-
-	if ( !self hasWeapon( weapon ) )
-		return;
-
-	if ( !(self AnyAmmoForWeaponModes( weapon )) )
-		return;
 
 	clipAmmo = self GetWeaponAmmoClip( weapon );
 
@@ -169,8 +129,6 @@ dropWeaponForDeath( attacker )
 		stockAmmo = stockMax;
 
 	item = self dropItem( weapon );
-
-	self.droppedDeathWeapon = true;
 
 	item ItemWeaponSetAmmo( clipAmmo, stockAmmo );
 

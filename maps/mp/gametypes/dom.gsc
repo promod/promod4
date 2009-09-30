@@ -9,7 +9,6 @@
 */
 
 #include maps\mp\_utility;
-#include maps\mp\gametypes\_hud_util;
 
 main()
 {
@@ -19,12 +18,6 @@ main()
 	maps\mp\gametypes\_globallogic::init();
 	maps\mp\gametypes\_callbacksetup::SetupCallbacks();
 	maps\mp\gametypes\_globallogic::SetupCallbacks();
-
-	maps\mp\gametypes\_globallogic::registerRoundSwitchDvar( "dom", 0, 0, 1 );
-	maps\mp\gametypes\_globallogic::registerTimeLimitDvar( "dom", 30, 0, 1440 );
-	maps\mp\gametypes\_globallogic::registerScoreLimitDvar( "dom", 300, 0, 1000 );
-	maps\mp\gametypes\_globallogic::registerRoundLimitDvar( "dom", 1, 1, 2 );
-	maps\mp\gametypes\_globallogic::registerNumLivesDvar( "dom", 0, 0, 10 );
 
 	level.teamBased = true;
 	level.overrideTeamScore = true;
@@ -365,8 +358,6 @@ onUse( player )
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "captured" + self.label + "" + player.name;
-
-	player logString( "flag captured: " + self.label );
 
 	self maps\mp\gametypes\_gameobjects::setOwnerTeam( team );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_capture" + label );

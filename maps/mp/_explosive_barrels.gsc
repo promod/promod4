@@ -132,7 +132,7 @@ oil_spill_burn(P, dest)
 	right = anglestoright(angle);
 
 	barrels = getentarray ("explodable_barrel","targetname");
-	distsqr = 22 * 22;
+	distsqr = 484;
 
 	test = spawn("script_origin", P);
 
@@ -268,15 +268,15 @@ explodable_barrel_burn()
 				playfx (level.breakables_fx["barrel"]["burn_start"], self.origin + offset1);
 				startedfx = true;
 			}
+
 			if (count > 20)
 				count = 0;
 
 			playfx (level.breakables_fx["barrel"]["burn"], self.origin + offset2);
 
-			if (count == 0)
-			{
+			if (!count)
 				self.damageTaken += (10 + randomfloat(10));
-			}
+
 			count++;
 			wait 0.05;
 		}

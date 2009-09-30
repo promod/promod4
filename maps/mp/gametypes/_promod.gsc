@@ -8,10 +8,6 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-#include maps\mp\_utility;
-#include maps\mp\gametypes\_hud_util;
-#include common_scripts\utility;
-
 init()
 {
 	level.serverDvars = [];
@@ -41,8 +37,8 @@ init()
 	setDvarDefault( "weap_allow_uzi", 1, 0, 1 );
 	setDvarDefault( "weap_allow_ak74u", 1, 0, 1 );
 
-	setDvarDefault( "attach_allow_smg_none", 1, 0, 1 );
-	setDvarDefault( "attach_allow_smg_silencer", 1, 0, 1 );
+	setDvarDefault( "attach_allow_specops_none", 1, 0, 1 );
+	setDvarDefault( "attach_allow_specops_silencer", 1, 0, 1 );
 
 	setDvarDefault( "weap_allow_m1014", 1, 0, 1 );
 	setDvarDefault( "weap_allow_winchester1200", 1, 0, 1 );
@@ -143,8 +139,8 @@ setClassChoice( classType )
 					"weap_allow_mp5", getDvar( "weap_allow_mp5" ),
 					"weap_allow_uzi", getDvar( "weap_allow_uzi" ),
 					"weap_allow_ak74u", getDvar( "weap_allow_ak74u" ),
-					"attach_allow_smg_none", getDvar( "attach_allow_smg_none" ),
-					"attach_allow_smg_silencer", getDvar( "attach_allow_smg_silencer" ) );
+					"attach_allow_specops_none", getDvar( "attach_allow_specops_none" ),
+					"attach_allow_specops_silencer", getDvar( "attach_allow_specops_silencer" ) );
 			break;
 		case "demolitions":
 			self setClientDvars(
@@ -225,89 +221,165 @@ initClassLoadouts()
 
 initLoadoutForClass( classType )
 {
-	CLASS_PRIMARY = "";
-	CLASS_PRIMARY_ATTACHMENT = "";
-	CLASS_SECONDARY = "";
-	CLASS_SECONDARY_ATTACHMENT = "";
-	CLASS_GRENADE = "";
-	CLASS_CAMO = "";
-
+	SSALC = "";
 	if ( classType == "assault" )
-	{
-		CLASS_PRIMARY = "ASSAULT_PRIMARY";
-		CLASS_PRIMARY_ATTACHMENT = "ASSAULT_PRIMARY_ATTACHMENT";
-		CLASS_SECONDARY = "ASSAULT_SECONDARY";
-		CLASS_SECONDARY_ATTACHMENT = "ASSAULT_SECONDARY_ATTACHMENT";
-		CLASS_GRENADE = "ASSAULT_GRENADE";
-		CLASS_CAMO = "ASSAULT_CAMO";
-	}
+		SSALC = "ASSAULT";
 	else if ( classType == "specops" )
-	{
-		CLASS_PRIMARY = "SPECOPS_PRIMARY";
-		CLASS_PRIMARY_ATTACHMENT = "SPECOPS_PRIMARY_ATTACHMENT";
-		CLASS_SECONDARY = "SPECOPS_SECONDARY";
-		CLASS_SECONDARY_ATTACHMENT = "SPECOPS_SECONDARY_ATTACHMENT";
-		CLASS_GRENADE = "SPECOPS_GRENADE";
-		CLASS_CAMO = "SPECOPS_CAMO";
-	}
+		SSALC = "SPECOPS";
 	else if ( classType == "demolitions" )
-	{
-		CLASS_PRIMARY = "DEMOLITIONS_PRIMARY";
-		CLASS_PRIMARY_ATTACHMENT = "DEMOLITIONS_PRIMARY_ATTACHMENT";
-		CLASS_SECONDARY = "DEMOLITIONS_SECONDARY";
-		CLASS_SECONDARY_ATTACHMENT = "DEMOLITIONS_SECONDARY_ATTACHMENT";
-		CLASS_GRENADE = "DEMOLITIONS_GRENADE";
-		CLASS_CAMO = "DEMOLITIONS_CAMO";
-	}
+		SSALC = "DEMOLITIONS";
 	else if ( classType == "sniper" )
-	{
-		CLASS_PRIMARY = "SNIPER_PRIMARY";
-		CLASS_PRIMARY_ATTACHMENT = "SNIPER_PRIMARY_ATTACHMENT";
-		CLASS_SECONDARY = "SNIPER_SECONDARY";
-		CLASS_SECONDARY_ATTACHMENT = "SNIPER_SECONDARY_ATTACHMENT";
-		CLASS_GRENADE = "SNIPER_GRENADE";
-		CLASS_CAMO = "SNIPER_CAMO";
-	}
+		SSALC = "SNIPER";
+
+	CLASS_PRIMARY = SSALC + "_PRIMARY";
+	CLASS_PRIMARY_ATTACHMENT = SSALC + "_PRIMARY_ATTACHMENT";
+	CLASS_SECONDARY = SSALC + "_SECONDARY";
+	CLASS_SECONDARY_ATTACHMENT = SSALC + "_SECONDARY_ATTACHMENT";
+	CLASS_GRENADE = SSALC + "_GRENADE";
+	CLASS_CAMO = SSALC + "_CAMO";
 
 	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_PRIMARY, 0 ) ) ) )
 		self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
-	else if ( getDvarInt( "weap_allow_" + get_config( CLASS_PRIMARY ) ) )
+	else if ( validClass( classType, get_config( CLASS_PRIMARY ), "loadout_primary" ) )
 		self.pers[classType]["loadout_primary"] = get_config( CLASS_PRIMARY );
 	else
 		self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
 
 	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_PRIMARY_ATTACHMENT, 0 ) ) ) )
 		self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
-	else if ( getDvarInt( "attach_allow_assault_" + get_config( CLASS_PRIMARY_ATTACHMENT ) ) && classType == "assault" || getDvarInt( "attach_allow_smg_" + get_config( CLASS_PRIMARY_ATTACHMENT ) ) && classType == "specops" )
+	else if ( validClass( classType, get_config( CLASS_PRIMARY_ATTACHMENT ), "loadout_primary_attachment" ) )
 		self.pers[classType]["loadout_primary_attachment"] = get_config( CLASS_PRIMARY_ATTACHMENT );
 	else
 		self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
 
 	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_SECONDARY, 0 ) ) ) )
 		self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
-	else if ( getDvarInt( "weap_allow_" + get_config( CLASS_SECONDARY ) ) )
+	else if ( validClass( classType, get_config( CLASS_SECONDARY ), "loadout_secondary" ) )
 		self.pers[classType]["loadout_secondary"] = get_config( CLASS_SECONDARY );
 	else
 		self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
 
 	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_SECONDARY_ATTACHMENT, 0 ) ) ) )
 		self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
-	else if ( getDvarInt( "attach_allow_pistol_" + get_config( CLASS_SECONDARY_ATTACHMENT ) ) )
+	else if ( validClass( classType, get_config( CLASS_SECONDARY_ATTACHMENT ), "loadout_secondary_attachment" ) )
 		self.pers[classType]["loadout_secondary_attachment"] = get_config( CLASS_SECONDARY_ATTACHMENT );
 	else
 		self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
 
 	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_GRENADE, 0 ) ) ) )
 		self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
-	else if ( getDvarInt( "weap_allow_" + get_config( CLASS_GRENADE ) ) )
+	else if ( validClass( classType, get_config( CLASS_GRENADE ), "loadout_grenade" ) )
 		self.pers[classType]["loadout_grenade"] = get_config( CLASS_GRENADE );
 	else
 		self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
 
 	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_CAMO, 0 ) ) ) )
 		self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
-	else
+	else if ( validClass( classType, get_config( CLASS_CAMO ), "loadout_camo" ) )
 		self.pers[classType]["loadout_camo"] = get_config( CLASS_CAMO );
+	else
+		self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
+}
+
+validClass( classType, preServed, type )
+{
+	loadout_primary = "";
+	loadout_primary_attachment = "";
+	loadout_secondary = "";
+	loadout_secondary_attachment = "";
+	loadout_grenade = "";
+	loadout_camo = "";
+
+	if ( classType == "assault" )
+		loadout_primary = strTok( "m16,ak47,m4,g3,g36c,m14,mp44", "," );
+	else if ( classType == "specops" )
+		loadout_primary = strTok( "mp5,uzi,ak74u", "," );
+	else if ( classType == "demolitions" )
+		loadout_primary = strTok( "winchester1200,m1014", "," );
+	else if ( classType == "sniper" )
+		loadout_primary = strTok( "m40a3,remington700", "," );
+
+	loadout_primary_attachment = strTok( "none,silencer", "," );
+	loadout_secondary = strTok( "deserteaglegold,deserteagle,colt45,usp,beretta", "," );
+	loadout_secondary_attachment = strTok( "none,silencer", "," );
+	loadout_grenade = strTok( "flash_grenade,smoke_grenade", "," );
+	loadout_camo = strTok( "camo_none,camo_brockhaurd,camo_bushdweller,camo_blackwhitemarpat,camo_tigerred,camo_stagger,camo_gold", "," );
+
+	switch ( type )
+	{
+		case "loadout_primary":
+			for ( i = 0; i < loadout_primary.size; i++ )
+			{
+				exp = loadout_primary[i];
+
+				if ( exp == preServed )
+					if ( getDvarInt( "weap_allow_" + preServed ) )
+						return true;
+			}
+			break;
+
+		case "loadout_primary_attachment":
+			if ( classType == "assault" || classType == "specops" )
+			{
+				for ( i = 0; i < loadout_primary_attachment.size; i++ )
+				{
+					exp = loadout_primary_attachment[i];
+
+					if ( exp == preServed )
+						if ( getDvarInt( "attach_allow" + "_" + classType + "_" + preServed ) )
+							return true;
+				}
+			}
+			break;
+
+		case "loadout_secondary":
+			for ( i = 0; i < loadout_secondary.size; i++ )
+			{
+				exp = loadout_secondary[i];
+
+				if ( exp == preServed )
+					if ( getDvarInt( "weap_allow_" + preServed ) )
+						return true;
+			}
+			break;
+
+		case "loadout_secondary_attachment":
+			for ( i = 0; i < loadout_secondary_attachment.size; i++ )
+			{
+				exp = loadout_secondary_attachment[i];
+
+				if ( exp == preServed )
+					if ( getDvarInt( "attach_allow_pistol_" + preServed ) )
+						return true;
+			}
+			break;
+
+		case "loadout_grenade":
+			for ( i = 0; i < loadout_grenade.size; i++ )
+			{
+				exp = loadout_grenade[i];
+
+				if ( exp == preServed )
+					if ( getDvarInt( "weap_allow_" + preServed ) )
+						return true;
+			}
+			break;
+
+		case "loadout_camo":
+			for ( i = 0; i < loadout_camo.size; i++ )
+			{
+				exp = loadout_camo[i];
+
+				if ( exp == preServed )
+					return true;
+			}
+			break;
+
+		default:
+			return false;
+	}
+
+	return false;
 }
 
 setDvarsFromClass( classType )
@@ -360,7 +432,7 @@ processLoadoutResponse( respString )
 
 			case "loadout_primary_attachment":
 			case "loadout_secondary_attachment":
-				if( respString != "loadout_primary_attachment:assault:none" && respString != "loadout_primary_attachment:assault:silencer" && respString != "loadout_primary_attachment:smg:none" && respString != "loadout_primary_attachment:smg:silencer" && respString != "loadout_secondary_attachment:pistol:none" && respString != "loadout_secondary_attachment:pistol:silencer" )
+				if( respString != "loadout_primary_attachment:assault:none" && respString != "loadout_primary_attachment:assault:silencer" && respString != "loadout_primary_attachment:specops:none" && respString != "loadout_primary_attachment:specops:silencer" && respString != "loadout_secondary_attachment:pistol:none" && respString != "loadout_secondary_attachment:pistol:silencer" )
 					return;
 
 				if ( subTokens[0] == "loadout_primary_attachment" && self.pers[self.class]["loadout_primary"] == "mp44" )
@@ -444,7 +516,7 @@ verifyClassChoice( teamName, classType )
 {
 	if ( teamName == "allies" || teamName == "axis" )
 	{
-		if ( getDvarInt( "class_" + classType + "_limit" ) == 0 )
+		if ( !getDvarInt( "class_" + classType + "_limit" ) )
 			return false;
 
 		if ( isDefined( self.pers["class"] ) && self.pers["class"] == classType )
@@ -504,39 +576,40 @@ updateClassAvailability( teamName )
 	setDvarWrapper( teamName + "_allow_sniper", game[teamName + "_sniper_count"] < getDvarInt( "class_sniper_limit" ) );
 }
 
-menuAcceptClass()
+menuAcceptClass( response )
 {
-	self maps\mp\gametypes\_globallogic::closeMenus();
+	if ( isDefined( response) && response == "apply" && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "pub" )
+		return;
 
-	if(!isDefined(self.pers["team"]) || (self.pers["team"] != "allies" && self.pers["team"] != "axis"))
+	if ( isDefined( response) && response == "go" )
+		self maps\mp\gametypes\_globallogic::closeMenus();
+
+	if ( !isDefined( self.pers["team"] ) || ( self.pers["team"] != "allies" && self.pers["team"] != "axis" ) )
 		return;
 
 	if ( self.sessionstate == "playing" )
 	{
-		self.pers["primary"] = undefined;
-		self.pers["weapon"] = undefined;
-
-		if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" )
-		{
+		if ( level.inGracePeriod && !self.hasDoneCombat && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
-		}
 		else
 		{
-			self iPrintLnBold( game["strings"]["change_class"] );
+			if ( !isDefined( response) || response != "apply" )
+				self iPrintLnBold( game["strings"]["change_class"] );
+
 			self setClientDvar( "loadout_curclass", self.pers["class"] );
 			self.curClass = self.pers["class"];
 		}
 
-		self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
+		if ( isDefined( response) && response == "go" )
+			self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
 	}
 	else
 	{
-		self.pers["primary"] = undefined;
-		self.pers["weapon"] = undefined;
-
 		self setClientDvar( "loadout_curclass", self.pers["class"] );
 		self.curClass = self.pers["class"];
-		self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
+
+		if ( isDefined( response) && response == "go" )
+			self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
 
 		if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 			return;

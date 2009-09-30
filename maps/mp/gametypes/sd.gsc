@@ -20,12 +20,6 @@ main()
 	maps\mp\gametypes\_callbacksetup::SetupCallbacks();
 	maps\mp\gametypes\_globallogic::SetupCallbacks();
 
-	maps\mp\gametypes\_globallogic::registerRoundSwitchDvar( level.gameType, 3, 0, 999 );
-	maps\mp\gametypes\_globallogic::registerTimeLimitDvar( level.gameType, 2.5, 0, 1440 );
-	maps\mp\gametypes\_globallogic::registerScoreLimitDvar( level.gameType, 4, 0, 500 );
-	maps\mp\gametypes\_globallogic::registerRoundLimitDvar( level.gameType, 0, 0, 999 );
-	maps\mp\gametypes\_globallogic::registerNumLivesDvar( level.gameType, 1, 0, 10 );
-
 	level.teamBased = true;
 	level.overrideTeamScore = true;
 	level.onPrecacheGameType = ::onPrecacheGameType;
@@ -110,6 +104,7 @@ getBetterTeam()
 
 	if ( randomint(2) == 0 )
 		return "allies";
+
 	return "axis";
 }
 
@@ -157,7 +152,7 @@ onSpawnPlayer()
 	self.isDefusing = false;
 	self.isBombCarrier = false;
 
-	if(self.pers["team"] == game["attackers"])
+	if ( self.pers["team"] == game["attackers"] )
 		spawnPointName = "mp_sd_spawn_attacker";
 	else
 		spawnPointName = "mp_sd_spawn_defender";
@@ -232,9 +227,7 @@ onDeadEvent( team )
 		sd_endGame( game["defenders"], game["strings"][game["attackers"]+"_eliminated"] );
 	}
 	else if ( team == game["defenders"] )
-	{
 		sd_endGame( game["attackers"], game["strings"][game["defenders"]+"_eliminated"] );
-	}
 }
 
 onTimeLimit()
@@ -261,22 +254,16 @@ bombs()
 
 	trigger = getEnt( "sd_bomb_pickup_trig", "targetname" );
 	if ( !isDefined( trigger ) )
-	{
-		maps\mp\_utility::error("No sd_bomb_pickup_trig trigger found in map.");
 		return;
-	}
 
 	visuals[0] = getEnt( "sd_bomb", "targetname" );
 	if ( !isDefined( visuals[0] ) )
-	{
-		maps\mp\_utility::error("No sd_bomb script_model found in map.");
 		return;
-	}
 
 	precacheModel( "prop_suitcase_bomb" );
 	visuals[0] setModel( "prop_suitcase_bomb" );
 
-	if ( !level.multiBomb && isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] && isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "strat" )
+	if ( !level.multiBomb && isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "strat" )
 	{
 		level.sdBomb = maps\mp\gametypes\_gameobjects::createCarryObject( game["attackers"], trigger, visuals, (0,0,32) );
 		level.sdBomb maps\mp\gametypes\_gameobjects::allowCarry( "friendly" );
@@ -347,6 +334,7 @@ bombs()
 			if ( otherindex != index )
 				array[ array.size ] = level.bombZones[otherindex];
 		}
+
 		level.bombZones[index].otherBombZones = array;
 	}
 }
@@ -369,9 +357,7 @@ onBeginUse( player )
 		if ( level.multibomb )
 		{
 			for ( i = 0; i < self.otherBombZones.size; i++ )
-			{
 				self.otherBombZones[i] maps\mp\gametypes\_gameobjects::disableObject();
-			}
 		}
 	}
 }
@@ -387,18 +373,14 @@ onEndUse( team, player, result )
 	if ( self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
 		if ( isDefined( level.sdBombModel ) && !result )
-		{
 			level.sdBombModel show();
-		}
 	}
 	else
 	{
 		if ( level.multibomb && !result )
 		{
 			for ( i = 0; i < self.otherBombZones.size; i++ )
-			{
 				self.otherBombZones[i] maps\mp\gametypes\_gameobjects::enableObject();
-			}
 		}
 	}
 }
@@ -410,15 +392,12 @@ onCantUse( player )
 
 onUsePlantObject( player )
 {
-	timeLeft = maps\mp\gametypes\_globallogic::getTimeRemaining();
-
-	if (timeLeft < 10 )
+	if ( level.gameEnded )
 		return;
 
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
-		player notify ( "bomb_planted" );
-		player logString( "bomb planted: " + self.label );
+		level notify ( "bomb_planted" );
 
 		if ( !level.hardcoreMode )
 			iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
@@ -434,9 +413,7 @@ onUsePlantObject( player )
 		}
 
 		for ( i = 0; i < level.players.size; i++ )
-		{
 			level.players[i] playLocalSound("promod_planted");
-		}
 
 		player thread [[level.onXPEvent]]( "plant" );
 		level thread bombPlanted( self, player );
@@ -448,27 +425,22 @@ onUsePlantObject( player )
 
 onUseDefuseObject( player )
 {
-	wait .01;
-
-	if ( level.bombExploded )
+	if ( level.gameEnded || level.bombExploded )
 		return;
 
-	player notify ( "bomb_defused" );
-	player logString( "bomb defused: " + self.label );
-	level thread bombDefused();
-
-	for ( i = 0; i < level.players.size; i++ )
-	{
-		level.players[i] playLocalSound("promod_defused");
-	}
-
-	self maps\mp\gametypes\_gameobjects::disableObject();
+	level notify( "bomb_defused" );
 
 	if ( !level.hardcoreMode )
 		iPrintLn( &"MP_EXPLOSIVES_DEFUSED_BY", player.name );
 
 	maps\mp\gametypes\_globallogic::givePlayerScore( "defuse", player );
+	self maps\mp\gametypes\_gameobjects::disableObject();
+
+	for ( i = 0; i < level.players.size; i++ )
+		level.players[i] playLocalSound("promod_defused");
+
 	player thread [[level.onXPEvent]]( "defuse" );
+	level thread bombDefused();
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "defused_by" + player.name;
@@ -484,19 +456,12 @@ onDrop( player )
 
 		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
 				game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
-
-		if ( isDefined( player ) )
-		 	player logString( "bomb dropped" );
-		 else
-		 	logString( "bomb dropped" );
 	}
 
 	self maps\mp\gametypes\_gameobjects::set3DIcon( "friendly", "waypoint_bomb" );
 
-	if ( level.bombPlanted )
-		return;
-	else
-	maps\mp\_utility::playSoundOnPlayers( game["bomb_dropped_sound"], game["attackers"] );
+	if ( !level.bombPlanted )
+		maps\mp\_utility::playSoundOnPlayers( game["bomb_dropped_sound"], game["attackers"] );
 }
 
 onPickup( player )
@@ -510,22 +475,16 @@ onPickup( player )
 		if ( isDefined( player ) && isDefined( player.name ) )
 			printOnTeamArg( &"MP_EXPLOSIVES_RECOVERED_BY", game["attackers"], player );
 
-		player logString( "bomb taken" );
 
 		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
 			game["promod_scorebot_ticker_buffer"] += "pickup_bomb" + player.name;
 	}
-	maps\mp\_utility::playSoundOnPlayers( game["bomb_recovered_sound"], game["attackers"] );
-}
 
-onReset()
-{
+	maps\mp\_utility::playSoundOnPlayers( game["bomb_recovered_sound"], game["attackers"] );
 }
 
 bombPlanted( destroyedObj, player )
 {
-	wait .05;
-
 	maps\mp\gametypes\_globallogic::pauseTimer();
 	level.bombPlanted = true;
 
@@ -545,7 +504,6 @@ bombPlanted( destroyedObj, player )
 	}
 	else
 	{
-
 		for ( index = 0; index < level.players.size; index++ )
 		{
 			if ( isDefined( level.players[index].carryIcon ) )
@@ -563,6 +521,7 @@ bombPlanted( destroyedObj, player )
 		level.sdBombModel.angles = dropAngles;
 		level.sdBombModel setModel( "prop_suitcase_bomb" );
 	}
+
 	destroyedObj maps\mp\gametypes\_gameobjects::allowUse( "none" );
 	destroyedObj maps\mp\gametypes\_gameobjects::setVisibleTeam( "none" );
 
@@ -593,6 +552,8 @@ bombPlanted( destroyedObj, player )
 	if ( level.gameEnded || level.bombDefused )
 		return;
 
+	level notify ( "bomb_exploded" );
+
 	level.bombExploded = true;
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
@@ -614,24 +575,24 @@ bombPlanted( destroyedObj, player )
 
 	for ( index = 0; index < level.bombZones.size; index++ )
 		level.bombZones[index] maps\mp\gametypes\_gameobjects::disableObject();
+
 	defuseObject maps\mp\gametypes\_gameobjects::disableObject();
 
 	setGameEndTime( 0 );
 
-	wait 2;
-
 	for ( i = 0; i < level.players.size; i++ )
-	{
 		level.players[i] playLocalSound("promod_destroyed");
-	}
+
+	wait 0.5;
 
 	sd_endGame( game["attackers"], game["strings"]["target_destroyed"] );
 }
 
 BombTimerWait()
 {
-	level endon("game_ended");
+	level endon("bomb_exploded");
 	level endon("bomb_defused");
+
 	wait level.bombTimer;
 }
 
@@ -649,11 +610,10 @@ bombDefused()
 	level.tickingObject maps\mp\gametypes\_globallogic::stopTickingSound();
 	level.bombDefused = true;
 	setDvar( "ui_bomb_timer", 0 );
-	level notify("bomb_defused");
-
-	wait .05;
 
 	setGameEndTime( 0 );
+
+	wait 0.5;
 
 	sd_endGame( game["defenders"], game["strings"]["bomb_defused"] );
 }

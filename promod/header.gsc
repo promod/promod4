@@ -13,39 +13,35 @@ create()
 	if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 		wait 0.75;
 
-	level.prover_hud = newHudElem();
-	level.prover_hud.x = -7;
-	level.prover_hud.y = 35;
-	level.prover_hud.horzAlign = "right";
-	level.prover_hud.vertAlign = "top";
-	level.prover_hud.alignX = "right";
-	level.prover_hud.alignY = "middle";
-	level.prover_hud.alpha = 1;
-	level.prover_hud.fontScale = 1.4;
-	level.prover_hud.hidewheninmenu = true;
-	level.prover_hud.color = (.8, 1, 1);
-	level.prover_hud setText( game["PROMOD_VERSION"] );
+	promod_ver = newHudElem();
+	promod_ver.x = -7;
+	promod_ver.y = 35;
+	promod_ver.horzAlign = "right";
+	promod_ver.vertAlign = "top";
+	promod_ver.alignX = "right";
+	promod_ver.alignY = "middle";
+	promod_ver.fontScale = 1.4;
+	promod_ver.hidewheninmenu = true;
+	promod_ver.color = (.8, 1, 1);
+	promod_ver setText( game["PROMOD_VERSION"] );
 
-	level.hud_league_text = newHudElem();
-	level.hud_league_text.x = -7;
-	level.hud_league_text.y = 50;
-	level.hud_league_text.horzAlign = "right";
-	level.hud_league_text.vertAlign = "top";
-	level.hud_league_text.alignX = "right";
-	level.hud_league_text.alignY = "middle";
-	level.hud_league_text.alpha = 1;
-	level.hud_league_text.fontScale = 1.4;
-	level.hud_league_text.hidewheninmenu = true;
-	level.hud_league_text.color = (1,1,0);
-	level.hud_league_text setText( game["PROMOD_MODE_HUD"] );
+	promod_mode = newHudElem();
+	promod_mode.x = -7;
+	promod_mode.y = 50;
+	promod_mode.horzAlign = "right";
+	promod_mode.vertAlign = "top";
+	promod_mode.alignX = "right";
+	promod_mode.alignY = "middle";
+	promod_mode.fontScale = 1.4;
+	promod_mode.hidewheninmenu = true;
+	promod_mode.color = (1,1,0);
+	promod_mode setText( game["PROMOD_MODE_HUD"] );
 
-	level waittill("header_destroy");
+	level waittill( "header_destroy" );
 
-	if(isdefined(level.prover_hud))
-		level.prover_hud destroy();
+	if ( isDefined( promod_ver ) )
+		promod_ver destroy();
 
-	if(isdefined(level.hud_league_text))
-		level.hud_league_text destroy();
-
-	wait .05;
+	if ( isDefined( promod_mode ) )
+		promod_mode destroy();
 }

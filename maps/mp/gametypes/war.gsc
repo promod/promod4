@@ -8,9 +8,6 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-#include maps\mp\_utility;
-#include maps\mp\gametypes\_hud_util;
-
 main()
 {
 	if(getdvar("mapname") == "mp_background")
@@ -19,12 +16,6 @@ main()
 	maps\mp\gametypes\_globallogic::init();
 	maps\mp\gametypes\_callbacksetup::SetupCallbacks();
 	maps\mp\gametypes\_globallogic::SetupCallbacks();
-
-	maps\mp\gametypes\_globallogic::registerTimeLimitDvar( "war", 10, 0, 1440 );
-	maps\mp\gametypes\_globallogic::registerScoreLimitDvar( "war", 500, 0, 5000 );
-	maps\mp\gametypes\_globallogic::registerRoundLimitDvar( "war", 1, 0, 999 );
-	maps\mp\gametypes\_globallogic::registerRoundSwitchDvar( "war", 0, 0, 999 );
-	maps\mp\gametypes\_globallogic::registerNumLivesDvar( "war", 0, 0, 10 );
 
 	level.teamBased = true;
 	level.onStartGameType = ::onStartGameType;

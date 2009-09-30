@@ -10,10 +10,10 @@
 
 main()
 {
-	if ( getdvar( "promod_enable_scorebot" ) == "" )
-		setDvar( "promod_enable_scorebot", "0" );
+	if ( getDvar( "promod_enable_scorebot" ) == "" )
+		setDvar( "promod_enable_scorebot", 0 );
 
-	if ( !getDvarInt( "promod_enable_scorebot" ) || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" || !level.teambased )
+	if ( !getDvarInt( "promod_enable_scorebot" ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" || !level.teambased )
 	{
 		level.scorebot = false;
 		game["promod_scorebot_ticker_buffer"] = -1;

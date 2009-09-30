@@ -8,9 +8,6 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-#include common_scripts\utility;
-#include maps\mp\gametypes\_hud_util;
-
 init()
 {
 	level.scoreInfo = [];
@@ -103,7 +100,6 @@ onPlayerSpawned()
 			self.hud_rankscroreupdate.color = (0.5,0.5,0.5);
 			self.hud_rankscroreupdate maps\mp\gametypes\_hud::fontPulseInit();
 		}
-
 	}
 }
 
@@ -129,7 +125,7 @@ updateRankScoreHUD( amount )
 	self endon( "joined_team" );
 	self endon( "joined_spectators" );
 
-	if ( amount == 0 )
+	if ( !amount )
 		return;
 
 	self notify( "update_score" );

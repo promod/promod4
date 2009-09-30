@@ -73,7 +73,7 @@ Timeout_Time_Timer()
 
 Timeout_Call()
 {
-	if ( isDefined( level.ready_up_over ) && !level.ready_up_over || isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] != "match" )
+	if ( isDefined( level.ready_up_over ) && !level.ready_up_over || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" )
 		return;
 
 	if ( level.gametype != "sd" && level.gametype != "sab" )
@@ -85,7 +85,7 @@ Timeout_Call()
 		return;
 	}
 
-	if ( game[self.pers["team"] + "_timeout_called"] == 1 )
+	if ( game[self.pers["team"] + "_timeout_called"] )
 	{
 		self iprintln("^3Only one timeout per team/half allowed");
 		return;

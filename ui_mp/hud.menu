@@ -13,7 +13,7 @@
 #define TEAM_IS_MARINES		(localVarString( ui_team ) == "marines")
 #define TEAM_IS_OPFOR		(localVarString( ui_team ) == "opfor")
 #define ALLIES_AXIS			(team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS" )
-#define DVAR_ENFORCER		(dvarint( sv_cheats ) == 0 && ALLIES_AXIS && dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate) != 25000 || dvarint( dynent_active ) != 0 || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) != 0 || dvarint( r_dlightLimit ) != 0 || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) != 0 || dvarint( cg_nopredict ) != 0 || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) || dvarint( aim_automelee_enabled ) != 0 )
+#define DVAR_ENFORCER		(!dvarint( sv_cheats ) && ALLIES_AXIS && dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) || dvarint( aim_automelee_enabled ) || dvarint( developer ) )
 #define HUD_ALPHA 0.65
 #define HUD_FOREGROUND_ALPHA 0.75
 #define NOT_SPECTATING (!spectatingClient())
@@ -78,7 +78,7 @@
     	name			"MantleHint"
     	rect			0 105 40 40 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			when( dvarInt( ui_hud_hardcore ) == 0 )
+		visible			when( !dvarInt( ui_hud_hardcore ) )
 
 		itemDef
 		{
@@ -97,7 +97,7 @@
 		name			"Cursorhints"
 		rect			0 60 40 40 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			when( dvarInt( ui_hud_hardcore ) == 0 && !ui_active() )
+		visible			when( !dvarInt( ui_hud_hardcore ) && !ui_active() )
 
 		itemDef
 		{
@@ -144,7 +144,7 @@
 			rect			0 0 80 80
 			ownerdraw		CG_PLAYER_STANCE
 			textfont		UI_FONT_OBJECTIVE
-			visible			when( !inkillcam() && dvarint( ui_hud_hardcore ) == 0 );
+			visible			when( !inkillcam() && !dvarint( ui_hud_hardcore ) );
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			forecolor		1 1 1 HUD_ALPHA
@@ -161,7 +161,7 @@
 		name			"Compass_old"
  	   	rect			RECT_COMPASS
  	   	fullScreen		0
-		visible 		when ( DVAR_ENFORCER == false && !inkillcam() && !flashbanged() && !ui_active() && !scoped() && (dvarString( createfx ) != "on") && (dvarint( ui_hud_hardcore ) == 0 || dvarInt( g_compassShowEnemies ) ) );
+		visible 		when ( DVAR_ENFORCER == false && !inkillcam() && !flashbanged() && !ui_active() && !scoped() && (dvarString( createfx ) != "on") && (!dvarint( ui_hud_hardcore ) || dvarInt( g_compassShowEnemies ) ) );
 
 		itemDef
 		{
@@ -252,7 +252,7 @@
 	{
 		name		"xpbar"
 		fullScreen	0
-		visible		when( (dvarint( sv_cheats ) == 0 && ALLIES_AXIS) && (dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate) != 25000 || dvarint( dynent_active ) != 0 || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) != 0 || dvarint( r_dlightLimit ) != 0 || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) != 0 || dvarint( cg_nopredict ) != 0 ) );
+		visible		when( ( !dvarint( sv_cheats ) && ALLIES_AXIS ) && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) ) || dvarint( developer ) );
 		soundloop	"weap_ak47_fire_plr"
 	}
 
@@ -271,7 +271,7 @@
 		rect			(BOTTOM_RECT_X+SCORE_OFFSET_X) (BOTTOM_RECT_Y+SCORE_OFFSET_Y) 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
 		exp				rect Y( BOTTOM_RECT_Y - 10 );
 		fullScreen		0
-		visible 		when( !inkillcam() && !ui_active() && dvarint( ui_hud_hardcore ) == 0 && (!dvarint( sv_cheats ) || dvarint( sv_cheats ) && !dvarint( promod_movie_hidescorebar ) );
+		visible 		when( !inkillcam() && !ui_active() && !dvarint( ui_hud_hardcore ) && (!dvarint( sv_cheats ) || dvarint( sv_cheats ) && !dvarint( promod_movie_hidescorebar ) );
 
 		itemDef
 		{
@@ -656,6 +656,16 @@
 			visible when ( ((timeLeft() >= 0 && timeLeft() < 30) || dvarBool( ui_bomb_timer )) && !PROMOD_SB );
 			decoration
 		}
+		itemDef
+		{
+			exp text ( dvarString( "promod_hud_website" ) );
+			exp rect X( 3 + ( 65 * !PROMOD_SB ) )
+			exp rect Y( 433 + ( 44 * !PROMOD_SB ) )
+			textscale 0.35
+			forecolor 0.99 0.99 0.75 1
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			visible when ( dvarString( "promod_hud_website" ) != "" )
+		}
 	}
 
 	#define WEAPINFO_X -4
@@ -667,7 +677,7 @@
 		rect			BOTTOM_RECT_X BOTTOM_RECT_Y 0 0 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
 		exp				rect Y( BOTTOM_RECT_Y - 10 );
 		fullScreen		0
-		visible			when( !inkillcam() && dvarBool( ammoCounterHide ) == 0 && !flashbanged() && !ui_active() && dvarint( ui_hud_hardcore ) == 0 && NOT_SPECTATING );
+		visible			when( !inkillcam() && !dvarBool( ammoCounterHide ) && !flashbanged() && !ui_active() && !dvarint( ui_hud_hardcore ) && NOT_SPECTATING );
 
 		itemDef
 		{
@@ -678,7 +688,7 @@
 			textfont		UI_FONT_OBJECTIVE
 			forecolor		1 1 1 1
 			ownerdraw 		CG_PLAYER_AMMO_VALUE
-			visible 		when ( dvarint( cg_drawBreathHint ) == 1)
+			visible 		when ( dvarint( cg_drawBreathHint ) )
 			decoration
 		}
 		itemDef
@@ -687,7 +697,7 @@
 			rect			(WEAPINFO_X - 33) (WEAPINFO_Y + 32 -6) 1 1
 			forecolor		1 1 1 HUD_ALPHA
 			ownerdraw		CG_PLAYER_WEAPON_AMMO_CLIP_GRAPHIC
-			visible 		when ( dvarint( cg_drawBreathHint ) == 0)
+			visible 		when ( !dvarint( cg_drawBreathHint ) )
 			decoration
 		}
 		itemDef
@@ -699,7 +709,7 @@
 			textfont		UI_FONT_OBJECTIVE
 			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
 			ownerdraw		CG_PLAYER_WEAPON_AMMO_STOCK
-			visible 		when ( dvarint( cg_drawBreathHint ) == 0)
+			visible 		when ( !dvarint( cg_drawBreathHint ) )
 			decoration
 		}
 		itemDef
@@ -771,9 +781,9 @@
 	menuDef
 	{
 		name			"amitalking"
-		blurworld 		32
-		rect			0 45 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
-		fullScreen		0
+		background		"$levelBriefing"
+		rect			0 0 640 480
+		fullScreen		1
 		visible			when( DVAR_ENFORCER )
 
 		itemDef
@@ -801,7 +811,7 @@
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( dvarint( r_dlightLimit ) != 0 )
+			visible 	when ( dvarint( r_dlightlimit ) )
 			decoration
 		}
 		itemDef
@@ -857,7 +867,7 @@
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( dvarint( dynent_active ) != 0 )
+			visible 	when ( dvarint( dynent_active ) )
 			decoration
 		}
 		itemDef
@@ -913,7 +923,7 @@
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( dvarint( r_filmtweakInvert ) != 0 )
+			visible 	when ( dvarint( r_filmtweakInvert ) )
 			decoration
 		}
 		itemDef
@@ -927,7 +937,7 @@
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( dvarint( sm_enable ) != 0 )
+			visible 	when ( dvarint( sm_enable ) )
 			decoration
 		}
 		itemDef
@@ -941,7 +951,7 @@
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( dvarint( cg_nopredict ) != 0 )
+			visible 	when ( dvarint( cg_nopredict ) )
 			decoration
 		}
 		itemDef
@@ -978,12 +988,26 @@
 			origin		0 0
 			forecolor	1 0 0 1
 			backcolor	1 0 0 1
+			exp text	( "SET DEVELOPER TO 0" );
+			textfont	UI_FONT_OBJECTIVE
+			textscale	0.60
+			textalign	ITEM_ALIGN_CENTER
+			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
+			visible 	when ( dvarint( developer ) )
+			decoration
+		}
+		itemDef
+		{
+			rect		0 175 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
+			origin		0 0
+			forecolor	1 0 0 1
+			backcolor	1 0 0 1
 			exp text	( "PLEASE RECONNECT TO THE SERVER" );
 			textfont	UI_FONT_OBJECTIVE
 			textscale	0.60
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when( dvarint( aim_automelee_enabled ) != 0 );
+			visible 	when( dvarint( aim_automelee_enabled ) );
 			decoration
 		}
 	}
@@ -993,7 +1017,7 @@
     	name			"talkers"
 		rect			0 45 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
     	fullScreen		0
-    	visible			when ( dvarint( hud_enable ) == 1 && dvarint( ui_hud_hardcore ) == 0 && !ui_active() )
+    	visible			when ( dvarint( hud_enable ) && !dvarint( ui_hud_hardcore ) && !ui_active() )
 
 		itemDef
 		{
@@ -1104,7 +1128,7 @@
 			textscale		TEXTSIZE_DEFAULT
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			ownerdraw		CG_CENTER_MESSAGE
-			visible			when(!dvarbool("sv_cheats") || (dvarbool("sv_cheats") && !dvarbool("promod_movie_hidekilledby")))
+			visible			1
 			decoration
 		}
 	}
@@ -1162,7 +1186,7 @@
 			exp				rect Y( 207 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsred" );
+			exp				material( "rank_rec1" );
 			visible			when( dvarString( shout_axis1 ) != "" )
 			decoration
 		}
@@ -1175,7 +1199,7 @@
 			exp				rect Y( 225 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsred" );
+			exp				material( "rank_rec1" );
 			visible			when( dvarString( shout_axis2 ) != "" )
 			decoration
 		}
@@ -1188,7 +1212,7 @@
 			exp				rect Y( 243 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsred" );
+			exp				material( "rank_rec1" );
 			visible			when( dvarString( shout_axis3 ) != "" )
 			decoration
 		}
@@ -1201,7 +1225,7 @@
 			exp				rect Y( 261 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsred" );
+			exp				material( "rank_rec1" );
 			visible			when( dvarString( shout_axis4 ) != "" )
 			decoration
 		}
@@ -1214,7 +1238,7 @@
 			exp				rect Y( 279 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsred" );
+			exp				material( "rank_rec1" );
 			visible			when( dvarString( shout_axis5 ) != "" )
 			decoration
 		}
@@ -1287,7 +1311,7 @@
 		{
 			origin			0 0
 			rect			-7 223 1 1
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_axis1 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_RIGHT
@@ -1300,7 +1324,7 @@
 		{
 			origin			0 0
 			rect			-7 241 1 1
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_axis2 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_RIGHT
@@ -1313,7 +1337,7 @@
 		{
 			origin			0 0
 			rect			-7 259 1 1
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_axis3 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_RIGHT
@@ -1326,7 +1350,7 @@
 		{
 			origin			0 0
 			rect			-7 277 1 1
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_axis4 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_RIGHT
@@ -1339,7 +1363,7 @@
 		{
 			origin			0 0
 			rect			-7 295 1 1
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_axis5 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_RIGHT
@@ -1366,7 +1390,7 @@
 			exp				rect Y( 207 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsblue" );
+			exp				material( "rank_sgt1" );
 			visible			when( dvarString( shout_allies1 ) != "" )
 			decoration
 		}
@@ -1379,7 +1403,7 @@
 			exp				rect Y( 225 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsblue" );
+			exp				material( "rank_sgt1" );
 			visible			when( dvarString( shout_allies2 ) != "" )
 			decoration
 		}
@@ -1392,7 +1416,7 @@
 			exp				rect Y( 243 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsblue" );
+			exp				material( "rank_sgt1" );
 			visible			when( dvarString( shout_allies3 ) != "" )
 			decoration
 		}
@@ -1405,7 +1429,7 @@
 			exp				rect Y( 261 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsblue" );
+			exp				material( "rank_sgt1" );
 			visible			when( dvarString( shout_allies4 ) != "" )
 			decoration
 		}
@@ -1418,7 +1442,7 @@
 			exp				rect Y( 279 )
 			exp				rect W( 128 )
 			exp				rect H( 16 )
-			exp				material( "spsblue" );
+			exp				material( "rank_sgt1" );
 			visible			when( dvarString( shout_allies5 ) != "" )
 			decoration
 		}
@@ -1491,7 +1515,7 @@
 		{
 			origin			0 0
 			rect			5 223 136 15
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_allies1 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_LEFT
@@ -1504,7 +1528,7 @@
 		{
 			origin			0 0
 			rect			5 241 136 15
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_allies2 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_LEFT
@@ -1517,7 +1541,7 @@
 		{
 			origin			0 0
 			rect			5 259 136 15
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_allies3 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_LEFT
@@ -1530,7 +1554,7 @@
 		{
 			origin			0 0
 			rect			5 277 136 15
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_allies4 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_LEFT
@@ -1543,7 +1567,7 @@
 		{
 			origin			0 0
 			rect			5 295 136 15
-			forecolor		0.4 0.4 0.4 0.7
+			forecolor		0.5 0.5 0.5 1
 			exp text		( dvarString( shout_allies5 ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_LEFT
@@ -1571,7 +1595,7 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_LEFT
 			textscale			(TEXTSIZE_SMALL*0.75)
-			visible				when ( dvarint( ui_hud_obituaries ) == 1 && !ui_active() );
+			visible				when ( dvarint( ui_hud_obituaries ) && !ui_active() );
 		}
 	}
 
@@ -1592,7 +1616,7 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_CENTER
 			textscale			0.417
-			visible				when ( dvarint( ui_hud_obituaries ) == 1 && !ui_active() );
+			visible				when ( dvarint( ui_hud_obituaries ) && !ui_active() );
 		}
 	}
 
@@ -1613,7 +1637,7 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_LEFT
 			textscale			TEXTSIZE_SMALL
-			visible				when ( dvarint( ui_hud_obituaries ) == 1 && !ui_active() && dvarint( ui_hud_hardcore ) == 0 );
+			visible				when ( dvarint( ui_hud_obituaries ) && !ui_active() && !dvarint( ui_hud_hardcore ) );
 		}
 	}
 

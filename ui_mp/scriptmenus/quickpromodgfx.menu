@@ -79,7 +79,7 @@
 			textscale		TEXTSIZE_SMALL
 			textaligny		8
 			text			"2. Film Tweaks: Off"
-			visible			when ( dvarInt( r_filmusetweaks ) == 0 )
+			visible			when ( !dvarInt( r_filmusetweaks ) )
 			decoration
 		}
 		itemDef
@@ -94,7 +94,7 @@
 			textscale		TEXTSIZE_SMALL
 			textaligny		8
 			text			"2. Film Tweaks: On"
-			visible			when ( dvarInt( r_filmusetweaks ) == 1 )
+			visible			when ( dvarInt( r_filmusetweaks ) )
 			decoration
 		}
 		execKey "2" { scriptMenuResponse "2"; close quickpromodgfx }
@@ -126,7 +126,7 @@
 			textscale		TEXTSIZE_SMALL
 			textaligny		8
 			text			"3. Texture Filtering: On"
-			visible			when ( dvarInt( r_texfilterdisable ) == 0 )
+			visible			when ( !dvarInt( r_texfilterdisable ) )
 			decoration
 		}
 		itemDef
@@ -141,7 +141,7 @@
 			textscale		TEXTSIZE_SMALL
 			textaligny		8
 			text			"3. Texture Filtering: Off"
-			visible			when ( dvarInt( r_texfilterdisable) == 1 )
+			visible			when ( dvarInt( r_texfilterdisable) )
 			decoration
 		}
 		execKey "3" { scriptMenuResponse "3"; close quickpromodgfx }

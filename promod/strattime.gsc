@@ -56,6 +56,7 @@ main()
 
 	setDvar( "g_speed", 190 );
 	setDvar( "player_sustainAmmo", 0 );
+	setClientNameMode("manual_change");
 
 	if ( game["promod_timeout_called"] )
 	{
@@ -71,6 +72,7 @@ Strat_Time()
 	time_increment = .25;
 
 	setDvar( "player_sustainAmmo", 1 );
+	setClientNameMode("auto_change");
 
 	while ( !level.strat_over )
 	{

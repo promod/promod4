@@ -250,7 +250,7 @@ pickupObjectDelay( origin )
 
 	for( ;; )
 	{
-		if ( distanceSquared( self.origin, origin ) > 64*64 )
+		if ( distanceSquared( self.origin, origin ) > 4096 )
 			break;
 
 		wait 0.2;
@@ -701,7 +701,7 @@ setKeyObject( object )
 
 useObjectUseThink()
 {
-	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
 		return;
 
 	level endon ( "game_ended" );
@@ -720,6 +720,9 @@ useObjectUseThink()
 			continue;
 
 		if ( !player isOnGround() )
+			continue;
+
+		if ( !player isTouching( self.trigger ) )
 			continue;
 
 		if ( isDefined( self.keyObject ) && (!isDefined( player.carryObject ) || player.carryObject != self.keyObject ) )
@@ -778,7 +781,7 @@ getEarliestClaimPlayer()
 
 useObjectProxThink()
 {
-	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ) )
+	if ( (isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ) )
 		return;
 
 	level endon ( "game_ended" );
@@ -1009,32 +1012,9 @@ useHoldThink( player )
 	player clientClaimTrigger( self.trigger );
 	player.claimTrigger = self.trigger;
 
-	useWeapon = self.useWeapon;
 	lastWeapon = player getCurrentWeapon();
 
-	if ( isDefined( useWeapon ) )
-	{
-		assert( isDefined( lastWeapon ) );
-		if ( lastWeapon == useWeapon )
-		{
-			assert( isdefined( player.lastNonUseWeapon ) );
-			lastWeapon = player.lastNonUseWeapon;
-		}
-		assert( lastWeapon != useWeapon );
-
-		player.lastNonUseWeapon = lastWeapon;
-
-		player giveWeapon( useWeapon );
-		player setWeaponAmmoStock( useWeapon, 0 );
-		player setWeaponAmmoClip( useWeapon, 0 );
-		player switchToWeapon( useWeapon );
-
-		player thread attachUseModel();
-	}
-	else
-	{
-		player _disableWeapon();
-	}
+	player _disableWeapon();
 
 	self.curProgress = 0;
 	self.inUse = true;
@@ -1050,27 +1030,13 @@ useHoldThink( player )
 		player notify( "done_using" );
 	}
 
-	if ( isDefined( useWeapon ) && isDefined( player ) )
-		player thread takeUseWeapon( useWeapon );
-
 	if ( isdefined( result ) && result )
 		return true;
 
 	if ( isDefined( player ) )
 	{
 		player.claimTrigger = undefined;
-		if ( isDefined( useWeapon ) )
-		{
-			if ( lastWeapon != "none" )
-				player switchToWeapon( lastWeapon );
-			else
-				player takeWeapon( useWeapon );
-		}
-		else
-		{
-			player _enableWeapon();
-		}
-
+		player _enableWeapon();
 		player unlink();
 
 		if ( !isAlive( player ) )
@@ -1091,25 +1057,11 @@ detachUseModels()
 	}
 }
 
-takeUseWeapon( useWeapon )
-{
-	self endon( "use_hold" );
-	self endon( "death" );
-	self endon( "disconnect" );
-	level endon( "game_ended" );
-
-	while ( self getCurrentWeapon() == useWeapon && !self.throwingGrenade )
-		wait ( .05 );
-
-	self takeWeapon( useWeapon );
-}
-
 useHoldThinkLoop( player, lastWeapon )
 {
 	level endon ( "game_ended" );
 	self endon("disabled");
 
-	useWeapon = self.useWeapon;
 	waitForWeapon = true;
 	timedOut = 0;
 
@@ -1119,39 +1071,17 @@ useHoldThinkLoop( player, lastWeapon )
 	{
 		timedOut += .05;
 
-		if ( !isDefined( useWeapon ) || player getCurrentWeapon() == useWeapon )
-		{
-			self.curProgress += (50 * self.useRate);
-			self.useRate = 1;
-			waitForWeapon = false;
-		}
-		else
-		{
-			self.useRate = 0;
-		}
+		self.curProgress += (50 * self.useRate);
+		self.useRate = 1;
+		waitForWeapon = false;
 
 		if ( self.curProgress >= self.useTime )
 		{
 			self.inUse = false;
 			player clientReleaseTrigger( self.trigger );
 			player.claimTrigger = undefined;
-
-			if ( isDefined( useWeapon ) )
-			{
-				player setWeaponAmmoStock( useWeapon, 1 );
-				player setWeaponAmmoClip( useWeapon, 1 );
-				if ( lastWeapon != "none" )
-					player switchToWeapon( lastWeapon );
-				else
-					player takeWeapon( useWeapon );
-			}
-			else
-			{
-				player _enableWeapon();
-			}
+			player _enableWeapon();
 			player unlink();
-
-			wait .05;
 
 			return isAlive( player );
 		}
@@ -1171,7 +1101,8 @@ personalUseBar( object )
 	useBarText setText( object.useText );
 
 	lastRate = -1;
-	while ( isAlive( self ) && object.inUse && !level.gameEnded )
+
+	while ( isAlive( self ) && object.inUse && self useButtonPressed() && !level.gameEnded )
 	{
 		if ( lastRate != object.useRate )
 		{
@@ -1520,7 +1451,7 @@ setCanUse( relativeTeam )
 
 set2DIcon( relativeTeam, shader )
 {
-	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
 		return;
 
 	self.compassIcons[relativeTeam] = shader;
@@ -1529,7 +1460,7 @@ set2DIcon( relativeTeam, shader )
 
 set3DIcon( relativeTeam, shader )
 {
-	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
 		return;
 
 	self.worldIcons[relativeTeam] = shader;
@@ -1538,7 +1469,7 @@ set3DIcon( relativeTeam, shader )
 
 set3DUseIcon( relativeTeam, shader )
 {
-	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "strat" ))
+	if ((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ))
 		return;
 
 	self.worldUseIcons[relativeTeam] = shader;

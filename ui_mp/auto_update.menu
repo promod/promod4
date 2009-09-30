@@ -70,7 +70,7 @@
 		itemDef
 		{
 			name oldtitle
-			text "Current Promod Version: LIVE V2.04 EU"
+			text "Current Promod Version: LIVE V2.05 EU"
 			style 0
 			textscale .25
 			textstyle 3
@@ -102,7 +102,7 @@
 		itemDef
 		{
 			name newtitle
-			text "Trivve, Ingram, raf1, MavLP, bullet-worm"
+			text "Trivve, Ingram, abhi, raf1, MavLP, bullet-worm"
 			style 0
 			textscale .25
 			textstyle 3

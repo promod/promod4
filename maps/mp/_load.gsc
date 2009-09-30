@@ -25,7 +25,7 @@ main( bScriptgened, bCSVgened, bsgenabled )
 		level.flags_lock = [];
 	}
 
-	setDvar("scr_RequiredMapAspectratio", "1");
+	setDvar("scr_RequiredMapAspectratio", 1);
 
 	thread maps\mp\gametypes\_tweakables::init();
 	thread maps\mp\_minefields::minefields();
@@ -94,7 +94,7 @@ exploder_load( trigger )
 		level thread exploder_load( trigger );
 		return;
 	}
-	maps\mp\_utility::exploder( trigger.script_exploder );
+	exploder( trigger.script_exploder );
 	level notify( "killexplodertridgers" + trigger.script_exploder );
 }
 

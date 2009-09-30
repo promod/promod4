@@ -8,10 +8,6 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-#include common_scripts\utility;
-#include maps\mp\_utility;
-#include maps\mp\gametypes\_hud_util;
-
 init()
 {
 	level.primary_weapon_array = [];

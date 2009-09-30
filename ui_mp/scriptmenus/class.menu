@@ -117,7 +117,7 @@
 
 		CHOICE_MENU_TITLE( "@MENU_OPTIONS_UPPER_CASE" )
 
-		#define BACK_OPEN	;
+		#define BACK_OPEN;
 		#include "ui_mp/navcontrols.inc"
 
 		#include "ui_mp/teamicon.inc"

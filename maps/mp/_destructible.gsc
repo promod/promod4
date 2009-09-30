@@ -309,7 +309,7 @@ setup_destructibles()
 			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "health" ] ) )
 				self.destructible_parts[ i ].v[ "health" ] = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "health" ];
 
-			if ( i == 0 )
+			if ( !i )
 				continue;
 
 			modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "modelName" ];
@@ -397,7 +397,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 {
 	if ( !isdefined( self.destructible_parts ) )
 		return;
-	if ( self.destructible_parts.size == 0 )
+	if ( !self.destructible_parts.size )
 		return;
 
 	partIndex = -1;
@@ -513,7 +513,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ] ) )
 		{
-			if ( partIndex == 0 )
+			if ( !partIndex )
 			{
 				newModel = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "modelName" ];
 				self setModel( newModel );
@@ -567,9 +567,9 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 					self.animsApplied = [];
 				self.animsApplied[ self.animsApplied.size ] = animName;
 
-				if ( partIndex == 0 )
+				if ( !partIndex )
 					self thread explodeAnim();
-					}
+			}
 		}
 
 		if ( !isdefined( self.exploded ) )
@@ -637,18 +637,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 		}
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "physics" ] ) )
-		{
-			initial_velocity = point;
-			impactDir = ( 0, 0, 0 );
-			if ( isdefined( attacker ) )
-			{
-				impactDir = attacker.origin;
-				initial_velocity = vectorNormalize( point - impactDir);
-				initial_velocity = vectorScale( initial_velocity, 200 );
-			}
-			self thread physics_launch( partIndex, actionStateIndex, point, initial_velocity );
 			return;
-		}
 
 		updateHealthValue = true;
 	}
@@ -678,7 +667,7 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 					modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "modelName" ];
 					assert( isdefined( modelName ) );
 
-					if ( i == 0 )
+					if ( !i )
 					{
 						d = distance( point, self.origin );
 						tagName = undefined;
@@ -816,41 +805,6 @@ health_drain( amount, interval, partIndex, modelName, tagName )
 	}
 }
 
-physics_launch( partIndex, stateIndex, point, initial_velocity )
-{
-	modelName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "modelName" ];
-	tagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "tagName" ];
-
-	self hideapart( tagName );
-
-	if ( getdvar( "destructibles_enable_physics" ) == "0" )
-		return;
-
-	if ( level.destructibleSpawnedEnts.size >= level.destructibleSpawnedEntsLimit )
-		physics_object_remove( level.destructibleSpawnedEnts[ 0 ] );
-
-	physicsObject = spawn( "script_model", self getTagOrigin( tagName ) );
-	physicsObject.angles = self getTagAngles( tagName );
-	physicsObject setModel( modelName );
-
-	level.destructibleSpawnedEnts[ level.destructibleSpawnedEnts.size ] = physicsObject;
-
-	physicsObject physicsLaunch( point, initial_velocity );
-}
-
-physics_object_remove( ent )
-{
-	newArray = [];
-	for( i = 0 ; i < level.destructibleSpawnedEnts.size ; i++ )
-	{
-		if ( level.destructibleSpawnedEnts[ i ] == ent )
-			continue;
-		newArray[ newArray.size ] = level.destructibleSpawnedEnts[ i ];
-	}
-	level.destructibleSpawnedEnts = newArray;
-	ent delete();
-}
-
 explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 {
 	assert( isdefined( force_min ) );
@@ -874,61 +828,16 @@ explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 
 	waittillframeend;
 
-	if ( isdefined( level.destructible_type[self.destuctableInfo].parts ) )
-	{
-		for( i = ( level.destructible_type[ self.destuctableInfo ].parts.size - 1 ) ; i >= 0  ; i-- )
-		{
-			if ( i == partIndex )
-				continue;
-
-			stateIndex = self.destructible_parts[ i ].v[ "currentState" ];
-			if ( stateIndex >= level.destructible_type[ self.destuctableInfo ].parts[ i ].size )
-				stateIndex = level.destructible_type[ self.destuctableInfo ].parts[ i ].size - 1;
-			modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "modelName" ];
-			tagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ];
-
-			if ( !isdefined( modelName ) )
-				continue;
-			if ( !isdefined( tagName ) )
-				continue;
-
-			if ( self.destructible_parts[ i ] isLinked() )
-			{
-				if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "physicsOnExplosion" ] ) )
-				{
-					if ( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "physicsOnExplosion" ] > 0 )
-					{
-						velocityScaler = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "physicsOnExplosion" ];
-
-						point = self getTagOrigin( tagName );
-						initial_velocity = vectorNormalize( point - explosionOrigin );
-						initial_velocity = vectorScale( initial_velocity, randomfloatrange( force_min, force_max ) * velocityScaler );
-
-						self thread physics_launch( i, stateIndex, point, initial_velocity );
-						continue;
-					}
-				}
-			}
-		}
-	}
-
 	self notify( "stop_taking_damage" );
 	wait 0.05;
 
 	if ( !isDefined( self.damageOwner ) )
-	{
 		self radiusDamage( explosionOrigin + ( 0, 0, 80 ), range, maxdamage, mindamage );
-	}
 	else
 	{
 		self radiusDamage( explosionOrigin + ( 0, 0, 80 ), range, maxdamage, mindamage, self.damageOwner );
 		self.damageOwner notify ( "destroyed_car" );
 	}
-}
-
-isLinked()
-{
-	return !isDefined( self.unlinked );
 }
 
 play_loop_sound_on_destructible( alias, tag )

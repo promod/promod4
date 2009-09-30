@@ -10,7 +10,7 @@
 
 main()
 {
-	if ( isDefined( game["promod_match_mode"] ) && game["promod_match_mode"] == "match" )
+	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
 		return;
 
 	if (getDvar("promod_mc_enable") == "" || getDvarInt("promod_mc_enable") < 1)

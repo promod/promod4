@@ -10,7 +10,7 @@
 
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
-#define OPTIONS_STYLE 1
+#define	OPTIONS_STYLE 1
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 
@@ -21,12 +21,8 @@
 		fullScreen		0
 		rect			0 0 640 480
 		focusColor		COLOR_FOCUSED
-		soundloop		""
 		onOpen
 		{
-			exec "setfromdvar ui_name name";
-			exec "setfromdvar ui_sensitivity sensitivity";
-
 			close options_look;
 			close options_move;
 			close options_shoot;
@@ -45,7 +41,6 @@
 		}
 		onClose
 		{
-			exec "setfromdvar sensitivity ui_sensitivity";
 			setLocalVarBool ui_hideBack 0;
 		}
 		onESC
@@ -61,21 +56,31 @@
 		CHOICE_BIND( 23, "@MENU_TEAM_CHAT", "chatmodeteam", ; )
 		CHOICE_BIND( 24, "@MENU_QUICK_CHAT", "mp_QuickMessage", ; )
 
-		CHOICE_SECTION_TITLE( 25, "Promod Binds" )
+		#undef CHOICE_X_START
+		#define CHOICE_X_START -600
 
-		CHOICE_BIND( 26, "Change Class", "openscriptmenu quickpromod X", ; )
-		CHOICE_BIND( 27, "Drop Bomb", "openscriptmenu quickpromod 2", ; )
-		CHOICE_BIND( 28, "Toggle Special Grenade", "openscriptmenu quickpromod grenade", ; )
-		CHOICE_BIND( 29, "Toggle Silencer", "openscriptmenu quickpromod silencer", ; )
-		CHOICE_BIND( 30, "Assault", "openscriptmenu quickpromod assault", ; )
-		CHOICE_BIND( 31, "Spec Ops", "openscriptmenu quickpromod specops", ; )
-		CHOICE_BIND( 32, "Demolitions", "openscriptmenu quickpromod demolitions", ; )
-		CHOICE_BIND( 33, "Sniper", "openscriptmenu quickpromod sniper", ; )
-		CHOICE_BIND( 34, "Toggle Lighting", "openscriptmenu quickpromodgfx 1", ; )
-		CHOICE_BIND( 35, "Toggle Film Tweaks", "openscriptmenu quickpromodgfx 2", ; )
-		CHOICE_BIND( 36, "Toggle Normal Map", "openscriptmenu quickpromodgfx 4", ; )
-		CHOICE_BIND( 37, "Toggle FOV Scale", "openscriptmenu quickpromodgfx 5", ; )
-		CHOICE_DVAREDIT( 38, "Mouse Sensitivity", ui_sensitivity, ; )
+		#undef CHOICE_Y_START
+		#define CHOICE_Y_START 105
+
+		CHOICE_BIND( 25, "Assault Class", "openscriptmenu quickpromod assault", ; )
+		CHOICE_BIND( 26, "Spec Ops Class", "openscriptmenu quickpromod specops", ; )
+		CHOICE_BIND( 27, "Demolitions Class", "openscriptmenu quickpromod demolitions", ; )
+		CHOICE_BIND( 28, "Sniper Class", "openscriptmenu quickpromod sniper", ; )
+		CHOICE_BIND( 29, "Change Class Menu", "openscriptmenu quickpromod X", ; )
+		CHOICE_BIND( 30, "Drop Bomb", "openscriptmenu quickpromod 2", ; )
+
+		#undef CHOICE_X_START
+		#define CHOICE_X_START -324
+
+		#undef CHOICE_Y_START
+		#define CHOICE_Y_START -39
+
+		CHOICE_BIND( 31, "Toggle Grenade", "openscriptmenu quickpromod grenade", ; )
+		CHOICE_BIND( 32, "Toggle Silencer", "openscriptmenu quickpromod silencer", ; )
+		CHOICE_BIND( 33, "Toggle Lighting", "openscriptmenu quickpromodgfx 1", ; )
+		CHOICE_BIND( 34, "Toggle Film Tweaks", "openscriptmenu quickpromodgfx 2", ; )
+		CHOICE_BIND( 35, "Toggle Normal Map", "openscriptmenu quickpromodgfx 4", ; )
+		CHOICE_BIND( 36, "Toggle FOV Scale", "openscriptmenu quickpromodgfx 5", ; )
 
 		CHOICE_KEYBINDHELP
 	}

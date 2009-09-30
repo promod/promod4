@@ -8,7 +8,6 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-#include common_scripts\utility;
 #include maps\mp\_utility;
 
 onPlayerConnect()
@@ -132,7 +131,7 @@ getSpawnpoint_Final( spawnpoints, useweights )
 
 	bestspawnpoint = undefined;
 
-	if ( !isdefined( spawnpoints ) || spawnpoints.size == 0 )
+	if ( !isdefined( spawnpoints ) || !spawnpoints.size )
 		return undefined;
 
 	if ( !isdefined( useweights ) )
@@ -222,7 +221,7 @@ getBestWeightedSpawnpoint( spawnpoints )
 				bestspawnpoints[bestspawnpoints.size] = spawnpoints[i];
 			}
 		}
-		if ( bestspawnpoints.size == 0 )
+		if ( !bestspawnpoints.size )
 			return undefined;
 
 		bestspawnpoint = bestspawnpoints[randomint( bestspawnpoints.size )];
@@ -434,7 +433,7 @@ updateDeathInfo()
 	{
 		deathInfo = level.spawnlogic_deaths[i];
 
-		if (time - deathInfo.time > 1000*90 ||
+		if (time - deathInfo.time > 90000 ||
 			!isdefined(deathInfo.killer) ||
 			!isalive(deathInfo.killer) ||
 			(deathInfo.killer.pers["team"] != "axis" && deathInfo.killer.pers["team"] != "allies") ||
@@ -688,8 +687,8 @@ avoidSpawnReuse(spawnpoints, teambased)
 
 	time = getTime();
 
-	maxtime = 10*1000;
-	maxdistSq = 800 * 800;
+	maxtime = 10000;
+	maxdistSq = 640000;
 
 	for (i = 0; i < spawnpoints.size; i++)
 	{
