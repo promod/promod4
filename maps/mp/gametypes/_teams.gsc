@@ -10,12 +10,7 @@
 
 init()
 {
-	switch(game["allies"])
-	{
-	case "marines":
-		precacheShader("mpflag_american");
-		break;
-	}
+	if(game["allies"] == "marines") precacheShader("mpflag_american");
 
 	precacheShader("mpflag_russian");
 	precacheShader("mpflag_spectator");
@@ -198,10 +193,9 @@ getJoinTeamPermissions( team )
 	level.teamLimit = level.maxclients / 2;
 	teamcount = 0;
 
-	players = level.players;
-	for(i = 0; i < players.size; i++)
+	for(i = 0; i < level.players.size; i++)
 	{
-		player = players[i];
+		player = level.players[i];
 
 		if((isdefined(player.pers["team"])) && (player.pers["team"] == team))
 			teamcount++;

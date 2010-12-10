@@ -8,24 +8,20 @@
 
 localize,promod
 
-menufile,ui_mp/auto_update.menu
-menufile,ui_mp/connect.menu
-menufile,ui_mp/controls_multi.menu
-menufile,ui_mp/hud.menu
-menufile,ui_mp/main.menu
-menufile,ui_mp/options_multi.menu
 menufile,ui_mp/scriptmenus/changeclass_marines_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_opfor_mw.menu
 menufile,ui_mp/scriptmenus/class.menu
+menufile,ui_mp/scriptmenus/echo.menu
 menufile,ui_mp/scriptmenus/quickpromod.menu
 menufile,ui_mp/scriptmenus/quickpromodgfx.menu
 menufile,ui_mp/scriptmenus/scoreboard.menu
 menufile,ui_mp/scriptmenus/shoutcast.menu
 menufile,ui_mp/scriptmenus/shoutcast_map.menu
+menufile,ui_mp/scriptmenus/shoutcast_setup.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor_flipped.menu
-menufile,ui_mp/wm_quickmessage.menu
+menufile,ui_mp/promod.txt
 
 rawfile,maps/createfx/mp_backlot_fx.gsc
 rawfile,maps/createfx/mp_bloc_fx.gsc
@@ -61,6 +57,7 @@ rawfile,maps/mp/gametypes/_globallogic.gsc
 rawfile,maps/mp/gametypes/_healthoverlay.gsc
 rawfile,maps/mp/gametypes/_hud.gsc
 rawfile,maps/mp/gametypes/_hud_message.gsc
+rawfile,maps/mp/gametypes/_killcam.gsc
 rawfile,maps/mp/gametypes/_menus.gsc
 rawfile,maps/mp/gametypes/_missions.gsc
 rawfile,maps/mp/gametypes/_promod.gsc
@@ -100,7 +97,6 @@ rawfile,maps/mp/mp_showdown.gsc
 rawfile,maps/mp/mp_strike.gsc
 rawfile,maps/mp/mp_vacant.gsc
 
-rawfile,promod/bombdrop.gsc
 rawfile,promod/client.gsc
 rawfile,promod/comp.gsc
 rawfile,promod/dvarmon.gsc

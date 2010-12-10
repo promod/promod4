@@ -122,7 +122,7 @@
 
 		#include "ui_mp/teamicon.inc"
 
-		#undef  CHOICE_X_START
+		#undef CHOICE_X_START
 		#define CHOICE_X_START	-320
 
 		#undef	CHOICE_HORIZONTAL_ALIGN
@@ -145,10 +145,6 @@
 
 		CHOICE_BUTTON( 6, "@MPUI_MUTE_PLAYERS", open muteplayer; close self; )
 
-		CHOICE_BUTTON_BG( 7, 1 )
-		CHOICE_HIGHLIGHT( 7, 1 )
-		CHOICE_BUTTON_VIS_NOHI( 7, "@MENU_LEAVE_GAME", open popup_leavegame, 1 )
-
-		#include "ui/safearea.menu"
+		CHOICE_BUTTON( 7, "@MENU_LEAVE_GAME", open popup_leavegame; )
 	}
 }

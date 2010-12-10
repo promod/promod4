@@ -11,46 +11,18 @@
 updateHealthbar()
 {
 	self endon ( "disconnect" );
+	self endon ( "killspec" );
 
 	for(;;)
 	{
-		if( game["attackers"] == "allies" && game["defenders"] == "axis" )
-		{
-			shout_attack_team = self.pers["team"] == "allies";
-			shout_defence_team = self.pers["team"] == "axis";
-		}
-		else
-		{
-			shout_attack_team = self.pers["team"] == "axis";
-			shout_defence_team = self.pers["team"] == "allies";
-		}
+		if(self.pers["team"] != "allies" && self.pers["team"] != "axis")
+			break;
 
-		health = self.health / self.maxhealth;
+		for( i = 0; i < level.players.size; i++ )
+			if( level.players[i].pers["team"] == "spectator" )
+				level.players[i] setClientDvars( "shout_"+ self.pers["team"] + self.shoutNumber, self.name, "shout_"+ self.pers["team"] + "health" + self.shoutNumber, self.health / self.maxhealth );
 
-		if( shout_attack_team )
-		{
-			for( i = 0; i < level.players.size; i++ )
-			{
-				player = level.players[i];
-				if( player.pers["team"] == "spectator" )
-				{
-					player setClientDvar( "shout_allies" + self.shoutNumber, self.name );
-					player setClientDvar( "shout_allieshealth" + self.shoutNumber, health );
-				}
-			}
-		}
-		else if( shout_defence_team )
-		{
-			for( i = 0; i < level.players.size; i++ )
-			{
-				player = level.players[i];
-				if( player.pers["team"] == "spectator" )
-				{
-					player setClientDvar( "shout_axis" + self.shoutNumber, self.name );
-					player setClientDvar( "shout_axishealth" + self.shoutNumber, health );
-				}
-			}
-		}
+		self thread setShoutClass();
 
 		self waittill( "updateshoutcast" );
 	}
@@ -62,21 +34,28 @@ resetShoutcast()
 							"shout_allies2", "",
 							"shout_allies3", "",
 							"shout_allies4", "",
-							"shout_allies5", "" );
-
-	self setClientDvars(	"shout_allieshealth1", "",
+							"shout_allies5", "",
+							"shout_alliesclass1", "",
+							"shout_alliesclass2", "",
+							"shout_alliesclass3", "",
+							"shout_alliesclass4", "",
+							"shout_alliesclass5", "",
+							"shout_allieshealth1", "",
 							"shout_allieshealth2", "",
 							"shout_allieshealth3", "",
 							"shout_allieshealth4", "",
-							"shout_allieshealth5", "" );
-
-	self setClientDvars(	"shout_axis1", "",
+							"shout_allieshealth5", "",
+							"shout_axis1", "",
 							"shout_axis2", "",
 							"shout_axis3", "",
 							"shout_axis4", "",
-							"shout_axis5", "" );
-
-	self setClientDvars(	"shout_axishealth1", "",
+							"shout_axis5", "",
+							"shout_axisclass1", "",
+							"shout_axisclass2", "",
+							"shout_axisclass3", "",
+							"shout_axisclass4", "",
+							"shout_axisclass5", "",
+							"shout_axishealth1", "",
 							"shout_axishealth2", "",
 							"shout_axishealth3", "",
 							"shout_axishealth4", "",
@@ -85,7 +64,7 @@ resetShoutcast()
 	wait 0.05;
 
 	if ( isDefined( self ) )
-		assignShoutID();
+		thread assignShoutID();
 }
 
 assignShoutID()
@@ -97,7 +76,7 @@ assignShoutID()
 	for( i = 0; i < level.players.size; i++ )
 	{
 		player = level.players[i];
-		if( player.pers["team"] == "allies" || player.pers["team"] == "axis" )
+		if( ( player.pers["team"] == "allies" || player.pers["team"] == "axis" ) && isDefined( player.pers["class"] ) )
 		{
 			if( player.pers["team"] == "axis" )
 			{
@@ -114,5 +93,17 @@ assignShoutID()
 
 			player notify( "updateshoutcast" );
 		}
+	}
+}
+
+setShoutClass()
+{
+	if ( !isDefined( self.shoutNumber ) || !isDefined( self.curClass ) )
+		return;
+
+	for( i = 0; i < level.players.size; i++ )
+	{
+		if( level.players[i].pers["team"] == "spectator" )
+			level.players[i] setClientDvar( "shout_"+ self.pers["team"] + "class" + self.shoutNumber, maps\mp\gametypes\_quickmessages::chooseClassName(self.curClass) );
 	}
 }

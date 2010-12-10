@@ -8,4 +8,12 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-init(){}
+{
+	loadMenu { "ui_mp/auto_update.menu" }
+	loadMenu { "ui_mp/connect.menu" }
+	loadMenu { "ui_mp/controls_multi.menu" }
+	loadMenu { "ui_mp/hud.menu" }
+	loadMenu { "ui_mp/main.menu" }
+	loadMenu { "ui_mp/options_multi.menu" }
+	loadMenu { "ui_mp/wm_quickmessage.menu" }
+}

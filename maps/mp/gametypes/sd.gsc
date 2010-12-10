@@ -182,7 +182,7 @@ onPlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHit
 
 checkAllowSpectating()
 {
-	wait ( 0.05 );
+	wait 0.05;
 
 	update = false;
 	if ( !level.aliveCount[ game["attackers"] ] )
@@ -285,10 +285,10 @@ bombs()
 
 	bombZones = getEntArray( "bombzone", "targetname" );
 
-	for ( index = 0; index < bombZones.size; index++ )
+	for ( i = 0; i < bombZones.size; i++ )
 	{
-		trigger = bombZones[index];
-		visuals = getEntArray( bombZones[index].target, "targetname" );
+		trigger = bombZones[i];
+		visuals = getEntArray( bombZones[i].target, "targetname" );
 
 		bombZone = maps\mp\gametypes\_gameobjects::createUseObject( game["defenders"], trigger, visuals, (0,0,64) );
 		bombZone maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
@@ -309,11 +309,11 @@ bombs()
 		bombZone.onUse = ::onUsePlantObject;
 		bombZone.onCantUse = ::onCantUse;
 
-		for ( i = 0; i < visuals.size; i++ )
+		for ( j = 0; j < visuals.size; j++ )
 		{
-			if ( isDefined( visuals[i].script_exploder ) )
+			if ( isDefined( visuals[j].script_exploder ) )
 			{
-				bombZone.exploderIndex = visuals[i].script_exploder;
+				bombZone.exploderIndex = visuals[j].script_exploder;
 				break;
 			}
 		}
@@ -326,16 +326,16 @@ bombs()
 		bombZone.bombDefuseTrig.label = label;
 	}
 
-	for ( index = 0; index < level.bombZones.size; index++ )
+	for ( i = 0; i < level.bombZones.size; i++ )
 	{
 		array = [];
-		for ( otherindex = 0; otherindex < level.bombZones.size; otherindex++ )
+		for ( j = 0; j < level.bombZones.size; j++ )
 		{
-			if ( otherindex != index )
-				array[ array.size ] = level.bombZones[otherindex];
+			if ( j != i )
+				array[ array.size ] = level.bombZones[j];
 		}
 
-		level.bombZones[index].otherBombZones = array;
+		level.bombZones[i].otherBombZones = array;
 	}
 }
 
@@ -404,12 +404,12 @@ onUsePlantObject( player )
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "plant", player );
 
-		for ( index = 0; index < level.bombZones.size; index++ )
+		for ( i = 0; i < level.bombZones.size; i++ )
 		{
-			if ( level.bombZones[index] == self )
+			if ( level.bombZones[i] == self )
 				continue;
 
-			level.bombZones[index] maps\mp\gametypes\_gameobjects::disableObject();
+			level.bombZones[i] maps\mp\gametypes\_gameobjects::disableObject();
 		}
 
 		for ( i = 0; i < level.players.size; i++ )
@@ -455,7 +455,7 @@ onDrop( player )
 			printOnTeamArg( &"MP_EXPLOSIVES_DROPPED_BY", game["attackers"], player );
 
 		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
-				game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
+			game["promod_scorebot_ticker_buffer"] += "dropped_bomb" + player.name;
 	}
 
 	self maps\mp\gametypes\_gameobjects::set3DIcon( "friendly", "waypoint_bomb" );
@@ -474,7 +474,6 @@ onPickup( player )
 	{
 		if ( isDefined( player ) && isDefined( player.name ) )
 			printOnTeamArg( &"MP_EXPLOSIVES_RECOVERED_BY", game["attackers"], player );
-
 
 		if ( isDefined( level.scorebot ) && level.scorebot && isDefined( player ) && isDefined( player.name ) )
 			game["promod_scorebot_ticker_buffer"] += "pickup_bomb" + player.name;
@@ -504,10 +503,10 @@ bombPlanted( destroyedObj, player )
 	}
 	else
 	{
-		for ( index = 0; index < level.players.size; index++ )
+		for ( i = 0; i < level.players.size; i++ )
 		{
-			if ( isDefined( level.players[index].carryIcon ) )
-				level.players[index].carryIcon destroyElem();
+			if ( isDefined( level.players[i].carryIcon ) )
+				level.players[i].carryIcon destroyElem();
 		}
 
 		trace = bulletTrace( player.origin + (0,0,20), player.origin - (0,0,2000), false, player );
@@ -532,7 +531,7 @@ bombPlanted( destroyedObj, player )
 	visuals = [];
 	defuseObject = maps\mp\gametypes\_gameobjects::createUseObject( game["defenders"], trigger, visuals, (0,0,32) );
 	defuseObject maps\mp\gametypes\_gameobjects::allowUse( "friendly" );
-	defuseObject maps\mp\gametypes\_gameobjects::setUseTime( level.defuseTime);
+	defuseObject maps\mp\gametypes\_gameobjects::setUseTime( level.defuseTime );
 	defuseObject maps\mp\gametypes\_gameobjects::setUseText( &"MP_DEFUSING_EXPLOSIVE" );
 	defuseObject maps\mp\gametypes\_gameobjects::setUseHintText( &"PLATFORM_HOLD_TO_DEFUSE_EXPLOSIVES" );
 	defuseObject maps\mp\gametypes\_gameobjects::setVisibleTeam( "any" );
@@ -573,8 +572,8 @@ bombPlanted( destroyedObj, player )
 
 	thread playSoundinSpace( "exp_suitcase_bomb_main", explosionOrigin );
 
-	for ( index = 0; index < level.bombZones.size; index++ )
-		level.bombZones[index] maps\mp\gametypes\_gameobjects::disableObject();
+	for ( i = 0; i < level.bombZones.size; i++ )
+		level.bombZones[i] maps\mp\gametypes\_gameobjects::disableObject();
 
 	defuseObject maps\mp\gametypes\_gameobjects::disableObject();
 

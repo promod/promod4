@@ -14,34 +14,33 @@
 #define MAP_HEIGHT				268
 #define ORIGIN_MAP_FRAME		MAP_X MAP_Y
 #define MAP_WIDTH2				(MAP_WIDTH+5)
-#define SHOULD_SHOW_MAP			1
 
 #define UI_MAP_NAME		"@"+tablelookup("mp/mapsTable.csv",0,dvarString(mapname),3)
 #define MAP_OFFSET		0 21
 
 	itemDef
-   	{
+	{
 		name			"mini_map2"
 		rect			ORIGIN_MAP_FRAME MAP_WIDTH MAP_WIDTH RIGHTITEM_ALIGN VERTICAL_ALIGN_TOP
 		origin			MAP_OFFSET
 		forecolor		1 1 1 1
 		background		"compass_map_default"
 		ownerdraw		CG_PLAYER_FULLMAP_MAP
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
-   	}
+	}
 
 	itemDef
-   	{
+	{
 		style			WINDOW_STYLE_SHADER
 		name			"mini_map2_overlay"
 		rect			ORIGIN_MAP_FRAME MAP_WIDTH MAP_WIDTH RIGHTITEM_ALIGN VERTICAL_ALIGN_TOP
 		origin			MAP_OFFSET
 		forecolor		1 1 1 1
 		exp				material( tableLookup( "mp/mapsTable.csv", 0, dvarString( mapname ), 7 ) )
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
-   	}
+	}
 
 	itemDef
 	{
@@ -51,7 +50,7 @@
 		forecolor		1 1 1 1
 		background		"objective_line"
 		ownerdraw		CG_PLAYER_FULLMAP_POINTERS
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
 	}
 	itemDef
@@ -62,7 +61,7 @@
 		forecolor		1 1 1 1
 		background		"compassping_friendly"
 		ownerdraw		CG_PLAYER_FULLMAP_FRIENDS
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
 	}
 	itemDef
@@ -73,7 +72,7 @@
 		forecolor		1 1 1 1
 		background		"compassping_enemy"
 		ownerdraw		CG_PLAYER_FULLMAP_ENEMIES
-		visible			when ( !dvarbool( ui_hud_hardcore ) );
+		visible			when( dvarInt( g_compassShowEnemies ) );
 		decoration
 	}
 

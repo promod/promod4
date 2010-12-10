@@ -86,37 +86,35 @@ dropWeaponForDeath( attacker )
 {
 	weapon = self getCurrentWeapon();
 
-	if ( !isDefined( weapon ) )
+	if ( !isDefined( weapon ) || !self hasWeapon( weapon ) )
 		return;
 
-	if ( !self hasWeapon( weapon ) )
-		return;
-
-	if ( !isPrimaryWeapon( weapon ) )
-		return false;
-
-	switch ( level.primary_weapon_array[weapon] )
+	if( isPrimaryWeapon( weapon ) )
 	{
-		case "weapon_assault":
-			if ( !getDvarInt( "class_assault_allowdrop" ) )
+		switch ( level.primary_weapon_array[weapon] )
+		{
+			case "weapon_assault":
+				if ( !getDvarInt( "class_assault_allowdrop" ) )
+					return;
+				break;
+			case "weapon_smg":
+				if ( !getDvarInt( "class_specops_allowdrop" ) )
+					return;
+				break;
+			case "weapon_sniper":
+				if ( !getDvarInt( "class_sniper_allowdrop" ) )
+					return;
+				break;
+			case "weapon_shotgun":
+				if ( !getDvarInt( "class_demolitions_allowdrop" ) )
+					return;
+				break;
+			default:
 				return;
-			break;
-		case "weapon_smg":
-			if ( !getDvarInt( "class_specops_allowdrop" ) )
-				return;
-			break;
-		case "weapon_sniper":
-			if ( !getDvarInt( "class_sniper_allowdrop" ) )
-				return;
-			break;
-		case "weapon_shotgun":
-			if ( !getDvarInt( "class_demolitions_allowdrop" ) )
-				return;
-			break;
-
-		default:
-			return;
+		}
 	}
+	else if ( WeaponClass( weapon ) != "pistol" )
+		return false;
 
 	clipAmmo = self GetWeaponAmmoClip( weapon );
 
@@ -135,14 +133,15 @@ dropWeaponForDeath( attacker )
 	item.owner = self;
 	item.ownersattacker = attacker;
 
-	item thread deletePickupAfterAWhile();
+	if( !isDefined(game["PROMOD_MATCH_MODE"]) || game["PROMOD_MATCH_MODE"] != "match" || (game["PROMOD_MATCH_MODE"] == "match" && level.gametype != "sd") || game["promod_do_readyup"] )
+		item thread deletePickupAfterAWhile();
 }
 
 deletePickupAfterAWhile()
 {
 	self endon("death");
 
-	wait 60;
+	wait 180;
 
 	if ( !isDefined( self ) )
 		return;
@@ -156,16 +155,6 @@ getItemWeaponName()
 	assert( getsubstr( classname, 0, 7 ) == "weapon_" );
 	weapname = getsubstr( classname, 7 );
 	return weapname;
-}
-
-getWeaponBasedGrenadeCount(weapon)
-{
-	return 2;
-}
-
-getWeaponBasedSmokeGrenadeCount(weapon)
-{
-	return 1;
 }
 
 getFragGrenadeCount()
@@ -193,33 +182,6 @@ getFlashGrenadeCount()
 	return count;
 }
 
-friendlyFireCheck( owner, attacker, forcedFriendlyFireRule )
-{
-	if ( !isdefined(owner) )
-		return true;
-
-	if ( !level.teamBased )
-		return true;
-
-	friendlyFireRule = level.friendlyfire;
-	if ( isdefined( forcedFriendlyFireRule ) )
-		friendlyFireRule = forcedFriendlyFireRule;
-
-	if ( friendlyFireRule != 0 )
-		return true;
-
-	if ( attacker == owner )
-		return true;
-
-	if (!isdefined(attacker.pers["team"]))
-		return true;
-
-	if ( attacker.pers["team"] != owner.pers["team"] )
-		return true;
-
-	return false;
-}
-
 watchGrenadeUsage()
 {
 	self endon( "death" );
@@ -227,7 +189,7 @@ watchGrenadeUsage()
 
 	self.throwingGrenade = false;
 
-	for ( ;; )
+	for(;;)
 	{
 		self waittill ( "grenade_pullback", weaponName );
 
@@ -260,12 +222,7 @@ onWeaponDamage( eInflictor, sWeapon, meansOfDeath, damage )
 	self endon ( "death" );
 	self endon ( "disconnect" );
 
-	switch( sWeapon )
-	{
-		default:
-			maps\mp\gametypes\_shellshock::shellshockOnDamage( meansOfDeath, damage );
-		break;
-	}
+	maps\mp\gametypes\_shellshock::shellshockOnDamage( meansOfDeath, damage );
 }
 
 isPrimaryWeapon( weaponname )

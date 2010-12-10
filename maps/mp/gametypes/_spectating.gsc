@@ -65,8 +65,8 @@ updateSpectateSettings()
 {
 	level endon ( "game_ended" );
 
-	for ( index = 0; index < level.players.size; index++ )
-		level.players[index] setSpectatePermissions();
+	for ( i = 0; i < level.players.size; i++ )
+		level.players[i] setSpectatePermissions();
 }
 
 getOtherTeam( team )

@@ -97,58 +97,61 @@ toggle_gfxblur()
 use_config()
 {
 	if ( !self.pers["PROMOD_CACHE_SUNLIGHT"] )
-	{
 		self setClientDvars( "r_lighttweaksunlight", 1.2,
 							 "sunlight", 1.2 );
-	}
 	else if ( self.pers["PROMOD_CACHE_SUNLIGHT"] == 1 )
 	{
-		if ( getDvar( "mapname" ) == "mp_backlot" )
-			self setClientDvar( "r_lighttweaksunlight", 1.3 );
-		else if ( getDvar( "mapname" ) == "mp_bloc" )
-			self setClientDvar( "r_lighttweaksunlight", 0.9 );
-		else if ( getDvar( "mapname" ) == "mp_bog" )
-			self setClientDvar( "r_lighttweaksunlight", 0.8 );
-		else if ( getDvar( "mapname" ) == "mp_broadcast" )
-			self setClientDvar( "r_lighttweaksunlight", 1.4 );
-		else if ( getDvar( "mapname" ) == "mp_carentan" )
-			self setClientDvar( "r_lighttweaksunlight", 0.75 );
-		else if ( getDvar( "mapname" ) == "mp_cargoship" )
-			self setClientDvar( "r_lighttweaksunlight", 1.3 );
-		else if ( getDvar( "mapname" ) == "mp_citystreets" )
-			self setClientDvar( "r_lighttweaksunlight", 0.78 );
-		else if ( getDvar( "mapname" ) == "mp_convoy" )
-			self setClientDvar( "r_lighttweaksunlight", 1.6 );
-		else if ( getDvar( "mapname" ) == "mp_countdown" )
-			self setClientDvar( "r_lighttweaksunlight", 1.5 );
-		else if ( getDvar( "mapname" ) == "mp_crash" )
-			self setClientDvar( "r_lighttweaksunlight", 1.3 );
-		else if ( getDvar( "mapname" ) == "mp_crash_snow" )
-			self setClientDvar( "r_lighttweaksunlight", 0.25 );
-		else if ( getDvar( "mapname" ) == "mp_creek" )
-			self setClientDvar( "r_lighttweaksunlight", 1.5 );
-		else if ( getDvar( "mapname" ) == "mp_crossfire" )
-			self setClientDvar( "r_lighttweaksunlight", 1 );
-		else if ( getDvar( "mapname" ) == "mp_farm" )
-			self setClientDvar( "r_lighttweaksunlight", 1 );
-		else if ( getDvar( "mapname" ) == "mp_killhouse" )
-			self setClientDvar( "r_lighttweaksunlight", 1.5 );
-		else if ( getDvar( "mapname" ) == "mp_overgrown" )
-			self setClientDvar( "r_lighttweaksunlight", 1.1 );
-		else if ( getDvar( "mapname" ) == "mp_pipeline" )
-			self setClientDvar( "r_lighttweaksunlight", 1.15 );
-		else if ( getDvar( "mapname" ) == "mp_shipment" )
-			self setClientDvar( "r_lighttweaksunlight", 1.3 );
-		else if ( getDvar( "mapname" ) == "mp_showdown" )
-			self setClientDvar( "r_lighttweaksunlight", 1.6 );
-		else if ( getDvar( "mapname" ) == "mp_strike" )
-			self setClientDvar( "r_lighttweaksunlight", 1 );
-		else if ( getDvar( "mapname" ) == "mp_vacant" )
-			self setClientDvar( "r_lighttweaksunlight", 1.3 );
-		else
-			self setClientDvar( "r_lighttweaksunlight", 1.2 );
-
-		self setClientDvar( "sunlight", "Stock" );
+		sl = 1.2;
+		switch(getDvar("mapname"))
+		{
+			case "mp_backlot":
+			case "mp_cargoship":
+			case "mp_crash":
+			case "mp_shipment":
+			case "mp_vacant":
+				sl = 1.3;
+				break;
+			case "mp_bloc":
+				sl = 0.9;
+				break;
+			case "mp_bog":
+				sl = 0.8;
+				break;
+			case "mp_broadcast":
+				sl = 1.4;
+				break;
+			case "mp_carentan":
+				sl = 0.75;
+				break;
+			case "mp_citystreets":
+				sl = 0.78;
+				break;
+			case "mp_convoy":
+			case "mp_showdown":
+				sl = 1.6;
+				break;
+			case "mp_countdown":
+			case "mp_creek":
+			case "mp_killhouse":
+				sl = 1.5;
+				break;
+			case "mp_crash_snow":
+				sl = 0.25;
+				break;
+			case "mp_crossfire":
+			case "mp_farm":
+			case "mp_strike":
+				sl = 1;
+				break;
+			case "mp_overgrown":
+				sl = 1.1;
+				break;
+			case "mp_pipeline":
+				sl = 1.15;
+				break;
+		}
+		self setClientDvars( "r_lighttweaksunlight", sl,
+							 "sunlight", "Stock" );
 	}
 	else
 		self setClientDvars( "r_lighttweaksunlight", 0,
@@ -172,13 +175,6 @@ use_config()
 	else if ( self.pers["PROMOD_CACHE_GFXBLUR"] == 5 )
 		self setClientDvar( "r_blur", 1 );
 
-	if ( !self.pers["PROMOD_CACHE_FIRSTTIME"] )
-	{
-		self.pers["PROMOD_CACHE_FIRSTTIME"] = 1;
-		self setClientDvar( "cg_voiceIconSize", 1 );
-		self set_config( "PROMOD_FIRSTTIME", 1 );
-	}
-
 	self setClientDvars(
 	"aim_automelee_enabled", 0,
 	"aim_automelee_range", 0,
@@ -197,9 +193,13 @@ use_config()
 	"cg_huddamageiconwidth", 128,
 	"r_filmtweakinvert", 0,
 	"r_desaturation", 0,
-	"r_specularcolorscale", 0,
-	"fx_drawclouds", 0,
+	"r_dlightlimit", 0,
 	"r_fog", 0,
+	"r_specularcolorscale", 0,
+	"r_zfeather", 1,
+	"fx_drawclouds", 0,
+	"rate", 25000,
+	"cl_maxpackets", 100,
 	"developer", 0,
 	"r_normalmap", self.pers["PROMOD_CACHE_NORMALMAP"],
 	"r_texfilterdisable", self.pers["PROMOD_CACHE_TEXTURE"],

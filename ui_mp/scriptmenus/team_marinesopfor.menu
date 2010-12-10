@@ -72,13 +72,11 @@
 		#include "ui_mp/navcontrols.inc";
 		#include "ui_mp/tactical_map.inc";
 
-		#ifdef PC
-			#undef  CHOICE_X_START
-			#define CHOICE_X_START	-320
+		#undef CHOICE_X_START
+		#define CHOICE_X_START	-320
 
-			#undef	CHOICE_HORIZONTAL_ALIGN
-			#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
-		#endif
+		#undef	CHOICE_HORIZONTAL_ALIGN
+		#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
 
 		CHOICE_BUTTON_VIS( 1, "1. Attack", play "mouse_click"; scriptMenuResponse "allies";, when( team( name ) == "TEAM_AXIS" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
 		CHOICE_DBUTTON_VIS( 1, "1. Attack", when( team( name ) == "TEAM_ALLIES" ) )
@@ -90,14 +88,12 @@
 
 		CHOICE_SEPARATOR( CHOICE_SEP_1 )
 
-		CHOICE_BUTTON_BG( 4, 1 )
-		CHOICE_HIGHLIGHT( 4, 1 )
-
-		CHOICE_BUTTON( 4, "Shoutcaster", close self; scriptMenuResponse "shoutcast"; )
+		CHOICE_BUTTON( 4, "4. Shoutcaster", scriptMenuResponse "shoutcast"; )
 		CHOICE_BUTTON_VIS( 5, "@MPUI_LEAVE_GAME", open popup_endgame, when( team( name ) == "TEAM_FREE" ) )
 
 		execKey "1" { scriptMenuResponse "allies"; }
 		execKey "2" { scriptMenuResponse "axis"; }
 		execKey "3" { scriptMenuResponse "autoassign"; }
+		execKey "4" { scriptMenuResponse "shoutcast"; }
 	}
 }

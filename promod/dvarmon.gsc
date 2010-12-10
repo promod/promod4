@@ -12,13 +12,13 @@ main()
 {
 	level endon ( "restarting" );
 
-	dvars = strTok( "scr_team_fftype|bg_falldamageminheight|scr_enable_hiticon|class_assault_allowdrop|class_assault_limit|class_demolitions_allowdrop|class_demolitions_limit|class_sniper_allowdrop|class_sniper_limit|class_specops_limit|class_specops_allowdrop|scr_game_allowkillcam|scr_drawfriend|scr_game_spectatetype|scr_" + level.gametype + "_timelimit|scr_" + level.gametype + "_numlives|scr_" + level.gametype + "_playerrespawndelay|scr_hardcore|scr_" + level.gametype + "_roundswitch|scr_sd_multibomb|scr_sab_hotpotato|scr_" + level.gametype + "_bombtimer|scr_" + level.gametype + "_defusetime|scr_" + level.gametype + "_planttime|koth_autodestroytime|koth_delayplayer|koth_destroytime|koth_spawnDelay|koth_spawntime", "|" );
+	dvars = strTok( "scr_team_fftype|scr_enable_hiticon|class_assault_allowdrop|class_assault_limit|class_demolitions_allowdrop|class_demolitions_limit|class_sniper_allowdrop|class_sniper_limit|class_specops_limit|class_specops_allowdrop|scr_game_allowkillcam|scr_drawfriend|scr_game_spectatetype|scr_" + level.gametype + "_timelimit|scr_" + level.gametype + "_numlives|scr_" + level.gametype + "_playerrespawndelay|scr_hardcore|scr_" + level.gametype + "_roundswitch|scr_sd_multibomb|scr_sab_hotpotato|scr_" + level.gametype + "_bombtimer|scr_" + level.gametype + "_defusetime|scr_" + level.gametype + "_planttime|koth_autodestroytime|koth_delayplayer|koth_destroytime|koth_spawnDelay|koth_spawntime", "|" );
 
 	current_values = [];
-	for ( d = 0; d < dvars.size; d++ )
+	for( d = 0; d < dvars.size; d++ )
 		current_values[d] = getDvar(dvars[d]);
 
-	for (;;)
+	for(;;)
 	{
 		wait 1;
 		for ( c = 0; c < dvars.size; c++ )

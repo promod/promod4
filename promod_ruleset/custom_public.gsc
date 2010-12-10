@@ -1,7 +1,7 @@
 main()
 {
 	// custom_public ruleset, promod live v2
-	// rule of thumb, 0 = disable, 1 (and in some cases higher) = enable
+	// boolean logic, 0 = false, 1 or higher = true
 
 	// sd
 	setDvar( "scr_sd_bombtimer", 45 ); // [1->] (seconds)
@@ -189,7 +189,6 @@ main()
 	setDvar( "g_no_script_spam", 1 );
 	setDvar( "g_antilag", 1 );
 	setDvar( "g_smoothClients", 1 );
-	setDvar( "g_banIPs", "" );
 	setDvar( "sv_allowDownload", 1 );
 	setDvar( "sv_maxPing", 0 );
 	setDvar( "sv_minPing", 0 );
@@ -203,7 +202,6 @@ main()
 
 	// various
 	setDvar( "g_allowVote", 0 ); // [0-1]
-	setDvar( "g_deadChat", 1 ); // [0-1]
 	setDvar( "scr_game_allowkillcam", 0 ); // [0-1]
 	setDvar( "scr_game_spectatetype", 1 ); // [0-2] (disabled, team only, all)
 	setDvar( "scr_game_matchstarttime", 10 ); // [0->] (seconds)
@@ -212,11 +210,12 @@ main()
 	setDvar( "scr_enable_scoretext", 1 ); // [0-1] (exp popups, +5 etc)
 	setDvar( "promod_allow_strattime", 0 ); // [0-1] (sd only)
 	setDvar( "promod_allow_readyup", 0 ); // [0-1]
+	setDvar( "promod_kniferound", 0 ); // [0-1] (sd only)
 	setDvar( "g_maxDroppedWeapons", 16 ); // [2-32] (maximum number of dropped weapons before recycling)
 	setDvar( "scr_hardcore", 0 ); // [0-1]
 
 	// website
-	setDvar( "promod_hud_website", "www.callofduty.com" ); // (avoid "//" here)
+	setDvar( "promod_hud_website", "www.codpromod.com" ); // (avoid "//" here)
 
 	// messagecenter
 	setDvar( "promod_mc_enable", 0 ); // [0-1]

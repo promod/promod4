@@ -8,32 +8,31 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-	#define SHOULD_SHOW_MAP			1
 	#define MAP_OFFSET				0 0
-	#define FULL_SCREEN				0 40 640 400
+	#define FULL_SCREEN				0 30 640 420
 
 	itemDef
-   	{
+	{
 		name			"mini_map2"
 		rect			FULL_SCREEN
 		origin			MAP_OFFSET
 		forecolor		1 1 1 1
 		background		"compass_map_default"
 		ownerdraw		CG_PLAYER_FULLMAP_MAP
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
-   	}
+	}
 	itemDef
-   	{
+	{
 		style			WINDOW_STYLE_SHADER
 		name			"mini_map2_overlay"
 		rect			FULL_SCREEN
 		origin			MAP_OFFSET
 		forecolor		1 1 1 1
 		exp				material( tableLookup( "mp/mapsTable.csv", 0, dvarString( mapname ), 7 ) )
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
-   	}
+	}
 	itemDef
 	{
 		name			"compasspointers2"
@@ -42,7 +41,7 @@
 		forecolor		1 1 1 1
 		background		"objective_line"
 		ownerdraw		CG_PLAYER_FULLMAP_POINTERS
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
 	}
 	itemDef
@@ -53,7 +52,7 @@
 		forecolor		1 1 1 1
 		background		"compassping_friendly"
 		ownerdraw		CG_PLAYER_FULLMAP_FRIENDS
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
 	}
 	itemDef
@@ -64,7 +63,7 @@
 		forecolor		1 1 1 1
 		background		"compassping_enemy"
 		ownerdraw		CG_PLAYER_FULLMAP_ENEMIES
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
 	}
 	itemDef
@@ -75,6 +74,6 @@
 		forecolor		1 1 1 1
 		background		"compassping_player"
 		ownerdraw		CG_PLAYER_FULLMAP_PLAYER
-		visible			when ( SHOULD_SHOW_MAP );
+		visible			1
 		decoration
 	}

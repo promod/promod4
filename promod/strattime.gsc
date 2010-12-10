@@ -31,7 +31,7 @@ main()
 		player = players[i];
 		classType = player.pers["class"];
 
-		if ( ( player.pers["team"] == "allies" || player.pers["team"] == "axis" ) && player.sessionstate == "playing" )
+		if ( ( player.pers["team"] == "allies" || player.pers["team"] == "axis" ) && player.sessionstate == "playing" && isDefined( player.pers["class"] ) )
 		{
 			if ( level.hardcoreMode && getDvarInt("weap_allow_frag_grenade") )
 				player giveWeapon( "frag_grenade_short_mp" );
@@ -69,7 +69,7 @@ Strat_Time()
 {
 	level.strat_over = false;
 	level.strat_time_left = game["PROMOD_STRATTIME"];
-	time_increment = .25;
+	time_increment = 0.25;
 
 	setDvar( "player_sustainAmmo", 1 );
 	setClientNameMode("auto_change");
@@ -110,7 +110,12 @@ Strat_Time_Timer()
 	matchStartText = createServerFontString( "objective", 1.5 );
 	matchStartText setPoint( "CENTER", "CENTER", 0, -20 );
 	matchStartText.sort = 1001;
-	matchStartText setText( "Strat Time" );
+
+	if( isDefined(game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] )
+		matchStartText setText( "Starting Knife Round" );
+	else
+		matchStartText setText( "Strat Time" );
+
 	matchStartText.foreground = false;
 	matchStartText.hidewheninmenu = false;
 

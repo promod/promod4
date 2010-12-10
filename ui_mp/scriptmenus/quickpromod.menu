@@ -90,6 +90,23 @@
 		{
 			name			"window"
 			group			ingamebox
+			rect			16 68 0 0
+			origin			ORIGIN_QUICKMESSAGEWINDOW
+			forecolor		1 1 1 1
+			textfont		UI_FONT_NORMAL
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_SMALL
+			textaligny		8
+			text			"4. Killspec"
+			visible			1
+			decoration
+		}
+		execKey "4" { scriptMenuResponse "killspec"; close quickpromod }
+
+		itemDef
+		{
+			name			"window"
+			group			ingamebox
 			rect			16 164 0 0
 			origin			ORIGIN_QUICKMESSAGEWINDOW
 			forecolor		1 1 1 1

@@ -10,10 +10,7 @@
 
 main()
 {
-	if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
-		return;
-
-	if (getDvar("promod_mc_enable") == "" || getDvarInt("promod_mc_enable") < 1)
+	if ( (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match") || getDvar("promod_mc_enable") == "" || getDvarInt("promod_mc_enable") < 1 )
 		return;
 
 	if (getDvarInt("promod_mc_rs_every_round") )
@@ -36,7 +33,7 @@ Run_Messages()
 	if (getDvar("promod_mc_maxmessages") == "")
 		setDvar("promod_mc_maxmessages" , 20);
 
-	while (1)
+	for(;;)
 	{
 		max = getDvarInt("promod_mc_maxmessages") +1;
 
@@ -46,7 +43,7 @@ Run_Messages()
 		{
 			if (getDvar("promod_mc_message_" + i) == "")
 			{
-				wait .05;
+				wait 0.05;
 				continue;
 			}
 			else
@@ -81,7 +78,7 @@ Run_Messages()
 
 				if (!isDefined(message))
 				{
-					wait .05;
+					wait 0.05;
 					continue;
 				}
 

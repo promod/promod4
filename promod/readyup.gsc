@@ -114,7 +114,7 @@ Player_Ready_Up_Loop()
 	self thread on_Spawn();
 
 	status = newClientHudElem(self);
-	status.x = -40;
+	status.x = -36;
 	status.y = 145;
 	status.horzAlign = "right";
 	status.vertAlign = "top";
@@ -122,12 +122,12 @@ Player_Ready_Up_Loop()
 	status.alignY = "middle";
 	status.fontScale = 1.4;
 	status.font = "default";
-	status.color = (.8, 1, 1);
+	status.color = (0.8, 1, 1);
 	status.hidewheninmenu = true;
 	status setText("Status");
 
 	readyhud = newClientHudElem(self);
-	readyhud.x = -40;
+	readyhud.x = -36;
 	readyhud.y = 160;
 	readyhud.horzAlign = "right";
 	readyhud.vertAlign = "top";
@@ -135,33 +135,33 @@ Player_Ready_Up_Loop()
 	readyhud.alignY = "middle";
 	readyhud.fontScale = 1.4;
 	readyhud.font = "default";
-	readyhud.color = (1, .66, .66);
+	readyhud.color = (1, 0.66, 0.66);
 	readyhud.hidewheninmenu = true;
 	readyhud setText("Not Ready");
 
 	killing = newClientHudElem(self);
-	killing.x = -40;
-	killing.y = 285;
+	killing.x = -36;
+	killing.y = 310;
 	killing.horzAlign = "right";
 	killing.vertAlign = "top";
 	killing.alignX = "center";
 	killing.alignY = "middle";
 	killing.fontScale = 1.4;
 	killing.font = "default";
-	killing.color = (.8, 1, 1);
+	killing.color = (0.8, 1, 1);
 	killing.hidewheninmenu = true;
 	killing setText("Killing");
 
 	readytally = newClientHudElem(self);
-	readytally.x = -40;
-	readytally.y = 300;
+	readytally.x = -36;
+	readytally.y = 325;
 	readytally.horzAlign = "right";
 	readytally.vertAlign = "top";
 	readytally.alignX = "center";
 	readytally.alignY = "middle";
 	readytally.fontScale = 1.4;
 	readytally.font = "default";
-	readytally.color = (1, .66, .66);
+	readytally.color = (1, 0.66, 0.66);
 	readytally.hidewheninmenu = true;
 	readytally setText("Disabled");
 
@@ -184,13 +184,21 @@ Player_Ready_Up_Loop()
 
 			if ( self.ready )
 			{
-				readyhud.color = (.73, .99, .73);
+				readyhud.color = (0.73, 0.99, 0.73);
 				readyhud setText("Ready");
+				self.statusicon = "compassping_friendlyfiring_mp";
+
+				for ( i = 0; i < level.players.size; i++ )
+					level.players[i] ShowScoreBoard();
 			}
 			else
 			{
-				readyhud.color = (1, .66, .66);
+				readyhud.color = (1, 0.66, 0.66);
 				readyhud setText("Not Ready");
+				self.statusicon = "compassping_enemy";
+
+				for ( i = 0; i < level.players.size; i++ )
+					level.players[i] ShowScoreBoard();
 			}
 		}
 
@@ -223,10 +231,10 @@ Player_Ready_Up_Loop()
 Waiting_On_Players_HUD_Loop()
 {
 	while ( !isDefined( level.not_ready_count ) )
-		wait .1;
+		wait 0.1;
 
 	waitingon = newHudElem();
-	waitingon.x = -40;
+	waitingon.x = -36;
 	waitingon.y = 80;
 	waitingon.horzAlign = "right";
 	waitingon.vertAlign = "top";
@@ -234,12 +242,12 @@ Waiting_On_Players_HUD_Loop()
 	waitingon.alignY = "middle";
 	waitingon.fontScale = 1.4;
 	waitingon.font = "default";
-	waitingon.color = (.8, 1, 1);
+	waitingon.color = (0.8, 1, 1);
 	waitingon.hidewheninmenu = true;
 	waitingon setText("Waiting On");
 
 	playerstext = newHudElem();
-	playerstext.x = -40;
+	playerstext.x = -36;
 	playerstext.y = 120;
 	playerstext.horzAlign = "right";
 	playerstext.vertAlign = "top";
@@ -247,12 +255,12 @@ Waiting_On_Players_HUD_Loop()
 	playerstext.alignY = "middle";
 	playerstext.fontScale = 1.4;
 	playerstext.font = "default";
-	playerstext.color = (.8, 1, 1);
+	playerstext.color = (0.8, 1, 1);
 	playerstext.hidewheninmenu = true;
 	playerstext setText("Players");
 
 	notreadyhud = newHudElem();
-	notreadyhud.x = -40;
+	notreadyhud.x = -36;
 	notreadyhud.y = 100;
 	notreadyhud.horzAlign = "right";
 	notreadyhud.vertAlign = "top";
@@ -260,13 +268,13 @@ Waiting_On_Players_HUD_Loop()
 	notreadyhud.alignY = "middle";
 	notreadyhud.fontScale = 1.4;
 	notreadyhud.font = "default";
-	notreadyhud.color = (.98, .98, .60);
+	notreadyhud.color = (0.98, 0.98, 0.60);
 	notreadyhud.hidewheninmenu = true;
 
 	while ( !level.ready_up_over )
 	{
 		notreadyhud setValue( level.not_ready_count );
-		wait 0.05;
+		wait 0.005;
 	}
 
 	notreadyhud setValue(0);

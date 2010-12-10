@@ -115,7 +115,6 @@ setClassChoice( classType )
 {
 	self.pers["class"] = classType;
 	self.class = classType;
-	self.curClass = classType;
 
 	self setClientDvar( "loadout_class", classType );
 	self setDvarsFromClass( classType );
@@ -163,9 +162,8 @@ setDvarWrapper( dvarName, setVal )
 	if ( isDefined( level.serverDvars[dvarName] ) )
 	{
 		level.serverDvars[dvarName] = setVal;
-		players = level.players;
-		for ( index = 0; index < level.players.size; index++ )
-			players[index] setClientDvar( dvarName, setVal );
+		for ( i = 0; i < level.players.size; i++ )
+			level.players[i] setClientDvar( dvarName, setVal );
 	}
 }
 
@@ -201,14 +199,6 @@ setServerInfoDvarDefault( dvarName, setVal, minVal, maxVal )
 	makeDvarServerInfo( dvarName, setVal );
 
 	setVal = setDvarDefault( dvarName, setVal, minVal, maxVal );
-}
-
-initClassAvailability()
-{
-	self setClientDvars( self.pers["team"] + "_allow_assault", game[self.pers["team"] + "_assault_count"] < getDvarInt( "class_assault_limit" ),
-						 self.pers["team"] + "_allow_specops", game[self.pers["team"] + "_specops_count"] < getDvarInt( "class_specops_limit" ),
-						 self.pers["team"] + "_allow_demolitions", game[self.pers["team"] + "_demolitions_count"] < getDvarInt( "class_demolitions_limit" ),
-						 self.pers["team"] + "_allow_sniper", game[self.pers["team"] + "_sniper_count"] < getDvarInt( "class_sniper_limit" ) );
 }
 
 initClassLoadouts()
@@ -397,10 +387,11 @@ processLoadoutResponse( respString )
 {
 	commandTokens = strTok( respString, "," );
 
-	for ( index = 0; index < commandTokens.size; index++ )
+	for ( i = 0; i < commandTokens.size; i++ )
 	{
-		subTokens = strTok( commandTokens[index], ":" );
-		assert( subTokens.size > 1 );
+		subTokens = strTok( commandTokens[i], ":" );
+		if( subTokens.size <= 1 )
+			return;
 
 		switch ( subTokens[0] )
 		{
@@ -425,9 +416,7 @@ processLoadoutResponse( respString )
 					}
 				}
 				else
-				{
 					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
-				}
 				break;
 
 			case "loadout_primary_attachment":
@@ -446,9 +435,7 @@ processLoadoutResponse( respString )
 					self setClientDvar( subTokens[0], subTokens[2] );
 				}
 				else
-				{
 					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
-				}
 				break;
 
 			case "loadout_grenade":
@@ -461,24 +448,23 @@ processLoadoutResponse( respString )
 					self setClientDvar( subTokens[0], subTokens[1] );
 				}
 				else
-				{
 					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
-				}
 				break;
 
 			case "loadout_camo":
-				if( respString != "loadout_camo:camo_none" && respString != "loadout_camo:camo_brockhaurd" && respString != "loadout_camo:camo_bushdweller" && respString != "loadout_camo:camo_blackwhitemarpat" && respString != "loadout_camo:camo_tigerred" && respString != "loadout_camo:camo_stagger" && respString != "loadout_camo:camo_gold" )
-					return;
-
 				switch ( subTokens[1] )
 				{
-					case "camo_none": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
-					case "camo_brockhaurd": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
-					case "camo_bushdweller": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
-					case "camo_blackwhitemarpat": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
-					case "camo_tigerred": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
-					case "camo_stagger": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
-					case "camo_gold": self.pers[self.class][subTokens[0]] = subTokens[1]; break;
+					case "camo_none":
+					case "camo_brockhaurd":
+					case "camo_bushdweller":
+					case "camo_blackwhitemarpat":
+					case "camo_tigerred":
+					case "camo_stagger":
+					case "camo_gold":
+						self.pers[self.class][subTokens[0]] = subTokens[1];
+						break;
+					default:
+						return;
 				}
 		}
 	}
@@ -492,7 +478,8 @@ verifyWeaponChoice( weaponName, classType )
 	switch ( classType )
 	{
 		case "assault":
-			if ( tableLookup( "mp/statsTable.csv", 4, weaponName, 2 ) == "weapon_assault" )
+		case "sniper":
+			if ( tableLookup( "mp/statsTable.csv", 4, weaponName, 2 ) == "weapon_"+classType )
 				return true;
 			break;
 		case "specops":
@@ -501,10 +488,6 @@ verifyWeaponChoice( weaponName, classType )
 			break;
 		case "demolitions":
 			if ( tableLookup( "mp/statsTable.csv", 4, weaponName, 2 ) == "weapon_shotgun" )
-				return true;
-			break;
-		case "sniper":
-			if ( tableLookup( "mp/statsTable.csv", 4, weaponName, 2 ) == "weapon_sniper" )
 				return true;
 			break;
 	}
@@ -523,10 +506,9 @@ verifyClassChoice( teamName, classType )
 			return true;
 
 		game[teamName + "_" + classType + "_count"] = 0;
-		players = level.players;
-		for ( index = 0; index < players.size; index++ )
+		for ( i = 0; i < level.players.size; i++ )
 		{
-			player = players[index];
+			player = level.players[i];
 
 			if ( player.team == self.team && isDefined( player.class ) && player.class == classType )
 				game[teamName + "_" + classType + "_count"]++;
@@ -552,10 +534,9 @@ updateClassAvailability( teamName )
 	game[teamName + "_demolitions_count"] = 0;
 	game[teamName + "_sniper_count"] = 0;
 
-	players = level.players;
-	for ( index = 0; index < players.size; index++ )
+	for ( i = 0; i < level.players.size; i++ )
 	{
-		player = players[index];
+		player = level.players[i];
 
 		if ( player.team == teamName && isDefined( player.class ) && player.class == "assault" )
 			game[teamName + "_assault_count"]++;
@@ -578,10 +559,10 @@ updateClassAvailability( teamName )
 
 menuAcceptClass( response )
 {
-	if ( isDefined( response) && response == "apply" && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "pub" )
+	if ( ( isDefined( response) && response == "apply" && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "pub" ) || !isDefined(self.pers["class"]) )
 		return;
 
-	if ( isDefined( response) && response == "go" )
+	if ( isDefined( response ) && response == "go" )
 		self maps\mp\gametypes\_globallogic::closeMenus();
 
 	if ( !isDefined( self.pers["team"] ) || ( self.pers["team"] != "allies" && self.pers["team"] != "axis" ) )
@@ -589,7 +570,7 @@ menuAcceptClass( response )
 
 	if ( self.sessionstate == "playing" )
 	{
-		if ( level.inGracePeriod && !self.hasDoneCombat && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
+		if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
 		else
 		{
@@ -597,7 +578,6 @@ menuAcceptClass( response )
 				self iPrintLnBold( game["strings"]["change_class"] );
 
 			self setClientDvar( "loadout_curclass", self.pers["class"] );
-			self.curClass = self.pers["class"];
 		}
 
 		if ( isDefined( response) && response == "go" )
@@ -606,7 +586,6 @@ menuAcceptClass( response )
 	else
 	{
 		self setClientDvar( "loadout_curclass", self.pers["class"] );
-		self.curClass = self.pers["class"];
 
 		if ( isDefined( response) && response == "go" )
 			self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
@@ -626,10 +605,10 @@ updateServerDvars()
 	self endon ( "disconnect" );
 
 	dvarKeys = getArrayKeys( level.serverDvars );
-	for ( index = 0; index < dvarKeys.size; index++ )
+	for ( i = 0; i < dvarKeys.size; i++ )
 	{
-		self setClientDvar( dvarKeys[index], level.serverDvars[dvarKeys[index]] );
-		wait ( 0.05 );
+		self setClientDvar( dvarKeys[i], level.serverDvars[dvarKeys[i]] );
+		wait 0.05;
 	}
 }
 

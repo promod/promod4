@@ -57,7 +57,8 @@ quickcommands(response)
 	if(!isdefined(self.pers["team"]) || self.pers["team"] == "spectator" || isdefined(self.spamdelay))
 		return;
 
-	self.spamdelay = true;
+	soundalias = "";
+	saytext = "";
 
 	switch(response)
 	{
@@ -96,12 +97,19 @@ quickcommands(response)
 			saytext = &"QUICKMESSAGE_HOLD_THIS_POSITION";
 			break;
 
-		default:
-			assert(response == "8");
+		case "8":
 			soundalias = "mp_cmd_regroup";
 			saytext = &"QUICKMESSAGE_REGROUP";
 			break;
+
+		default:
+			soundalias = "";
 	}
+
+	if ( soundalias == "" )
+		return;
+
+	self.spamdelay = true;
 
 	self saveHeadIcon();
 	self doQuickMessage(soundalias, saytext);
@@ -113,10 +121,13 @@ quickcommands(response)
 
 quickstatements(response)
 {
+	self endon ( "disconnect" );
+
 	if(!isdefined(self.pers["team"]) || self.pers["team"] == "spectator" || isdefined(self.spamdelay))
 		return;
 
-	self.spamdelay = true;
+	soundalias = "";
+	saytext = "";
 
 	switch(response)
 	{
@@ -150,12 +161,16 @@ quickstatements(response)
 			saytext = &"QUICKMESSAGE_SNIPER";
 			break;
 
-		default:
-			assert(response == "7");
+		case "7":
 			soundalias = "mp_stm_needreinforcements";
 			saytext = &"QUICKMESSAGE_NEED_REINFORCEMENTS";
 			break;
 	}
+
+	if ( soundalias == "" )
+		return;
+
+	self.spamdelay = true;
 
 	self saveHeadIcon();
 	self doQuickMessage(soundalias, saytext);
@@ -167,10 +182,13 @@ quickstatements(response)
 
 quickresponses(response)
 {
+	self endon ( "disconnect" );
+
 	if(!isdefined(self.pers["team"]) || self.pers["team"] == "spectator" || isdefined(self.spamdelay))
 		return;
 
-	self.spamdelay = true;
+	soundalias = "";
+	saytext = "";
 
 	switch(response)
 	{
@@ -199,12 +217,16 @@ quickresponses(response)
 			saytext = &"QUICKMESSAGE_GREAT_SHOT";
 			break;
 
-		default:
-			assert(response == "6");
+		case "6":
 			soundalias = "mp_rsp_comeon";
 			saytext = &"QUICKMESSAGE_COME_ON";
 			break;
 	}
+
+	if ( soundalias == "" )
+		return;
+
+	self.spamdelay = true;
 
 	self saveHeadIcon();
 	self doQuickMessage(soundalias, saytext);
@@ -216,6 +238,8 @@ quickresponses(response)
 
 quickpromod(response)
 {
+	self endon ( "disconnect" );
+
 	switch(response)
 	{
 		case "1":
@@ -223,7 +247,11 @@ quickpromod(response)
 			break;
 
 		case "2":
-			self thread promod\bombdrop::Bomb_Drop();
+			if ( self.sessionstate != "playing" || ( !isDefined( self.isBombCarrier ) || !self.isBombCarrier ) || isDefined( self.isPlanting ) && self.isPlanting )
+				return;
+
+			self.carryObject thread maps\mp\gametypes\_gameobjects::setDropped();
+			self.isBombCarrier = false;
 			break;
 
 		case "3":
@@ -257,7 +285,7 @@ quickpromod(response)
 				self iprintln("Silencer detached");
 			}
 
-			self classBind( classType );
+			self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
 			break;
 
 		case "grenade":
@@ -288,37 +316,52 @@ quickpromod(response)
 			else
 				return;
 
-			self classBind( classType );
+			self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
 			break;
 
 		case "assault":
-			self classBind( "assault" );
-			break;
-
 		case "specops":
-			self classBind( "specops" );
-			break;
-
 		case "demolitions":
-			self classBind( "demolitions" );
-			break;
-
 		case "sniper":
-			self classBind( "sniper" );
+			if ( ( self.pers["team"] != "axis" && self.pers["team"] != "allies" ) || ( isDefined(self.pers["class"]) && response == self.pers["class"] ) )
+				return;
+
+			if ( !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
+			{
+				self iprintln(chooseClassName(response)+" is unavailable");
+				return;
+			}
+
+			self maps\mp\gametypes\_promod::setClassChoice( response );
+			self maps\mp\gametypes\_promod::menuAcceptClass();
+			self iprintln(chooseClassName(response)+" selected");
 			break;
 
 		case "X":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
+			if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
+				self openMenu( game["menu_changeclass_" + self.pers["team"] ] );
+			else if ( self.pers["team"] == "spectator" )
+				self openMenu( game["menu_shoutcast"] );
+			else
 				return;
+			break;
 
-			team = self.pers["team"];
-			self openMenu( game[ "menu_changeclass_" + team ] );
+		case "controls":
+			self openMenu("quickpromod");
+			break;
+		case "graphics":
+			self openmenu("quickpromodgfx");
+			break;
+		case "killspec":
+			self [[level.killspec]]();
 			break;
 	}
 }
 
 quickpromodgfx(response)
 {
+	self endon ( "disconnect" );
+
 	switch(response)
 	{
 		case "1":
@@ -347,38 +390,70 @@ quickpromodgfx(response)
 	}
 }
 
-classBind( response )
+chooseClassName( classname )
 {
-	if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-		return;
-
-	if ( !isDefined( self.pers["class"] ) )
-		return;
-
-	if ( !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
+	switch( classname )
 	{
-		self iprintln("Class is unavailable");
+		case "assault":
+			return "Assault";
+		case "specops":
+			return "Spec Ops";
+		case "demolitions":
+			return "Demolitions";
+		case "sniper":
+			return "Sniper";
+		default:
+			return "";
+	}
+}
+
+setFollow( response )
+{
+	if ( self.pers["team"] != "spectator" )
 		return;
+
+	num = -1;
+	for ( i = 0; i < level.players.size; i++ )
+	{
+		players = level.players[i];
+		if ( isDefined( players.shoutNumber ) && int( response ) && isAlive( players ) && ( ( players.pers["team"] == "allies" && players.shoutNumber == int( response ) ) || ( ( players.pers["team"] == "axis" && players.shoutNumber == ( int( response ) -5 ) ) ) ) )
+			{
+				num = players getEntityNumber();
+				break;
+			}
 	}
 
-	self.oldClass = self.pers["class"];
-
-	self maps\mp\gametypes\_promod::setClassChoice( response );
-	self maps\mp\gametypes\_promod::menuAcceptClass();
-
-	if ( isDefined( self.oldClass ) && isDefined( self.pers["class"] ) )
+	if ( num == -1 )
 	{
-		if ( self.oldClass != self.pers["class"] )
+		self.cyclelist = [];
+		for ( i = 0; i < level.players.size; i++ )
 		{
-			if( response == "assault" )
-				self iprintln("Assault selected");
-			else if( response == "specops" )
-				self iprintln("Spec Ops selected");
-			else if( response == "demolitions" )
-				self iprintln("Demolitions selected");
-			else if( response == "sniper" )
-				self iprintln("Sniper selected");
+			players = level.players[i];
+			if ( isDefined( players.shoutNumber ) && isAlive( players ) && players.curClass == response )
+				self.cyclelist[self.cyclelist.size] = players;
 		}
+
+		if ( self.cyclelist.size > 0 )
+		{
+			if ( self.cyclelist.size > 1 )
+			{
+				if ( !isDefined( self.cycleorder ) || self.cycleorder + 1 >= self.cyclelist.size )
+					self.cycleorder = -1;
+
+				self.cycleorder++;
+				num = self.cyclelist[self.cycleorder] getEntityNumber();
+			}
+			else
+				num = self.cyclelist[0] getEntityNumber();
+		}
+	}
+
+	self.spectatorclient = num;
+
+	if ( num != -1 )
+	{
+		wait 0.05;
+		self.spectatorclient = -1;
 	}
 }
 

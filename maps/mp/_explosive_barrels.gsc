@@ -63,7 +63,7 @@ oil_spill_think()
 		self thread oil_spill_burn_after();
 	}
 
-	while(1)
+	for(;;)
 	{
 		self waittill("damage", other, damage, direction_vec, P, type );
 		if(type == "MOD_MELEE" || type == "MOD_IMPACT" || isDefined( level.strat_over ) && !level.strat_over)
@@ -107,7 +107,7 @@ getClosestEnt(org, array)
 
 oil_spill_burn_after()
 {
-	while(1)
+	for(;;)
 	{
 		self.barrel waittill("damage", amount ,attacker, direction_vec, P, type);
 		if(type == "MOD_MELEE" || type == "MOD_IMPACT" || isDefined( level.strat_over ) && !level.strat_over)
@@ -137,10 +137,10 @@ oil_spill_burn(P, dest)
 	test = spawn("script_origin", P);
 
 	num = 0;
-	while(1)
+	for(;;)
 	{
 		dist -= range;
-		if(dist < range *.1)
+		if(dist < range * 0.1)
 			break;
 
 		p += (interval + vector_multiply(right, randomfloatrange(-6, 6)));
@@ -148,9 +148,7 @@ oil_spill_burn(P, dest)
 		thread oil_spill_burn_section(P);
 		num++;
 		if(num == 4)
-		{
 			num = 0;
-		}
 
 		test.origin = P;
 
@@ -175,7 +173,7 @@ oil_spill_burn(P, dest)
 		}
 		for(i=0; i<remove.size; i++)
 			barrels = array_remove(barrels, remove[i]);
-		wait .1;
+		wait 0.1;
 	}
 
 	if(!isdefined(self.barrel))
@@ -223,7 +221,7 @@ explodable_barrel_think()
 	self breakable_clip();
 	self.damageTaken = 0;
 	self setcandamage(true);
-	for (;;)
+	for(;;)
 	{
 		self waittill("damage", amount ,attacker, direction_vec, P, type);
 		if(type == "MOD_MELEE" || type == "MOD_IMPACT" || isDefined( level.strat_over ) && !level.strat_over)
@@ -251,9 +249,9 @@ explodable_barrel_burn()
 	dot = vectordot(up, worldup);
 
 	offset1 = (0,0,0);
-	offset2 =  vector_multiply(up, 44);
+	offset2 = vector_multiply(up, 44);
 
-	if(dot < .5)
+	if(dot < 0.5)
 	{
 		offset1 = vector_multiply(up, 22) - (0,0,30);
 		offset2 = vector_multiply(up, 22) + (0,0,14);
@@ -294,10 +292,10 @@ explodable_barrel_explode()
 	dot = vectordot(up, worldup);
 
 	offset = (0,0,0);
-	if(dot < .5)
+	if(dot < 0.5)
 	{
 		start = (self.origin + vector_multiply(up, 22));
-		end  = physicstrace(start, (start + (0,0,-64)));
+		end = physicstrace(start, (start + (0,0,-64)));
 		offset = end - self.origin;
 	}
 	offset += (0,0,4);
@@ -308,9 +306,7 @@ explodable_barrel_explode()
 	level.barrelExplodingThisFrame = true;
 
 	if (isdefined (self.remove))
-	{
 		self.remove delete();
-	}
 
 	phyExpMagnitude = 2;
 	minDamage = 1;
@@ -333,7 +329,7 @@ explodable_barrel_explode()
 	else
 		self setModel("com_barrel_piece2");
 
-	if(dot < .5)
+	if(dot < 0.5)
 	{
 		start = (self.origin + vector_multiply(up, 22));
 		pos = physicstrace(start, (start + (0,0,-64)));
@@ -398,12 +394,12 @@ array_thread( entities, process, var, exclusions )
 	if ( !isDefined( exclusions ) )
 		exclusions = [];
 
-	for ( index = 0; index < entities.size; index++ )
+	for ( i = 0; i < entities.size; i++ )
 	{
 		exclude = false;
-		for ( exIndex = 0; exIndex < exclusions.size; exIndex++ )
+		for ( j = 0; j < exclusions.size; j++ )
 		{
-			if ( entities[index] != exclusions[exIndex] )
+			if ( entities[i] != exclusions[j] )
 				exclude = true;
 		}
 
@@ -411,9 +407,9 @@ array_thread( entities, process, var, exclusions )
 			continue;
 
 		if ( isDefined( var ) )
-			entities[index] thread [[process]]( var );
+			entities[i] thread [[process]]( var );
 		else
-			entities[index] thread [[process]]();
+			entities[i] thread [[process]]();
 	}
 }
 

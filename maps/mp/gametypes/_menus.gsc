@@ -21,6 +21,7 @@ init()
 	game["menu_changeclass_offline"] = "changeclass_offline";
 	game["menu_shoutcast"] = "shoutcast";
 	game["menu_shoutcast_map"] = "shoutcast_map";
+	game["menu_shoutcast_setup"] = "shoutcast_setup";
 	game["menu_callvote"] = "callvote";
 	game["menu_muteplayer"] = "muteplayer";
 
@@ -38,6 +39,8 @@ init()
 	precacheMenu(game["menu_muteplayer"]);
 	precacheMenu(game["menu_shoutcast"]);
 	precacheMenu(game["menu_shoutcast_map"]);
+	precacheMenu(game["menu_shoutcast_setup"]);
+	precacheMenu("echo");
 
 	level thread onPlayerConnect();
 }
@@ -68,9 +71,15 @@ onMenuResponse()
 			self closeMenu();
 			self closeInGameMenu();
 
-			if ( menu == "changeclass" && self.pers["team"] == "allies" )
+			if ( menu == "changeclass_mw" && isDefined( self.pers["class"] ) )
+			{
+				self maps\mp\gametypes\_promod::setClassChoice( self.pers["class"] );
+				self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
+			}
+
+			if ( menu == "changeclass_mw" && self.pers["team"] == "allies" )
 				self openMenu( game["menu_changeclass_allies"] );
-			else if ( menu == "changeclass" && self.pers["team"] == "axis" )
+			else if ( menu == "changeclass_mw" && self.pers["team"] == "axis" )
 				self openMenu( game["menu_changeclass_axis"] );
 
 			continue;
@@ -82,12 +91,22 @@ onMenuResponse()
 			continue;
 		}
 
+		if( menu == "echo" )
+		{
+			k = strtok(response, "_");
+			buf = "";
+			for(i=0;i<k.size;i++)
+			{
+				buf += k[i];
+				if(i!=k.size-1) buf += " ";
+			}
+			self iprintln(buf);
+			continue;
+		}
+
 		if( response == "classavailability" )
 		{
-			if ( self.pers["team"] != "allies" && self.pers["team"] != "axis" )
-				continue;
-
-			self maps\mp\gametypes\_promod::initClassAvailability();
+			self maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
 			continue;
 		}
 
@@ -97,6 +116,17 @@ onMenuResponse()
 			self closeInGameMenu();
 
 			self openMenu(game["menu_team"]);
+		}
+
+		if( response == "shoutcast_setup" )
+		{
+			if ( self.pers["team"] != "spectator" )
+				continue;
+
+			self closeMenu();
+			self closeInGameMenu();
+
+			self openMenu(game["menu_shoutcast_setup"]);
 		}
 
 		if( response == "changeclass_marines" )
@@ -138,10 +168,13 @@ onMenuResponse()
 		}
 		else if( menu == game["menu_changeclass_allies"] || menu == game["menu_changeclass_axis"] )
 		{
-			if ( response != "assault" && response != "specops" && response != "demolitions" && response != "sniper" )
+			if ( response == "killspec" )
+			{
+				self [[level.killspec]]();
 				continue;
+			}
 
-			if ( !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
+			if ( (response != "assault" && response != "specops" && response != "demolitions" && response != "sniper") || !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
 				continue;
 
 			self maps\mp\gametypes\_promod::setClassChoice( response );
@@ -152,6 +185,8 @@ onMenuResponse()
 		}
 		else if( menu == game["menu_changeclass"] )
 			self maps\mp\gametypes\_promod::menuAcceptClass( response );
+		else if( menu == game["menu_shoutcast_setup"] )
+			self maps\mp\gametypes\_quickmessages::setFollow( response );
 
 		if( menu == game["menu_quickcommands"] )
 			maps\mp\gametypes\_quickmessages::quickcommands(response);

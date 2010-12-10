@@ -220,6 +220,4 @@ setupExploders()
 	}
 }
 
-script_gen_dump()
-{
-}
+script_gen_dump(){}

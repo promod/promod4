@@ -10,75 +10,118 @@
 
 main()
 {
-	violationSystem();
-}
-
-violationSystem()
-{
 	for(;;)
 	{
 		if ( getDvarInt( "sv_cheats" ) )
 			break;
 
-		if ( getDvarInt( "sv_disableClientConsole" ) != 0 )
-			setDvar( "sv_disableClientConsole", 0 );
+		forceDvar( "sv_disableClientConsole", "0");
+		forceDvar( "sv_fps", "20" );
+		forceDvar( "sv_pure", "1" );
+		forceDvar( "sv_maxrate", "25000");
+		forceDvar( "g_gravity", "800" );
+		forceDvar( "g_knockback", "1000" );
+		forceDvar( "authServerName", "cod4master.activision.com" );
 
-		if ( getDvarInt( "sv_fps" ) != 20 )
-			setDvar( "sv_fps", 20 );
-
-		if ( getDvarInt( "sv_pure" ) != 1 )
-			setDvar( "sv_pure", 1 );
-
-		if ( getDvarInt( "sv_maxrate" ) != 25000 )
-			setDvar( "sv_maxrate", 25000 );
-
-		if ( getDvarInt( "g_gravity" ) != 800 )
-			setDvar( "g_gravity", 800 );
-
-		if ( getDvarInt( "g_knockback" ) != 1000 )
-			setDvar( "g_knockback", 1000 );
-
-		if ( getDvar( "authServerName" ) != "cod4master.activision.com" )
-			setDvar( "authServerName", "cod4master.activision.com" );
-
-		if ( getDvarInt( "sv_punkbuster" ) != 1 && game["LAN_MODE"] != 1 )
-			iPrintLNBold("^1Server Violation ^3#0100^7: Punkbuster Disabled");
+		if ( !getDvarInt( "sv_punkbuster" ) && !game["LAN_MODE"] && !game["PROMOD_PB_OFF"] )
+			iPrintLNBold("^1Server Violation^7: Punkbuster Disabled");
 
 		if ( getDvarInt( "scr_player_maxhealth" ) != 100 && game["HARDCORE_MODE"] != 1 && game["CUSTOM_MODE"] != 1 || getDvarInt( "scr_player_maxhealth" ) != 30 && game["HARDCORE_MODE"] == 1 && game["CUSTOM_MODE"] != 1 )
-			iPrintLNBold("^1Server Violation ^3#0101^7: Modified Player");
+			iPrintLNBold("^1Server Violation^7: Modified Player Health");
 
 		if ( getDvarInt( "g_speed" ) != 0 && getDvarInt( "g_speed" ) != 190 )
-			iPrintLNBold("^1Server Violation ^3#0102^7: Modified Environment");
+			iPrintLNBold("^1Server Violation^7: Modified Player Speed");
 
-		if ( getDvarInt( "g_antilag" ) != 1 && getDvarInt( "dedicated" ) != 1 )
-			iPrintLNBold("^1Server Violation ^3#0103^7: Modified Connection");
+		antilag = getDvarInt( "g_antilag" );
+		dedicated = getDvar( "dedicated" );
+		if ( (antilag && dedicated == "dedicated LAN server") || (!antilag && dedicated == "dedicated internet server" && !game["PROMOD_PB_OFF"]))
+			iPrintLNBold("^1Server Violation^7: Modified Connection");
 
-		if ( !isSubStr( getDvar( "fs_game" ), "_custom" ) || !game["CUSTOM_MODE"] )
+		if( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || toLower( getDvar( "fs_game" ) ) == "mods/promodlive210" )
 		{
-			badIWDnames = 0;
-			badIWDsums = 0;
+			if( toLower(getDvar("fs_game")) != "mods/promodlive210" )
+				iPrintLNBold("^1Server Violation^7: Invalid fs_game value");
 
-			cacheIWDnames = StrTok( getDvar( "sv_iwdnames" ), " " );
-			cacheIWDsums = StrTok( getDvar( "sv_iwds" ), " " );
-
-			for ( i = 0; i < cacheIWDnames.size; i++ )
+			iwdnames = strToK( getDvar( "sv_iwdnames" ), " " );
+			iwdsums = strToK( getDvar( "sv_iwds" ), " " );
+			iwd_loaded = false;
+			for(i=0;i<iwdnames.size;i++)
 			{
-				a = cacheIWDnames[i];
+				switch(iwdnames[i])
+				{
+					case "iw_00":
+					case "iw_01":
+					case "iw_02":
+					case "iw_03":
+					case "iw_04":
+					case "iw_05":
+					case "iw_06":
+					case "iw_07":
+					case "iw_08":
+					case "iw_09":
+					case "iw_10":
+					case "iw_11":
+					case "iw_12":
+					case "iw_13":
+						break;
 
-				if ( a != "iw_00" && a != "iw_01" && a != "iw_02" && a != "iw_03" && a != "iw_04" && a != "iw_05" && a != "iw_06" && a != "iw_07" && a != "iw_08" && a != "iw_09" && a != "iw_10" && a != "iw_11" && a != "iw_12" && a != "iw_13" && a != "promodlive205" && a != "z_custom_ruleset" )
-					badIWDnames = 1;
+					case "z_custom_ruleset":
+						if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" && iwdsums[i] != "-350238000" )
+							iPrintLNBold("^1Server Violation^7: Modified Custom IWD File While In Match Mode");
+						break;
 
-				if ( a == "promodlive205" && cacheIWDsums[i] != "-740633290" )
-					badIWDsums = 1;
+					case "promodlive210":
+						if( iwdsums[i] != "60316905" )
+							iPrintLNBold("^1Server Violation^7: Bad Promod IWD Checksum");
+						iwd_loaded = true;
+						break;
+
+					default:
+						if( !isCustomMap() || !isSubStr(iwdnames[i], level.script ) )
+							iPrintLNBold("^1Server Violation^7: Extra IWD Files Detected");
+						break;
+				}
 			}
-
-			if ( badIWDnames )
-				iPrintLNBold("^1Server Violation ^3#0104^7: Additional IWD Files Detected");
-
-			if ( badIWDsums )
-				iPrintLNBold("^1Server Violation ^3#0105^7: Bad Promod IWD Checksum");
+			if(!iwd_loaded)
+				iPrintLNBold("^1Server Violation^7: Promod IWD Not Loaded");
 		}
 
 		wait 3;
 	}
+}
+
+isCustomMap()
+{
+	switch(level.script)
+	{
+		case "mp_backlot":
+		case "mp_bloc":
+		case "mp_bog":
+		case "mp_broadcast":
+		case "mp_carentan":
+		case "mp_cargoship":
+		case "mp_citystreets":
+		case "mp_convoy":
+		case "mp_countdown":
+		case "mp_crash":
+		case "mp_crash_snow":
+		case "mp_creek":
+		case "mp_crossfire":
+		case "mp_farm":
+		case "mp_killhouse":
+		case "mp_overgrown":
+		case "mp_pipeline":
+		case "mp_shipment":
+		case "mp_showdown":
+		case "mp_strike":
+		case "mp_vacant":
+			return false;
+	}
+	return true;
+}
+
+forceDvar(dvar, value)
+{
+	if( getDvar( dvar ) != value)
+		setDvar( dvar, value );
 }

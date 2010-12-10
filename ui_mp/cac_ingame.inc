@@ -118,7 +118,6 @@
 		#define STAT_CAC_CAMO					tableLookup("mp/attachmentTable.csv", 4, dvarString( loadout_camo ), 11)
 
 		#include "ui_mp/cac_loadout_ingame.inc"
-		#include "ui/safearea.menu"
 	}
 
 	#define PREPROC_ATTACH_CLOSEALL \
@@ -186,7 +185,7 @@
 		LOCAL_WEAPON_CLASS( 5, "sniper", "@MPUI_SNIPER_RIFLES" )
 	}
 
-	#undef  UI_FOCUSFIRST
+	#undef UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_primary_highlighted"
 
 	#define LOCAL_MASTER_WEAPON_GROUP( suffix, pos, y_offset )\
@@ -265,7 +264,7 @@
 		CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, AI_FOCUS_ACTION(groupArg,pname), ;, when( !dvarBool( "attach_allow_"groupArg"_"pname ) ); ) \
 		CHOICE_DBUTTON_VIS( itemNum, "@"+tablelookup("mp/attachmentTable.csv",4,pname,3), when( !dvarBool( "attach_allow_"groupArg"_"pname ) ); )
 
-	#undef  UI_FOCUSFIRST
+	#undef UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_attachment_highlighted"
 
 	#define LOCAL_MASTER_ATTACHMENT_GROUP( stat_slot, suffix, pos, ptype, y_offset, statDvar )\
@@ -328,14 +327,14 @@
 	#define LOCAL_SIDEARM_ITEM( itemNum, weaponName, weaponStat, weaponRef, highlight_dvar )\
 		CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SIDEARM_ACTION( weaponStat, weaponRef ), SI_FOCUS_ACTION( weaponRef ), ;, \
 		when( dvarBool( "weap_allow_"weaponRef ) && ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) );, \
-			  dvarBool( "weap_allow_"weaponRef ) && ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) ) \
+			dvarBool( "weap_allow_"weaponRef ) && ( weaponRef == REF_DESERTEAGLE || weaponRef == REF_DESERTEAGLEGOLD ) ) \
 		CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SIDEARM_ACTION2( weaponStat, weaponRef ), SI_FOCUS_ACTION( weaponRef ), ;, \
 		when( dvarBool( "weap_allow_"weaponRef ) && weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD );, \
-			  dvarBool( "weap_allow_"weaponRef ) && weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD ) \
+			dvarBool( "weap_allow_"weaponRef ) && weaponRef != REF_DESERTEAGLE && weaponRef != REF_DESERTEAGLEGOLD ) \
 		CHOICE_BUTTON_FOCUS_VIS_NOHI( itemNum, "", ;, SI_FOCUS_ACTION( weaponRef ), ;, when( !dvarBool( "weap_allow_"weaponRef ) ); ) \
 		CHOICE_DBUTTON_VIS( itemNum, weaponName, when( !dvarBool( "weap_allow_"weaponRef ) ); )
 
-	#undef  UI_FOCUSFIRST
+	#undef UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_sidearm_highlighted"
 
 	menuDef
@@ -375,7 +374,7 @@
 		CHOICE_BUTTON_FOCUS_VIS_ADV( itemNum, weaponName, LOCAL_SGRENADE_ACTION( weaponRef ), execnow "set "highlight_dvar" "weaponRef, ;, when( dvarBool("weap_allow_"weaponRef) );, dvarBool("weap_allow_"weaponRef) ) \
 		CHOICE_DBUTTON_VIS( itemNum, weaponName, when( !dvarBool("weap_allow_"weaponRef) ); )
 
-	#undef  UI_FOCUSFIRST
+	#undef UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_sgrenade_highlighted"
 
 	menuDef
@@ -411,7 +410,7 @@
 		CHOICE_BUTTON_FOCUS_VIS( itemNum, camoName, LOCAL_CAMO_ACTION( camoRef );, execnow "set "highlight_dvar" "camoRef;, ;, when( dvarString( loadout_primary ) == "ak47" || dvarString( loadout_primary ) == "uzi" || dvarString( loadout_primary ) == "m1014" ) ) \
 		CHOICE_DBUTTON_VIS( itemNum, camoName, when( dvarString( loadout_primary ) != "ak47" && dvarString( loadout_primary ) != "uzi" && dvarString( loadout_primary ) != "m1014" ) )
 
-	#undef  UI_FOCUSFIRST
+	#undef UI_FOCUSFIRST
 	#define UI_FOCUSFIRST "ui_camo_highlighted"
 
 	#define LOCAL_CAMO_GROUP( prefix, onLeave )\

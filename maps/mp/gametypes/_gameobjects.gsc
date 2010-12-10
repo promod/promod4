@@ -37,9 +37,7 @@ main(allowed)
 			}
 
 			if(dodelete)
-			{
 				entitytypes[i] delete();
-			}
 		}
 	}
 }
@@ -59,7 +57,7 @@ onPlayerConnect()
 {
 	level endon ( "game_ended" );
 
-	for( ;; )
+	for(;;)
 	{
 		level waittill( "connecting", player );
 
@@ -128,13 +126,13 @@ createCarryObject( ownerTeam, trigger, visuals, offset )
 
 	carryObject.offset3d = offset;
 
-	for ( index = 0; index < visuals.size; index++ )
+	for ( i = 0; i < visuals.size; i++ )
 	{
-		visuals[index].baseOrigin = visuals[index].origin;
-		visuals[index].baseAngles = visuals[index].angles;
+		visuals[i].baseOrigin = visuals[i].origin;
+		visuals[i].baseAngles = visuals[i].angles;
 	}
-	carryObject.visuals = visuals;
 
+	carryObject.visuals = visuals;
 	carryObject.compassIcons = [];
 	carryObject.objIDAllies = getNextObjID();
 	carryObject.objIDAxis = getNextObjID();
@@ -183,26 +181,11 @@ carryObjectUseThink()
 {
 	level endon ( "game_ended" );
 
-	while ( true )
+	for(;;)
 	{
 		self.trigger waittill ( "trigger", player );
 
-		if ( self.isResetting )
-			continue;
-
-		if ( !isAlive( player ) )
-			continue;
-
-		if ( !self canInteractWith( player.pers["team"] ) )
-			continue;
-
-		if ( !player.canPickupObject )
-			continue;
-
-		if ( player.throwingGrenade )
-			continue;
-
-		if ( isDefined( self.carrier ) )
+		if ( self.isResetting || !isAlive( player ) || !self canInteractWith( player.pers["team"] ) || !player.canPickupObject || player.throwingGrenade || isDefined( self.carrier ) )
 			continue;
 
 		self setPickedUp( player );
@@ -213,26 +196,14 @@ carryObjectProxThink()
 {
 	level endon ( "game_ended" );
 
-	while ( true )
+	for(;;)
 	{
 		self.trigger waittill ( "trigger", player );
 
-		if ( self.isResetting )
+		if ( self.isResetting || !isAlive( player ) || !self canInteractWith( player.pers["team"] ) || !player.canPickupObject || isDefined( self.carrier ) )
 			continue;
 
-		if ( !isAlive( player ) )
-			continue;
-
-		if ( !self canInteractWith( player.pers["team"] ) )
-			continue;
-
-		if ( !player.canPickupObject )
-			continue;
-
-		if ( isDefined( self.carrier ) )
-			continue;
-
-		if (isDefined(level.timeout_over) && !level.timeout_over)
+		if ( (isDefined( level.timeout_over ) && !level.timeout_over) || ( isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] ) )
 			return;
 
 		self setPickedUp( player );
@@ -248,7 +219,7 @@ pickupObjectDelay( origin )
 
 	self.canPickupObject = false;
 
-	for( ;; )
+	for(;;)
 	{
 		if ( distanceSquared( self.origin, origin ) > 4096 )
 			break;
@@ -273,8 +244,8 @@ setPickedUp( player )
 
 	self setCarrier( player );
 
-	for ( index = 0; index < self.visuals.size; index++ )
-		self.visuals[index] hide();
+	for ( i = 0; i < self.visuals.size; i++ )
+		self.visuals[i] hide();
 
 	self.trigger.origin += (0,0,10000);
 
@@ -291,7 +262,7 @@ updateCarryObjectOrigin()
 	level endon ( "game_ended" );
 
 	objPingDelay = 5.0;
-	for ( ;; )
+	for(;;)
 	{
 		if ( isDefined( self.carrier ) )
 		{
@@ -348,7 +319,7 @@ updateCarryObjectOrigin()
 			self.objPoints["allies"] maps\mp\gametypes\_objpoints::updateOrigin( self.curOrigin + self.offset3d );
 			self.objPoints["axis"] maps\mp\gametypes\_objpoints::updateOrigin( self.curOrigin + self.offset3d );
 
-			wait ( .05 );
+			wait 0.05;
 		}
 	}
 }
@@ -382,11 +353,11 @@ returnHome()
 	self.isResetting = true;
 
 	self notify ( "reset" );
-	for ( index = 0; index < self.visuals.size; index++ )
+	for ( i = 0; i < self.visuals.size; i++ )
 	{
-		self.visuals[index].origin = self.visuals[index].baseOrigin;
-		self.visuals[index].angles = self.visuals[index].baseAngles;
-		self.visuals[index] show();
+		self.visuals[i].origin = self.visuals[i].baseOrigin;
+		self.visuals[i].angles = self.visuals[i].baseAngles;
+		self.visuals[i] show();
 	}
 	self.trigger.origin = self.trigger.baseOrigin;
 
@@ -407,11 +378,11 @@ setPosition( origin, angles )
 {
 	self.isResetting = true;
 
-	for ( index = 0; index < self.visuals.size; index++ )
+	for ( i = 0; i < self.visuals.size; i++ )
 	{
-		self.visuals[index].origin = self.origin;
-		self.visuals[index].angles = self.angles;
-		self.visuals[index] show();
+		self.visuals[i].origin = self.origin;
+		self.visuals[i].angles = self.angles;
+		self.visuals[i] show();
 	}
 	self.trigger.origin = origin;
 
@@ -460,11 +431,11 @@ setDropped()
 			dropAngles = (0,tempAngle,0);
 		}
 
-		for ( index = 0; index < self.visuals.size; index++ )
+		for ( i = 0; i < self.visuals.size; i++ )
 		{
-			self.visuals[index].origin = dropOrigin;
-			self.visuals[index].angles = dropAngles;
-			self.visuals[index] show();
+			self.visuals[i].origin = dropOrigin;
+			self.visuals[i].angles = dropAngles;
+			self.visuals[i] show();
 		}
 		self.trigger.origin = dropOrigin;
 
@@ -474,11 +445,11 @@ setDropped()
 	}
 	else
 	{
-		for ( index = 0; index < self.visuals.size; index++ )
+		for ( i = 0; i < self.visuals.size; i++ )
 		{
-			self.visuals[index].origin = self.visuals[index].baseOrigin;
-			self.visuals[index].angles = self.visuals[index].baseAngles;
-			self.visuals[index] show();
+			self.visuals[i].origin = self.visuals[i].baseOrigin;
+			self.visuals[i].angles = self.visuals[i].baseAngles;
+			self.visuals[i] show();
 		}
 		self.trigger.origin = self.trigger.baseOrigin;
 
@@ -520,23 +491,23 @@ pickupTimeout()
 	self endon ( "pickup_object" );
 	self endon ( "stop_pickup_timeout" );
 
-	wait ( .05 );
+	wait 0.05;
 
 	mineTriggers = getEntArray( "minefield", "targetname" );
 	hurtTriggers = getEntArray( "trigger_hurt", "classname" );
 
-	for ( index = 0; index < mineTriggers.size; index++ )
+	for ( i = 0; i < mineTriggers.size; i++ )
 	{
-		if ( !self.visuals[0] isTouching( mineTriggers[index] ) )
+		if ( !self.visuals[0] isTouching( mineTriggers[i] ) )
 			continue;
 
 		self returnHome();
 		return;
 	}
 
-	for ( index = 0; index < hurtTriggers.size; index++ )
+	for ( i = 0; i < hurtTriggers.size; i++ )
 	{
-		if ( !self.visuals[0] isTouching( hurtTriggers[index] ) )
+		if ( !self.visuals[0] isTouching( hurtTriggers[i] ) )
 			continue;
 
 		self returnHome();
@@ -545,7 +516,7 @@ pickupTimeout()
 
 	if ( isDefined( self.autoResetTime ) )
 	{
-		wait ( self.autoResetTime );
+		wait self.autoResetTime;
 
 		if ( !isDefined( self.carrier ) )
 			self returnHome();
@@ -587,7 +558,7 @@ trackCarrier()
 			if ( trace["fraction"] < 1 )
 				self.carryObject.safeOrigin = trace["position"];
 		}
-		wait ( .05 );
+		wait 0.05;
 	}
 }
 
@@ -599,13 +570,13 @@ manualDropThink()
 	self endon ( "death" );
 	self endon ( "drop_object" );
 
-	for( ;; )
+	for(;;)
 	{
 		while ( self attackButtonPressed() || self fragButtonPressed() || self secondaryOffhandButtonPressed() || self meleeButtonPressed() )
-			wait .05;
+			wait 0.05;
 
 		while ( !self attackButtonPressed() && !self fragButtonPressed() && !self secondaryOffhandButtonPressed() && !self meleeButtonPressed() )
-			wait .05;
+			wait 0.05;
 
 		if ( isDefined( self.carryObject ) && !self useButtonPressed() )
 			self.carryObject thread setDropped();
@@ -628,10 +599,10 @@ createUseObject( ownerTeam, trigger, visuals, offset )
 
 	useObject.trigger = trigger;
 
-	for ( index = 0; index < visuals.size; index++ )
+	for ( i = 0; i < visuals.size; i++ )
 	{
-		visuals[index].baseOrigin = visuals[index].origin;
-		visuals[index].baseAngles = visuals[index].angles;
+		visuals[i].baseOrigin = visuals[i].origin;
+		visuals[i].baseAngles = visuals[i].angles;
 	}
 	useObject.visuals = visuals;
 
@@ -706,23 +677,11 @@ useObjectUseThink()
 
 	level endon ( "game_ended" );
 
-	while ( true )
+	for(;;)
 	{
 		self.trigger waittill ( "trigger", player );
 
-		if ( !isAlive( player ) )
-			continue;
-
-		if ( isDefined(player.attaching) && player.attaching )
-			continue;
-
-		if ( !self canInteractWith( player.pers["team"] ) )
-			continue;
-
-		if ( !player isOnGround() )
-			continue;
-
-		if ( !player isTouching( self.trigger ) )
+		if ( !isAlive( player ) || ( isDefined(player.attaching) && player.attaching ) || !self canInteractWith( player.pers["team"] ) || !player isOnGround() || !player isTouching( self.trigger ) )
 			continue;
 
 		if ( isDefined( self.keyObject ) && (!isDefined( player.carryObject ) || player.carryObject != self.keyObject ) )
@@ -765,9 +724,9 @@ getEarliestClaimPlayer()
 	{
 		earliestTime = undefined;
 		players = getArrayKeys( self.touchList[team] );
-		for ( index = 0; index < players.size; index++ )
+		for ( i = 0; i < players.size; i++ )
 		{
-			touchdata = self.touchList[team][players[index]];
+			touchdata = self.touchList[team][players[i]];
 			if ( !isdefined( earliestTime ) || touchdata.starttime < earliestTime )
 			{
 				earliestPlayer = touchdata.player;
@@ -788,7 +747,7 @@ useObjectProxThink()
 
 	self thread proxTriggerThink();
 
-	while ( true )
+	for(;;)
 	{
 		if ( self.useTime && self.curProgress >= self.useTime )
 		{
@@ -835,7 +794,7 @@ useObjectProxThink()
 			}
 		}
 
-		wait ( .05 );
+		wait 0.05;
 	}
 }
 
@@ -845,7 +804,7 @@ proxTriggerThink()
 
 	entityNumber = self.entNum;
 
-	while ( true )
+	for(;;)
 	{
 		self.trigger waittill ( "trigger", player );
 
@@ -913,7 +872,7 @@ triggerTouchThink( object )
 	while ( isAlive( self ) && self isTouching( object.trigger ) && !level.gameEnded )
 	{
 		self updateProxBar( object, false );
-		wait ( .05 );
+		wait 0.05;
 	}
 
 	if ( isDefined( self ) )
@@ -946,6 +905,8 @@ updateProxBar( object, forceRemove )
 	if ( !isDefined( self.proxBar ) )
 	{
 		self.proxBar = createPrimaryProgressBar();
+		self.proxBar setShader( "progress_bar_bg", 120, 8 );
+		self.proxBar.alpha = 1;
 		self.proxBar.lastUseRate = -1;
 	}
 
@@ -1069,7 +1030,7 @@ useHoldThinkLoop( player, lastWeapon )
 
 	while( isAlive( player ) && player isTouching( self.trigger ) && player useButtonPressed() && !player.throwingGrenade && !player meleeButtonPressed() && self.curProgress < self.useTime && (self.useRate || waitForWeapon) && !(waitForWeapon && timedOut > maxWaitTime) )
 	{
-		timedOut += .05;
+		timedOut += 0.05;
 
 		self.curProgress += (50 * self.useRate);
 		self.useRate = 1;
@@ -1086,7 +1047,7 @@ useHoldThinkLoop( player, lastWeapon )
 			return isAlive( player );
 		}
 
-		wait .05;
+		wait 0.05;
 	}
 
 	return false;
@@ -1097,6 +1058,8 @@ personalUseBar( object )
 	self endon("disconnect");
 
 	useBar = createPrimaryProgressBar();
+	useBar setShader( "progress_bar_bg", 120, 8 );
+	useBar.alpha = 1;
 	useBarText = createPrimaryProgressBarText();
 	useBarText setText( object.useText );
 
@@ -1122,7 +1085,7 @@ personalUseBar( object )
 			}
 		}
 		lastRate = object.useRate;
-		wait ( .05 );
+		wait 0.05;
 	}
 
 	useBar destroyElem();
@@ -1135,9 +1098,7 @@ updateTrigger()
 		return;
 
 	if ( self.interactTeam == "none" )
-	{
 		self.trigger.origin -= (0,0,50000);
-	}
 	else if ( self.interactTeam == "any" )
 	{
 		self.trigger.origin = self.curOrigin;
@@ -1196,9 +1157,9 @@ updateWorldIcon( relativeTeam, showIcon )
 
 	updateTeams = getUpdateTeams( relativeTeam );
 
-	for ( index = 0; index < updateTeams.size; index++ )
+	for ( i = 0; i < updateTeams.size; i++ )
 	{
-		opName = "objpoint_" + updateTeams[index] + "_" + self.entNum;
+		opName = "objpoint_" + updateTeams[i] + "_" + self.entNum;
 		objPoint = maps\mp\gametypes\_objpoints::getObjPointByName( opName );
 
 		objPoint notify( "stop_flashing_thread" );
@@ -1262,14 +1223,14 @@ updateCompassIcon( relativeTeam, showIcon )
 {
 	updateTeams = getUpdateTeams( relativeTeam );
 
-	for ( index = 0; index < updateTeams.size; index++ )
+	for ( i = 0; i < updateTeams.size; i++ )
 	{
 		showIconThisTeam = showIcon;
-		if ( !showIconThisTeam && shouldShowCompassDueToRadar( updateTeams[ index ] ) )
+		if ( !showIconThisTeam && shouldShowCompassDueToRadar( updateTeams[i] ) )
 			showIconThisTeam = true;
 
 		objId = self.objIDAllies;
-		if ( updateTeams[ index ] == "axis" )
+		if ( updateTeams[i] == "axis" )
 			objId = self.objIDAxis;
 
 		if ( !isDefined( self.compassIcons[relativeTeam] ) || !showIconThisTeam )
@@ -1293,9 +1254,7 @@ updateCompassIcon( relativeTeam, showIcon )
 
 shouldPingObject( relativeTeam )
 {
-	if ( relativeTeam == "friendly" && self.objIDPingFriendly )
-		return true;
-	else if ( relativeTeam == "enemy" && self.objIDPingEnemy )
+	if ( ( relativeTeam == "friendly" && self.objIDPingFriendly ) || ( relativeTeam == "enemy" && self.objIDPingEnemy ) )
 		return true;
 
 	return false;
@@ -1336,7 +1295,7 @@ updateVisibilityAccordingToRadar()
 	self endon("death");
 	self endon("carrier_cleared");
 
-	while(1)
+	for(;;)
 	{
 		level waittill("radar_status_change");
 		self updateCompassIcons();
@@ -1394,24 +1353,24 @@ setModelVisibility( visibility )
 {
 	if ( visibility )
 	{
-		for ( index = 0; index < self.visuals.size; index++ )
+		for ( i = 0; i < self.visuals.size; i++ )
 		{
-			self.visuals[index] show();
-			if ( self.visuals[index].classname == "script_brushmodel" || self.visuals[index].classname == "script_model" )
+			self.visuals[i] show();
+			if ( self.visuals[i].classname == "script_brushmodel" || self.visuals[i].classname == "script_model" )
 			{
-				self.visuals[index] thread makeSolid();
+				self.visuals[i] thread makeSolid();
 			}
 		}
 	}
 	else
 	{
-		for ( index = 0; index < self.visuals.size; index++ )
+		for ( i = 0; i < self.visuals.size; i++ )
 		{
-			self.visuals[index] hide();
-			if ( self.visuals[index].classname == "script_brushmodel" || self.visuals[index].classname == "script_model" )
+			self.visuals[i] hide();
+			if ( self.visuals[i].classname == "script_brushmodel" || self.visuals[i].classname == "script_model" )
 			{
-				self.visuals[index] notify("changing_solidness");
-				self.visuals[index] notsolid();
+				self.visuals[i] notify("changing_solidness");
+				self.visuals[i] notsolid();
 			}
 		}
 	}
@@ -1423,7 +1382,7 @@ makeSolid()
 	self notify("changing_solidness");
 	self endon("changing_solidness");
 
-	while(1)
+	for(;;)
 	{
 		for ( i = 0; i < level.players.size; i++ )
 		{
@@ -1435,7 +1394,7 @@ makeSolid()
 			self solid();
 			break;
 		}
-		wait .05;
+		wait 0.05;
 	}
 }
 
@@ -1489,10 +1448,8 @@ disableObject()
 		if ( isDefined( self.carrier ) )
 			self.carrier takeObject( self );
 
-		for ( index = 0; index < self.visuals.size; index++ )
-		{
-			self.visuals[index] hide();
-		}
+		for ( i = 0; i < self.visuals.size; i++ )
+			self.visuals[i] hide();
 	}
 
 	self.trigger triggerOff();
@@ -1507,10 +1464,8 @@ enableObject()
 {
 	if ( self.type == "carryObject" )
 	{
-		for ( index = 0; index < self.visuals.size; index++ )
-		{
-			self.visuals[index] show();
-		}
+		for ( i = 0; i < self.visuals.size; i++ )
+			self.visuals[i] show();
 	}
 
 	self.trigger triggerOn();
@@ -1529,10 +1484,7 @@ getRelativeTeam( team )
 
 isFriendlyTeam( team )
 {
-	if ( self.ownerTeam == "any" )
-		return true;
-
-	if ( self.ownerTeam == team )
+	if ( self.ownerTeam == "any" || self.ownerTeam == team )
 		return true;
 
 	return false;
@@ -1568,31 +1520,28 @@ canInteractWith( team )
 
 isTeam( team )
 {
-	if ( team == "neutral" )
-		return true;
-	if ( team == "allies" )
-		return true;
-	if ( team == "axis" )
-		return true;
-	if ( team == "any" )
-		return true;
-	if ( team == "none" )
-		return true;
-
+	switch( team )
+	{
+		case "neutral":
+		case "allies":
+		case "axis":
+		case "any":
+		case "none":
+			return true;
+	}
 	return false;
 }
 
 isRelativeTeam( relativeTeam )
 {
-	if ( relativeTeam == "friendly" )
-		return true;
-	if ( relativeTeam == "enemy" )
-		return true;
-	if ( relativeTeam == "any" )
-		return true;
-	if ( relativeTeam == "none" )
-		return true;
-
+	switch( relativeTeam )
+	{
+		case "friendly":
+		case "enemy":
+		case "any":
+		case "none":
+			return true;
+	}
 	return false;
 }
 

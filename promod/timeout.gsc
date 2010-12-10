@@ -18,24 +18,32 @@ main()
 	level.timeout_over = false;
 
 	game["promod_timeout_called"] = false;
+	level.Timeout_time_left = 300;
+
+	if ( !isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"] )
+		level thread Timeout_Timer();
 
 	level thread Timeout_Time();
 	level thread Timeout_Time_Timer();
 }
 
+Timeout_Timer()
+{
+	while( !level.timeout_over )
+	{
+		wait 0.25;
+		level.Timeout_time_left -= 0.25;
+	}
+}
+
 Timeout_Time()
 {
-	level.Timeout_time_left = 300;
-	time_increment = .25;
-
 	if ( !isDefined( level.ready_up_over ) )
 		level.ready_up_over = false;
 
 	while ( !level.timeout_over )
 	{
-		wait time_increment;
-
-		level.Timeout_time_left -= time_increment;
+		wait 0.25;
 
 		if ( level.Timeout_time_left <= 0 || level.ready_up_over )
 		{
@@ -51,13 +59,19 @@ Timeout_Time_Timer()
 	matchStartText = createServerFontString( "objective", 1.5 );
 	matchStartText setPoint( "CENTER", "CENTER", 0, -60 );
 	matchStartText.sort = 1001;
-	matchStartText setText( "Timeout Remaining" );
+	if ( isDefined( game["LAN_MODE"] ) && game["LAN_MODE"] )
+		matchStartText setText( "Timeout Elapsed" );
+	else
+		matchStartText setText( "Timeout Remaining" );
 	matchStartText.foreground = false;
 	matchStartText.hidewheninmenu = true;
 
 	matchStartTimer = createServerTimer( "objective", 1.4 );
 	matchStartTimer setPoint( "CENTER", "CENTER", 0, -40 );
-	matchStartTimer setTimer( 300 );
+	if ( isDefined( game["LAN_MODE"] ) && game["LAN_MODE"] )
+		matchStartTimer setTimerUp( 0 );
+	else
+		matchStartTimer setTimer( 300 );
 	matchStartTimer.sort = 1001;
 	matchStartTimer.foreground = false;
 	matchStartTimer.hideWhenInMenu = true;
@@ -73,10 +87,7 @@ Timeout_Time_Timer()
 
 Timeout_Call()
 {
-	if ( isDefined( level.ready_up_over ) && !level.ready_up_over || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match" )
-		return;
-
-	if ( level.gametype != "sd" && level.gametype != "sab" )
+	if ( (isDefined( level.ready_up_over ) && !level.ready_up_over || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "match") || ( level.gametype != "sd" && level.gametype != "sab" ) )
 		return;
 
 	if ( game["promod_timeout_called"] )
@@ -85,7 +96,7 @@ Timeout_Call()
 		return;
 	}
 
-	if ( game[self.pers["team"] + "_timeout_called"] )
+	if ( game[self.pers["team"] + "_timeout_called"] && (!isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"]) )
 	{
 		self iprintln("^3Only one timeout per team/half allowed");
 		return;

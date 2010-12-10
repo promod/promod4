@@ -261,7 +261,7 @@ find_destructibles()
 	array_thread( getentarray( "destructible", "targetname" ), ::setup_destructibles );
 }
 
-precache_destructibles(  )
+precache_destructibles()
 {
 	if ( isdefined( level.destructible_type[self.destuctableInfo].parts ) )
 	{
@@ -339,7 +339,7 @@ damage_mirror( parent, modelName, tagName )
 	parent endon( "stop_taking_damage" );
 
 	self setCanDamage( true );
-	for ( ;; )
+	for(;;)
 	{
 		self waittill ( "damage", damage, attacker, direction_vec, point, type );
 		parent notify ( "damage", damage, attacker, direction_vec, point, type, modelName, tagName );
@@ -353,12 +353,7 @@ destructible_think()
 	{
 		self waittill( "damage", damage, attacker, direction_vec, point, type, modelName, tagName, partName, dflags );
 
-		if ( !isdefined( damage ) )
-			continue;
-		if ( damage <= 0 )
-			continue;
-
-		if ( isDefined( level.strat_over ) && !level.strat_over )
+		if ( !isdefined( damage ) || damage <= 0 || ( isDefined( level.strat_over ) && !level.strat_over ) )
 			continue;
 
 		if ( isDefined( attacker ) && isPlayer( attacker ) )
@@ -395,9 +390,7 @@ destructible_think()
 
 destructible_update_part( damage, modelName, tagName, point, direction_vec, attacker, damageType )
 {
-	if ( !isdefined( self.destructible_parts ) )
-		return;
-	if ( !self.destructible_parts.size )
+	if ( !isdefined( self.destructible_parts ) || !self.destructible_parts.size )
 		return;
 
 	partIndex = -1;
@@ -415,22 +408,13 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 	{
 		stateIndex = self.destructible_parts[ i ].v[ "currentState" ];
 
-		if( level.destructible_type[ self.destuctableInfo ].parts[ i ].size <= stateIndex )
+		if( level.destructible_type[ self.destuctableInfo ].parts[ i ].size <= stateIndex || !isdefined( tagName ) || !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "modelName" ] ) )
 			continue;
 
-		if( !isdefined( tagName ) )
-			continue;
-
-		if( !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "modelName" ] ) )
-			continue;
-
-		if ( isDefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ] ) )
+		if ( isDefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ] ) && level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ] == tagName )
 		{
-			if ( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ] == tagName )
-			{
-				partIndex = i;
-				break;
-			}
+			partIndex = i;
+			break;
 		}
 	}
 	assert( stateIndex >= 0 );
@@ -448,19 +432,14 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 		if ( !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ] ) )
 			break;
 
-		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ 0 ].v[ "alsoDamageParent" ] ) )
+		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ 0 ].v[ "alsoDamageParent" ] ) && getDamageType( damageType ) != "splash" )
 		{
-			if ( getDamageType( damageType ) != "splash" )
-			{
-				ratio = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ 0 ].v[ "alsoDamageParent" ];
-				parentDamage = int( damage * ratio );
-				self thread notifyDamageAfterFrame( parentDamage, attacker, direction_vec, point, damageType, "", "" );
-			}
+			ratio = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ 0 ].v[ "alsoDamageParent" ];
+			parentDamage = int( damage * ratio );
+			self thread notifyDamageAfterFrame( parentDamage, attacker, direction_vec, point, damageType, "", "" );
 		}
 
-		if ( !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "health" ] ) )
-			break;
-		if ( !isdefined( self.destructible_parts[ partIndex ].v[ "health" ] ) )
+		if ( !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "health" ] ) || !isdefined( self.destructible_parts[ partIndex ].v[ "health" ] ) )
 			break;
 
 		if ( updateHealthValue )
@@ -481,23 +460,17 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 		}
 
 		if ( self.destructible_parts[ partIndex ].v[ "health" ] > 0 )
-		{
 			return;
-		}
 
 		damage = int( abs( self.destructible_parts[ partIndex ].v[ "health" ] ) );
 		if ( damage < 0 )
-		{
 			return;
-		}
 		self.destructible_parts[ partIndex ].v[ "currentState" ]++;
 		stateIndex = self.destructible_parts[ partIndex ].v[ "currentState" ];
 		actionStateIndex = ( stateIndex - 1 );
 
 		if ( !isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ] ) )
-		{
 			return;
-		}
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "explode_force_min" ] ) )
 			self.exploding = true;
@@ -505,9 +478,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 		if ( ( isdefined( self.loopingSoundStopNotifies ) ) && ( isdefined( self.loopingSoundStopNotifies[ string( partIndex ) ] ) ) )
 		{
 			for( i = 0 ; i < self.loopingSoundStopNotifies[ string( partIndex ) ].size ; i++ )
-			{
 				self notify( self.loopingSoundStopNotifies[ string( partIndex ) ][ i ] );
-			}
 			self.loopingSoundStopNotifies[ string( partIndex ) ] = undefined;
 		}
 
@@ -536,9 +507,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			fx_tag = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx_tag" ];
 			self notify( "FX_State_Change" + partIndex );
 			if ( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx_useTagAngles" ] )
-			{
 				playfxontag ( fx, self, fx_tag );
-			}
 			else
 			{
 				fxOrigin = self getTagOrigin( fx_tag );
@@ -557,35 +526,29 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			self thread loopfx_onTag( loopfx, loopfx_tag, loopRate, partIndex );
 		}
 
-		if ( !isdefined( self.exploded ) )
+		if ( !isdefined( self.exploded ) && isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ] ) )
 		{
-			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ] ) )
-			{
-				animName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ];
-				animTree = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "animTree" ];
-				if ( !isdefined( self.animsApplied ) )
-					self.animsApplied = [];
-				self.animsApplied[ self.animsApplied.size ] = animName;
+			animName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ];
+			animTree = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "animTree" ];
+			if ( !isdefined( self.animsApplied ) )
+				self.animsApplied = [];
+			self.animsApplied[ self.animsApplied.size ] = animName;
 
-				if ( !partIndex )
-					self thread explodeAnim();
-			}
+			if ( !partIndex )
+				self thread explodeAnim();
 		}
 
-		if ( !isdefined( self.exploded ) )
+		if ( !isdefined( self.exploded ) && isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ] ) )
 		{
-			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ] ) )
+			for( i = 0 ; i < level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ].size ; i++ )
 			{
-				for( i = 0 ; i < level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ].size ; i++ )
+				validSoundCause = self isValidSoundCause( "soundCause", partIndex, actionStateIndex, i, damageType );
+				if ( validSoundCause )
 				{
-					validSoundCause = self isValidSoundCause( "soundCause", partIndex, actionStateIndex, i, damageType );
-					if ( validSoundCause )
-					{
-						soundAlias = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ][ i ];
-						soundTagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "tagName" ];
+					soundAlias = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ][ i ];
+					soundTagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "tagName" ];
 
-						self thread play_sound_on_tag( soundAlias, soundTagName );
-					}
+					self thread play_sound_on_tag( soundAlias, soundTagName );
 				}
 			}
 		}
@@ -645,10 +608,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 
 destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 {
-	if ( damage <= 0 )
-		return;
-
-	if ( isDefined( self.exploded ) )
+	if ( damage <= 0 || isDefined( self.exploded ) )
 		return;
 
 	damagedParts = [];
@@ -692,11 +652,7 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 		}
 	}
 
-	if ( !isdefined( closestPartDist ) )
-		return;
-	if ( closestPartDist < 0 )
-		return;
-	if ( damagedParts.size <= 0 )
+	if ( !isdefined( closestPartDist ) || closestPartDist < 0 || damagedParts.size <= 0 )
 		return;
 
 	for( i = 0 ; i < damagedParts.size ; i++ )
@@ -704,10 +660,7 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 		distanceMod = ( damagedParts[ i ].v[ "distance" ] * 1.4 );
 		damageAmount = ( damage - ( distanceMod - closestPartDist ) );
 
-		if ( damageAmount <= 0 )
-			continue;
-
-		if ( isDefined( self.exploded ) )
+		if ( damageAmount <= 0 || isDefined( self.exploded ) )
 			continue;
 
 		self thread destructible_update_part( damageAmount, damagedParts[ i ].v[ "modelName" ], damagedParts[ i ].v[ "tagName" ], point, direction_vec, attacker, damageType);
@@ -717,10 +670,7 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 isValidSoundCause( soundCauseVar, partIndex, stateIndex, soundIndex, damageType )
 {
 	soundCause = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ soundCauseVar ][ soundIndex ];
-	if ( !isdefined( soundCause ) )
-		return true;
-
-	if ( soundCause == damageType )
+	if ( !isdefined( soundCause ) || soundCause == damageType )
 		return true;
 
 	return false;
@@ -728,19 +678,13 @@ isValidSoundCause( soundCauseVar, partIndex, stateIndex, soundIndex, damageType 
 
 isAttackerValid( partIndex, stateIndex, attacker )
 {
-	if ( !isdefined( attacker ) )
-		return true;
-
 	return true;
 }
 
 isValidDamageCause( partIndex, stateIndex, damageType )
 {
-	if ( !isdefined( damageType ) )
-		return true;
-
 	validType = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "validDamageCause" ];
-	if ( !isdefined( validType ) )
+	if ( !isdefined( damageType ) || !isdefined( validType ) )
 		return true;
 
 	if ( ( validType == "no_melee" ) && damageType == "melee" || damageType == "impact" )
@@ -774,8 +718,6 @@ getDamageType( type )
 			return "splash";
 		case "mod_impact":
 			return "impact";
-		case "unknown":
-			return "unknown";
 		default:
 			return "unknown";
 	}
@@ -879,7 +821,12 @@ deleteEnt( ent )
 	ent delete();
 }
 
-hideapart( tagName ){	self hidepart( tagName );}showapart( tagName )
+hideapart( tagName )
+{
+	self hidepart( tagName );
+}
+
+showapart( tagName )
 {
 	self showpart( tagName );
 }
@@ -888,7 +835,7 @@ explodeAnim()
 {
 	self moveZ( 16, 0.3, 0, 0.2 );
 	self rotatePitch( 10, 0.3, 0, 0.2 );
-	wait ( 0.3 );
+	wait 0.3;
 	self moveZ( -16, 0.3, 0.15, 0 );
 	self rotatePitch( -10, 0.3, 0.15, 0 );
 }

@@ -72,8 +72,8 @@ main()
 	setDvar( "scr_dm_timelimit", 10 );
 	setDvar( "scr_dm_waverespawndelay", 0 );
 
-	setDvar( "class_specops_limit", 64 );
 	setDvar( "class_assault_limit", 64 );
+	setDvar( "class_specops_limit", 2 );
 	setDvar( "class_demolitions_limit", 1 );
 	setDvar( "class_sniper_limit", 1 );
 
@@ -171,7 +171,6 @@ main()
 	setDvar( "g_no_script_spam", 1 );
 	setDvar( "g_antilag", 1 );
 	setDvar( "g_smoothClients", 1 );
-	setDvar( "g_banIPs", "" );
 	setDvar( "sv_allowDownload", 1 );
 	setDvar( "sv_maxPing", 0 );
 	setDvar( "sv_minPing", 0 );

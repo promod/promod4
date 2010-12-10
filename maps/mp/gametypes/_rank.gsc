@@ -133,7 +133,7 @@ updateRankScoreHUD( amount )
 
 	self.rankUpdateTotal += amount;
 
-	wait ( 0.05 );
+	wait 0.05;
 
 	if( isDefined( self.hud_rankscroreupdate ) )
 	{

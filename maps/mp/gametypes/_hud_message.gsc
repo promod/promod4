@@ -244,7 +244,7 @@ showNotifyMessage( notifyData )
 
 waitRequireVisibility( waitTime )
 {
-	interval = .05;
+	interval = 0.05;
 
 	while ( !self canReadText() )
 		wait interval;
@@ -299,7 +299,7 @@ hintMessageDeathThink()
 {
 	self endon ( "disconnect" );
 
-	for ( ;; )
+	for(;;)
 	{
 		self waittill ( "death" );
 
@@ -662,7 +662,7 @@ updateOutcome( firstTitle, secondTitle, thirdTitle )
 	self endon( "disconnect" );
 	self endon( "reset_outcome" );
 
-	while( true )
+	for(;;)
 	{
 		self waittill( "update_outcome" );
 

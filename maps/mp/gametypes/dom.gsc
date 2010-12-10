@@ -72,13 +72,13 @@ onPrecacheGameType()
 
 	flagBaseFX = [];
 	flagBaseFX["marines"] = "misc/ui_flagbase_silver";
-	flagBaseFX["sas"    ] = "misc/ui_flagbase_black";
+	flagBaseFX["sas"] = "misc/ui_flagbase_black";
 	flagBaseFX["russian"] = "misc/ui_flagbase_red";
-	flagBaseFX["opfor"  ] = "misc/ui_flagbase_gold";
+	flagBaseFX["opfor"] = "misc/ui_flagbase_gold";
 
 	game["flagBaseFXid"] = [];
 	game["flagBaseFXid"][ "allies" ] = loadfx( flagBaseFX[ game[ "allies" ] ] );
-	game["flagBaseFXid"][ "axis"   ] = loadfx( flagBaseFX[ game[ "axis"   ] ] );
+	game["flagBaseFXid"][ "axis" ] = loadfx( flagBaseFX[ game[ "axis" ] ] );
 }
 
 onStartGameType()
@@ -142,20 +142,14 @@ onSpawnPlayer()
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all, getSpawnsBoundingFlag( enemyBestSpawnFlag ) );
 		}
 		else if ( flagsOwned > 0 )
-		{
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all, getBoundaryFlagSpawns( myTeam ) );
-		}
 		else
 		{
 			bestFlag = undefined;
 			if ( enemyFlagsOwned > 0 && enemyFlagsOwned < level.flags.size )
-			{
 				bestFlag = getUnownedFlagNearestStart( myTeam );
-			}
 			if ( !isdefined( bestFlag ) )
-			{
 				bestFlag = level.bestSpawnFlag[ self.pers["team"] ];
-			}
 
 			level.bestSpawnFlag[ self.pers["team"] ] = bestFlag;
 
@@ -217,20 +211,18 @@ domFlags()
 	}
 
 	level.flags = [];
-	for ( index = 0; index < primaryFlags.size; index++ )
-		level.flags[level.flags.size] = primaryFlags[index];
+	for ( i = 0; i < primaryFlags.size; i++ )
+		level.flags[level.flags.size] = primaryFlags[i];
 
-	for ( index = 0; index < secondaryFlags.size; index++ )
-		level.flags[level.flags.size] = secondaryFlags[index];
+	for ( i = 0; i < secondaryFlags.size; i++ )
+		level.flags[level.flags.size] = secondaryFlags[i];
 
 	level.domFlags = [];
-	for ( index = 0; index < level.flags.size; index++ )
+	for ( i = 0; i < level.flags.size; i++ )
 	{
-		trigger = level.flags[index];
+		trigger = level.flags[i];
 		if ( isDefined( trigger.target ) )
-		{
 			visuals[0] = getEnt( trigger.target, "targetname" );
-		}
 		else
 		{
 			visuals[0] = spawn( "script_model", trigger.origin );
@@ -264,11 +256,11 @@ domFlags()
 
 		domFlag.baseeffectpos = trace["position"];
 
-		level.flags[index].useObj = domFlag;
-		level.flags[index].adjflags = [];
-		level.flags[index].nearbyspawns = [];
+		level.flags[i].useObj = domFlag;
+		level.flags[i].adjflags = [];
+		level.flags[i].nearbyspawns = [];
 
-		domFlag.levelFlag = level.flags[index];
+		domFlag.levelFlag = level.flags[i];
 
 		level.domFlags[level.domFlags.size] = domFlag;
 	}
@@ -387,14 +379,14 @@ onUse( player )
 
 giveFlagCaptureXP( touchList )
 {
-	wait .05;
+	wait 0.05;
 	maps\mp\gametypes\_globallogic::WaitTillSlowProcessAllowed();
 
 	players = getArrayKeys( touchList );
-	for ( index = 0; index < players.size; index++ )
+	for ( i = 0; i < players.size; i++ )
 	{
-		touchList[players[index]].player thread [[level.onXPEvent]]( "capture" );
-		maps\mp\gametypes\_globallogic::givePlayerScore( "capture", touchList[players[index]].player );
+		touchList[players[i]].player thread [[level.onXPEvent]]( "capture" );
+		maps\mp\gametypes\_globallogic::givePlayerScore( "capture", touchList[players[i]].player );
 	}
 }
 
@@ -404,7 +396,6 @@ updateDomScores()
 
 	while ( !level.gameEnded )
 	{
-
 		numFlags = getTeamFlagCount( "allies" );
 		if ( numFlags )
 			[[level._setTeamScore]]( "allies", [[level._getTeamScore]]( "allies" ) + numFlags );
@@ -416,7 +407,7 @@ updateDomScores()
 		level.endGameOnScoreLimit = true;
 		maps\mp\gametypes\_globallogic::checkScoreLimit();
 		level.endGameOnScoreLimit = false;
-		wait ( 5.0 );
+		wait 5;
 	}
 }
 

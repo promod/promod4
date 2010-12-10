@@ -1,0 +1,14 @@
+1. Create a shortcut to the COD4 executable (iw3mp.exe).
+2. Right click on the shortcut and hit properties. In the target field add the command-line (sample below).
+3. Click "OK" to save, click the shortcut and if you did everything right the server should now be running.
+
+This is a sample command-line for starting and using Promod LIVE V2 under Windows:
+
+dedicated [0-3] (listen, LAN, internet)
+net_ip [xxx.xxx.xxx.xxx]
+net_port [1-65535] (standard is 28960)
+
+<path to iw3mp.exe> +set dedicated 2 +set net_ip localhost +set net_port 28960 +set sv_punkbuster 1 +set fs_game mods/promodlive210 +exec server.cfg +map_rotate
+
+Make sure you put the server config (server.cfg) in the main-folder.
+Included is also a iwd.cfg which you can put in the pb-folder, it contains checksums for the stock iwd-files for preventing custom skins and such and can be loaded by typing "\rcon pb_sv_load iwd.cfg".

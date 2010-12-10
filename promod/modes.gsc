@@ -13,175 +13,68 @@ main()
 	mode = toLower( getDvar( "promod_mode" ) );
 	if ( !validMode( mode ) )
 	{
-		setDvar( "promod_mode", "comp_public" );
-		mode = toLower( getDvar( "promod_mode" ) );
+		mode = "comp_public";
+		setDvar( "promod_mode", mode );
 	}
-
-	explodeMode( mode );
+	setMode(mode);
 }
 
-explodeMode( mode )
+validMode( mode )
 {
-	limited_mode = 0;
-	knockout_mode = 0;
-	mr_rating = 0;
-
-	game["CUSTOM_MODE"] = 0;
-	game["LAN_MODE"] = 0;
-	game["HARDCORE_MODE"] = 0;
-	game["PROMOD_STRATTIME"] = 6;
-	game["PROMOD_MODE_HUD"] = "";
-	game["PROMOD_MATCH_MODE"] = "";
-
-	if ( mode == "comp_public" )
+	switch ( mode )
 	{
-		promod\comp::main();
-		game["PROMOD_MATCH_MODE"] = "pub";
-		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public";
-		unified();
-	}
-	if ( mode == "comp_public_hc" )
-	{
-		promod\comp::main();
-		game["PROMOD_MATCH_MODE"] = "pub";
-		game["HARDCORE_MODE"] = 1;
-		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public";
-		unified();
-	}
-	else if ( mode == "custom_public" )
-	{
-		promod_ruleset\custom_public::main();
-		game["CUSTOM_MODE"] = 1;
-		game["PROMOD_MATCH_MODE"] = "pub";
-		game["PROMOD_MODE_HUD"] = "^4Custom ^3Public";
-	}
-	else if ( mode == "strat" )
-	{
-		promod\comp::main();
-		level thread promod\stratmode::main();
-		game["PROMOD_MODE_HUD"] = "^4Strat ^3Mode";
-		game["PROMOD_MATCH_MODE"] = "strat";
-		unified();
+		case "comp_public":
+		case "comp_public_hc":
+		case "custom_public":
+		case "strat":
+		case "match":
+		case "knockout":
+			return true;
 	}
 
-	if ( game["PROMOD_MATCH_MODE"] == "" )
+	keys = strtok(mode, "_");
+	if(keys.size <= 1) return false;
+	switches = [];
+	switches["match_knockout"] = false;
+	switches["1v1_2v2"] = false;
+	switches["lan_pb"] = false;
+	switches["hc_done"] = false;
+	switches["knife_done"] = false;
+	switches["mr_done"] = false;
+
+	for(i=0;i<keys.size;i++)
 	{
-		exploded = StrTok( mode, "_" );
-		for ( i = 0; i < exploded.size; i++ )
+		switch(keys[i])
 		{
-			exp = exploded[i];
-
-			if ( exp == "match" || exp == "knockout" )
-			{
-				game["PROMOD_MATCH_MODE"] = "match";
-
-				if ( exp == "knockout" )
-				{
-					knockout_mode = 1;
-					game["PROMOD_STRATTIME"] = 10;
-					game["PROMOD_MODE_HUD"] += "^4Knockout";
-				}
+			case "match":
+			case "knockout":
+				if(switches["match_knockout"]) return false;
+				switches["match_knockout"] = true;
+				break;
+			case "1v1":
+			case "2v2":
+				if(switches["1v1_2v2"]) return false;
+				switches["1v1_2v2"] = true;
+				break;
+			case "lan":
+			case "pb":
+				if(switches["lan_pb"]) return false;
+				switches["lan_pb"] = true;
+				break;
+			case "knife":
+			case "hc":
+				if(switches[keys[i]+"_done"]) return false;
+				switches[keys[i]+"_done"] = true;
+				break;
+			default:
+				if(keys[i] != "mr" && isSubStr(keys[i],"mr") && "mr"+int(strtok(keys[i], "mr")[0]) == keys[i] && int(strtok(keys[i], "mr")[0]) > 0 && !switches["mr_done"])
+					switches["mr_done"] = true;
 				else
-					game["PROMOD_MODE_HUD"] += "^4Match";
-			}
-			else if ( exp == "lan" )
-			{
-				game["LAN_MODE"] = 1;
-				game["PROMOD_MODE_HUD"] += " ^4LAN";
-			}
-			else if ( exp == "1v1" || exp == "2v2" )
-			{
-				limited_mode = 1;
-
-				if ( exp == "1v1" )
-					game["PROMOD_MODE_HUD"] += " ^21V1";
-				else
-					game["PROMOD_MODE_HUD"] += " ^22V2";
-			}
-			else if ( exp == "hc" )
-			{
-				game["HARDCORE_MODE"] = 1;
-				game["PROMOD_MODE_HUD"] += " ^6HC";
-			}
-			else if ( isSubStr( exp, "mr" ) )
-				mr_rating = mrrating( "mr", exp );
+					return false;
+				break;
 		}
 	}
-
-	if ( game["PROMOD_MATCH_MODE"] == "match" )
-	{
-		promod\comp::main();
-		unified();
-	}
-
-	if ( game["LAN_MODE"] )
-	{
-		setDvar( "g_antilag", 0 );
-		setDvar( "g_smoothClients", 0 );
-	}
-
-	if ( game["HARDCORE_MODE"] )
-		setDvar( "scr_hardcore", 1 );
-
-	if ( limited_mode )
-	{
-		setDvar( "class_demolitions_limit", 0 );
-		setDvar( "class_sniper_limit", 0 );
-	}
-
-	if ( int( mr_rating ) > 0 && ( level.gametype == "sd" || level.gametype == "sab" ) )
-	{
-		game["PROMOD_MODE_HUD"] += " " + "^3MR" + int( mr_rating );
-
-		setDvar( "scr_" + level.gametype + "_roundswitch", int( mr_rating ) );
-		setDvar( "scr_" + level.gametype + "_roundlimit", int( mr_rating ) * 2 );
-
-		if ( knockout_mode && level.gametype == "sd" )
-			setDvar( "scr_sd_scorelimit", int( mr_rating ) + 1 );
-	}
-	else if ( game["PROMOD_MATCH_MODE"] == "match" )
-		game["PROMOD_MODE_HUD"] += " ^3Standard";
-
-	if ( getDvarInt( "sv_cheats" ) )
-		game["PROMOD_MODE_HUD"] += " ^1CHEATS";
-}
-
-mrrating( pretext, mode )
-{
-	rating = "";
-	for ( i = pretext.size; i < mode.size; i++ )
-		rating += mode[i];
-
-	return rating;
-}
-
-unified()
-{
-	if ( game["PROMOD_MATCH_MODE"] == "match" )
-	{
-		setDvar( "scr_war_roundswitch", 1 );
-		setDvar( "scr_war_roundlimit", 2 );
-		setDvar( "class_specops_limit", 2 );
-	}
-	else if ( game["PROMOD_MATCH_MODE"] == "pub" )
-	{
-		setDvar( "scr_team_fftype", 0 );
-		setDvar( "scr_team_teamkillpointloss", 0 );
-		setDvar( "scr_war_roundswitch", 0 );
-		setDvar( "scr_war_roundlimit", 1 );
-		setDvar( "weap_allow_flash_grenade", 0 );
-		setDvar( "weap_allow_frag_grenade", 0 );
-		setDvar( "weap_allow_smoke_grenade", 0 );
-		setDvar( "class_assault_grenade", "none" );
-		setDvar( "class_specops_grenade", "none" );
-		setDvar( "class_demolitions_grenade", "none" );
-		setDvar( "class_sniper_grenade", "none" );
-	}
-	else
-	{
-		setDvar( "class_demolitions_limit", 64 );
-		setDvar( "class_sniper_limit", 64 );
-	}
+	return switches["match_knockout"];
 }
 
 monitorMode()
@@ -189,7 +82,7 @@ monitorMode()
 	o_mode = toLower( getDvar( "promod_mode" ) );
 	o_cheats = getDvarInt( "sv_cheats" );
 
-	while ( 1 )
+	for(;;)
 	{
 		mode = toLower( getDvar( "promod_mode" ) );
 		cheats = getDvarInt( "sv_cheats" );
@@ -205,27 +98,16 @@ monitorMode()
 			if ( validMode( mode ) )
 			{
 				level notify ( "restarting" );
-
-				iPrintLN( "Changing To Mode:  ^1" + level.mode );
-				iPrintLN( "Please Wait While It Loads..." );
-
-				explodeMode( level.mode );
-
+				iPrintLN( "Changing To Mode: ^1" + mode + "\nPlease Wait While It Loads..." );
+				setMode( mode );
 				wait 2;
-
 				map_restart( false );
 				return;
 			}
 			else
 			{
 				if ( isDefined( mode ) && mode != "" )
-				{
-					iPrintLN( "Error Changing To Mode:  " + "''" + "^1" + mode + "^7''" );
-					iPrintLN( "Valid Modes:" );
-					iPrintLN( "^7match( ^1_^7lan^1_^7xvx^1_^7hc^1_^7mrx )^1,  ^7knockout( ^1_^7lan^1_^7xvx^1_^7hc )^1_^7mrx^1," );
-					iPrintLN( "^7comp^1_^7public^1,  ^7comp^1_^7public_hc^1,  ^7custom^1_^7public^1,  ^7strat" );
-				}
-
+					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax:\nmatch|knockout_lan|pb_hc_knife_1v1|2v2_mr#,\nNormal Modes: comp_public, comp_public_hc, custom_public, strat" );
 				setDvar( "promod_mode", o_mode );
 			}
 		}
@@ -234,81 +116,157 @@ monitorMode()
 	}
 }
 
-validMode( mode )
+setMode( mode )
 {
-	if ( !isDefined( mode ) || mode == "" )
-		return false;
+	limited_mode = 0;
+	knockout_mode = 0;
+	mr_rating = 0;
 
-	level.mode = mode;
+	game["CUSTOM_MODE"] = 0;
+	game["LAN_MODE"] = 0;
+	game["HARDCORE_MODE"] = 0;
+	game["PROMOD_STRATTIME"] = 6;
+	game["PROMOD_MODE_HUD"] = "";
+	game["PROMOD_MATCH_MODE"] = "";
+	game["PROMOD_PB_OFF"] = 0;
+	game["PROMOD_KNIFEROUND"] = 0;
 
-	if (
-		mode == "comp_public" ||
-		mode == "comp_public_hc" ||
-		mode == "custom_public" ||
-		mode == "strat" )
-		return true;
-
-	mr_mode = "";
-	mr_rating = "";
-
-	exploded = StrTok( mode, "_" );
-	for ( i = 0; i < exploded.size; i++ )
+	if ( mode == "comp_public" )
 	{
- 		exp = exploded[i];
-
-		if ( !isSubStr( exp, "mr" ) )
-			mr_mode += exp + "_";
-		else
-			mr_rating = exp;
+		promod\comp::main();
+		game["PROMOD_MATCH_MODE"] = "pub";
+		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public";
+		pub();
+	}
+	else if ( mode == "comp_public_hc" )
+	{
+		promod\comp::main();
+		game["PROMOD_MATCH_MODE"] = "pub";
+		game["HARDCORE_MODE"] = 1;
+		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public ^6HC";
+		pub();
+	}
+	else if ( mode == "custom_public" )
+	{
+		promod_ruleset\custom_public::main();
+		game["CUSTOM_MODE"] = 1;
+		game["PROMOD_MATCH_MODE"] = "pub";
+		game["PROMOD_MODE_HUD"] = "^4Custom ^3Public";
+		game["PROMOD_KNIFEROUND"] = getDvarInt("promod_kniferound");
+	}
+	else if ( mode == "strat" )
+	{
+		promod\comp::main();
+		game["PROMOD_MODE_HUD"] = "^4Strat ^3Mode";
+		game["PROMOD_MATCH_MODE"] = "strat";
+		setDvar( "class_specops_limit", 64 );
+		setDvar( "class_demolitions_limit", 64 );
+		setDvar( "class_sniper_limit", 64 );
 	}
 
-	if (
-		mr_mode == "match_" ||
-		mr_mode == "match_hc_" ||
-		mr_mode == "match_1v1_" ||
-		mr_mode == "match_1v1_hc_" ||
-		mr_mode == "match_2v2_" ||
-		mr_mode == "match_2v2_hc_" ||
-		mr_mode == "match_lan_" ||
-		mr_mode == "match_lan_hc_" ||
-		mr_mode == "match_lan_1v1_" ||
-		mr_mode == "match_lan_1v1_hc_" ||
-		mr_mode == "match_lan_2v2_" ||
-		mr_mode == "match_lan_2v2_hc_" ||
-		mr_mode == "knockout_" ||
-		mr_mode == "knockout_hc_" ||
-		mr_mode == "knockout_1v1_" ||
-		mr_mode == "knockout_1v1_hc_" ||
-		mr_mode == "knockout_2v2_" ||
-		mr_mode == "knockout_2v2_hc_" ||
-		mr_mode == "knockout_lan_" ||
-		mr_mode == "knockout_lan_hc_" ||
-		mr_mode == "knockout_lan_1v1_" ||
-		mr_mode == "knockout_lan_1v1_hc_" ||
-		mr_mode == "knockout_lan_2v2_" ||
-		mr_mode == "knockout_lan_2v2_hc_" )
-		if ( isSubStr( mr_mode, "match" ) && !isSubStr( mr_rating, "mr" ) )
-			return true;
-		else if (
-				isSubStr( mr_rating, "mr1" ) ||
-				isSubStr( mr_rating, "mr2" ) ||
-				isSubStr( mr_rating, "mr3" ) ||
-				isSubStr( mr_rating, "mr4" ) ||
-				isSubStr( mr_rating, "mr5" ) ||
-				isSubStr( mr_rating, "mr6" ) ||
-				isSubStr( mr_rating, "mr7" ) ||
-				isSubStr( mr_rating, "mr8" ) ||
-				isSubStr( mr_rating, "mr9" ) )
-				{
-					result = StrTok( mr_rating, "mr" )[0];
+	if ( game["PROMOD_MATCH_MODE"] == "" )
+	{
+		exploded = StrTok( mode, "_" );
+		for ( i = 0; i < exploded.size; i++ )
+		{
+			switch(exploded[i])
+			{
+				case "match":
+					game["PROMOD_MATCH_MODE"] = "match";
+					break;
+				case "knockout":
+					knockout_mode = 1;
+					game["PROMOD_STRATTIME"] = 10;
+					game["PROMOD_MATCH_MODE"] = "match";
+					break;
+				case "lan":
+					game["LAN_MODE"] = 1;
+					break;
+				case "1v1":
+				case "2v2":
+					limited_mode = int(strtok(exploded[i],"v")[0]);
+					break;
+				case "knife":
+					game["PROMOD_KNIFEROUND"] = 1;
+					break;
+				case "pb":
+					game["PROMOD_PB_OFF"] = 1;
+					break;
+				case "hc":
+					game["HARDCORE_MODE"] = 1;
+					break;
+				default:
+					if ( isSubStr( exploded[i], "mr" ) )
+						mr_rating = strtok(exploded[i], "mr")[0];
+					break;
+			}
+		}
+	}
 
-					if ( ( !int( result ) ) )
-						return false;
+	if ( game["PROMOD_MATCH_MODE"] == "match" )
+		promod\comp::main();
 
-					level.mode = mr_mode + "mr" + int( result );
-					setDvar( "promod_mode", level.mode );
-					return true;
-				}
+	if ( limited_mode )
+	{
+		setDvar( "class_demolitions_limit", 0 );
+		setDvar( "class_sniper_limit", 0 );
+		game["PROMOD_MODE_HUD"] += "^2"+limited_mode+"V"+limited_mode+" ";
+	}
 
-	return false;
+	if( knockout_mode )
+		game["PROMOD_MODE_HUD"] += "^4Knockout";
+	else if ( game["PROMOD_MATCH_MODE"] == "match" )
+		game["PROMOD_MODE_HUD"] += "^4Match";
+
+	if ( game["LAN_MODE"] )
+	{
+		setDvar( "g_antilag", 0 );
+		setDvar( "g_smoothClients", 0 );
+		game["PROMOD_MODE_HUD"] += " ^4LAN";
+	}
+
+	if ( game["HARDCORE_MODE"] )
+	{
+		if(game["PROMOD_MATCH_MODE"] == "match")
+			game["PROMOD_MODE_HUD"] += " ^6HC";
+		setDvar( "scr_hardcore", 1 );
+	}
+
+	if ( int( mr_rating ) > 0 && ( level.gametype == "sd" || level.gametype == "sab" ) )
+	{
+		game["PROMOD_MODE_HUD"] += " " + "^3MR" + int( mr_rating );
+
+		setDvar( "scr_" + level.gametype + "_roundswitch", int( mr_rating ) );
+		setDvar( "scr_" + level.gametype + "_roundlimit", int( mr_rating ) * 2 );
+
+		if ( knockout_mode && level.gametype == "sd" )
+			setDvar( "scr_sd_scorelimit", int( mr_rating ) + 1 );
+	}
+	else if ( game["PROMOD_MATCH_MODE"] == "match" )
+		game["PROMOD_MODE_HUD"] += " ^3Standard";
+
+	if( game["PROMOD_PB_OFF"] && getDvarInt( "sv_cheats" ) && !getDvarInt( "sv_punkbuster" ) )
+		game["PROMOD_MODE_HUD"] += " ^1PB: OFF & CHEATS";
+	else if( game["PROMOD_PB_OFF"] && !getDvarInt( "sv_punkbuster" ) )
+		game["PROMOD_MODE_HUD"] += " ^1PB: OFF";
+	else if ( getDvarInt( "sv_cheats" ) )
+		game["PROMOD_MODE_HUD"] += " ^1CHEATS";
+
+	if(level.gametype != "sd") game["PROMOD_KNIFEROUND"] = 0;
+}
+
+pub()
+{
+	setDvar( "scr_team_fftype", 0 );
+	setDvar( "scr_team_teamkillpointloss", 0 );
+	setDvar( "scr_war_roundswitch", 0 );
+	setDvar( "scr_war_roundlimit", 1 );
+	setDvar( "weap_allow_flash_grenade", 0 );
+	setDvar( "weap_allow_frag_grenade", 0 );
+	setDvar( "weap_allow_smoke_grenade", 0 );
+	setDvar( "class_specops_limit", 64 );
+	setDvar( "class_assault_grenade", "none" );
+	setDvar( "class_specops_grenade", "none" );
+	setDvar( "class_demolitions_grenade", "none" );
+	setDvar( "class_sniper_grenade", "none" );
 }

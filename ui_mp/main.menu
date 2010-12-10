@@ -45,6 +45,7 @@
 			uiScript stopRefresh;
 			setdvar ui_showEndOfGame "0";
 			setdvar sv_cheats "1";
+			setdvar promod_mode "strat";
 		}
 	}
 

@@ -112,9 +112,9 @@ playerHealthRegen()
 	hurtTime = 0;
 	newHealth = 0;
 
-	for (;;)
+	for(;;)
 	{
-		wait (0.05);
+		wait 0.05;
 		if (player.health == maxhealth)
 		{
 			veryHurt = false;
@@ -132,17 +132,12 @@ playerHealthRegen()
 			veryHurt = true;
 			self.atBrinkOfDeath = true;
 			if (!wasVeryHurt)
-			{
 				hurtTime = gettime();
-			}
 		}
 
 		if (player.health >= oldhealth)
 		{
-			if (gettime() - hurttime < level.playerHealth_RegularRegenDelay)
-				continue;
-
-			if ( level.healthRegenDisabled )
+			if (gettime() - hurttime < level.playerHealth_RegularRegenDelay || level.healthRegenDisabled)
 				continue;
 
 			if (gettime() - lastSoundTime_Recover > level.playerHealth_RegularRegenDelay)
@@ -164,9 +159,7 @@ playerHealthRegen()
 				newHealth = 1.0;
 
 			if (newHealth <= 0)
-			{
 				return;
-			}
 
 			player setnormalhealth (newHealth);
 			oldhealth = player.health;
@@ -186,22 +179,19 @@ playerBreathingSound(healthcap)
 {
 	self endon("end_healthregen");
 
-	wait (2);
+	wait 2;
 	player = self;
-	for (;;)
+	for(;;)
 	{
-		wait (0.2);
-		if (player.health <= 0)
+		wait 0.2;
+		if ( player.health <= 0 )
 			return;
 
-		if (player.health >= healthcap)
-			continue;
-
-		if ( level.healthRegenDisabled && gettime() > player.breathingStopTime )
+		if ( player.health >= healthcap || level.healthRegenDisabled && gettime() > player.breathingStopTime )
 			continue;
 
 		player playLocalSound("breathing_hurt");
-		wait .784;
+		wait 0.784;
 		wait (0.1 + randomfloat (0.8));
 	}
 }

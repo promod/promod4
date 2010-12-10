@@ -36,7 +36,11 @@
 		rect			0 0 640 480
 		focuscolor		COLOR_FOCUSED
 		style			WINDOW_STYLE_EMPTY
-		blurWorld		7.0
+		blurWorld		0
+		onOpen
+		{
+			setLocalVarString ui_team "shoutcast"
+		}
 
 		itemDef
 		{
@@ -63,24 +67,24 @@
 			decoration
 		}
 
-		CHOICE_MENU_TITLE( "Shoutcaster" )
+		CHOICE_MENU_TITLE( "Shoutcast" )
 		#define BACK_ENABLE 1
 		#define BACK_OPEN;
 		#include "ui_mp/navcontrols.inc";
 
-		#ifdef PC
-			#undef  CHOICE_X_START
-			#define CHOICE_X_START	-320
+		#undef CHOICE_X_START
+		#define CHOICE_X_START	-320
 
-			#undef	CHOICE_HORIZONTAL_ALIGN
-			#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
-		#endif
+		#undef	CHOICE_HORIZONTAL_ALIGN
+		#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
 
-		CHOICE_BUTTON_VIS( 1, "Overview Map", close self; open shoutcast_map; setDvar cl_bypassMouseInput "1";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 2, "Promod Graphics", open quickpromodgfx;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 3, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 4, "@MENU_CONTROLS", close self; open main_controls;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 5, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 6, "@MPUI_LEAVE_GAME", open popup_endgame, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 1, "Spectate", close self;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 2, "Shoutcast Setup", scriptMenuResponse "shoutcast_setup";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 3, "Overview Map", close self; open shoutcast_map; setDvar cl_bypassMouseInput "1";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 4, "Promod Graphics", open quickpromodgfx;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 5, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 6, "@MENU_CONTROLS", close self; open main_controls;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 7, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON_VIS( 8, "@MPUI_LEAVE_GAME", open popup_endgame, when( dvarString( cl_bypassMouseInput ) != "1" ) )
 	}
 }

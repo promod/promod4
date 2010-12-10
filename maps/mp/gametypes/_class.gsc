@@ -142,24 +142,10 @@ giveLoadout( team, class )
 		}
 	}
 
-	switch ( class )
-	{
-		case "assault":
-			self setMoveSpeedScale( 0.95 );
-			break;
-		case "specops":
-			self setMoveSpeedScale( 1.0 );
-			break;
-		case "demolitions":
-			self setMoveSpeedScale( 1.0 );
-			break;
-		case "sniper":
-			self setMoveSpeedScale( 1.0 );
-			break;
-		default:
-			self setMoveSpeedScale( 1.0 );
-			break;
-	}
+	if( class == "assault" )
+		self setMoveSpeedScale( 0.95 );
+	else
+		self setMoveSpeedScale( 1.0 );
 }
 
 preserveClass( class )
@@ -256,21 +242,6 @@ set_config( dataName, value )
 	self setStat( int( tableLookup( "promod/customStatsTable.csv", 1, dataName, 0 ) ), value );
 }
 
-setWeaponAmmoOverall( weaponname, amount )
-{
-	if ( isWeaponClipOnly( weaponname ) )
-	{
-		self setWeaponAmmoClip( weaponname, amount );
-	}
-	else
-	{
-		self setWeaponAmmoClip( weaponname, amount );
-		diff = amount - self getWeaponAmmoClip( weaponname );
-		assert( diff >= 0 );
-		self setWeaponAmmoStock( weaponname, diff );
-	}
-}
-
 onPlayerConnecting()
 {
 	for(;;)
@@ -287,6 +258,8 @@ setClass( newClass )
 {
 	self setClientDvar( "loadout_curclass", newClass );
 	self.curClass = newClass;
+
+	self thread promod\shoutcast::setShoutClass();
 }
 
 cac_modified_damage( victim, attacker, damage, meansofdeath )
@@ -298,7 +271,6 @@ cac_modified_damage( victim, attacker, damage, meansofdeath )
 	if( meansofdeath == "" )
 		return damage;
 
-	old_damage = damage;
 	final_damage = damage;
 
 	if( isPrimaryDamage( meansofdeath ) )

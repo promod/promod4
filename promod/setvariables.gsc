@@ -16,8 +16,8 @@ main()
 	setDvar( "player_throwBackOuterRadius", 0 );
 	setDvar( "clientsideeffects", 0 );
 	setDvar( "g_speed", 190 );
-	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ) );
-	setDvar( "__promod_version", "Promod LIVE V2.05 EU" );
+	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ), getDvarInt( "promod_enable_scorebot" ) );
+	setDvar( "__promod_version", "Promod LIVE V2.10 EU", getDvarInt( "promod_enable_scorebot" ) );
 
 	game["allies_assault_count"] = 0;
 	game["allies_specops_count"] = 0;
@@ -35,5 +35,5 @@ main()
 	game["axis_timeout_called"] = 0;
 
 	game["promod_first_readyup_done"] = 0;
-	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.05 EU";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.10 EU";
 }

@@ -94,9 +94,7 @@ onRoundSwitch()
 		game["tiebreaker"] = true;
 	}
 	else
-	{
 		level.halftimeType = "halftime";
-	}
 }
 
 onStartGameType()
@@ -169,11 +167,12 @@ onOvertime()
 	level.timeLimitOverride = true;
 	level.inOvertime = true;
 
-	for ( index = 0; index < level.players.size; index++ )
+	for ( i = 0; i < level.players.size; i++ )
 	{
-		level.players[index] notify("force_spawn");
-		level.players[index] thread maps\mp\gametypes\_hud_message::oldNotifyMessage( &"MP_SUDDEN_DEATH", &"MP_NO_RESPAWN", undefined, (1, 0, 0), "mp_last_stand" );
-		level.players[index] setClientDvar( "g_compassShowEnemies", 1 );
+		player = level.players[i];
+		player notify("force_spawn");
+		player thread maps\mp\gametypes\_hud_message::oldNotifyMessage( &"MP_SUDDEN_DEATH", &"MP_NO_RESPAWN", undefined, (1, 0, 0), "mp_last_stand" );
+		player setClientDvar( "g_compassShowEnemies", 1 );
 	}
 
 	waitTime = 0;
@@ -184,7 +183,7 @@ onOvertime()
 			waitTime += 1;
 			setGameEndTime( getTime() + ((90-waitTime)*1000) );
 		}
-		wait ( 1.0 );
+		wait 1;
 	}
 
 	thread maps\mp\gametypes\_globallogic::endGame( "tie", game["strings"]["tie"] );
@@ -203,9 +202,7 @@ onDeadEvent( team )
 			thread maps\mp\gametypes\_globallogic::endGame( level.bombPlantedBy, game["strings"][level.bombPlantedBy+"_mission_accomplished"] );
 		}
 		else
-		{
 			thread maps\mp\gametypes\_globallogic::endGame( "tie", game["strings"]["tie"] );
-		}
 	}
 	else if ( level.bombPlanted )
 	{
@@ -314,10 +311,7 @@ sabotage()
 		visuals[0] delete();
 	}
 
-	if ( !isDefined( getEnt( "sab_bomb_axis", "targetname" ) ) )
-		return;
-
-	if ( !isDefined( getEnt( "sab_bomb_allies", "targetname" ) ) )
+	if ( !isDefined( getEnt( "sab_bomb_axis", "targetname" ) ) || !isDefined( getEnt( "sab_bomb_allies", "targetname" ) ) )
 		return;
 
 	level.bombZones["allies"] = createBombZone( "allies", getEnt( "sab_bomb_allies", "targetname" ) );
@@ -436,7 +430,7 @@ abandonmentThink( delay )
 {
 	level endon ( "bomb_picked_up" );
 
-	wait ( delay );
+	wait delay;
 
 	if ( isDefined( self.carrier ) )
 		return;
@@ -474,9 +468,7 @@ onUse( player )
 		maps\mp\gametypes\_globallogic::givePlayerScore( "plant", player );
 
 		for ( i = 0; i < level.players.size; i++ )
-		{
 			level.players[i] playLocalSound("promod_planted");
-		}
 
 		player thread [[level.onXPEvent]]( "plant" );
 		level thread bombPlanted( self, player.pers["team"] );
@@ -503,9 +495,7 @@ onUse( player )
 		maps\mp\gametypes\_globallogic::givePlayerScore( "defuse", player );
 
 		for ( i = 0; i < level.players.size; i++ )
-		{
 			level.players[i] playLocalSound("promod_defused");
-		}
 
 		player thread [[level.onXPEvent]]( "defuse" );
 		level thread bombDefused( self );
@@ -568,7 +558,7 @@ bombPlanted( destroyedObj, team )
 	if ( isdefined( level.bombowner ) )
 		destroyedObj.visuals[0] radiusDamage( explosionOrigin, 512, 200, 20, level.bombowner );
 	else
-	destroyedObj.visuals[0] radiusDamage( explosionOrigin, 512, 200, 20 );
+		destroyedObj.visuals[0] radiusDamage( explosionOrigin, 512, 200, 20 );
 
 	rot = randomfloat(360);
 	explosionEffect = spawnFx( level._effect["bombexplosion"], explosionOrigin + (0,0,50), (0,0,1), (cos(rot),sin(rot),0) );
@@ -583,9 +573,7 @@ bombPlanted( destroyedObj, team )
 	wait 3;
 
 	for ( i = 0; i < level.players.size; i++ )
-	{
 		level.players[i] playLocalSound("promod_destroyed");
-	}
 
 	thread maps\mp\gametypes\_globallogic::endGame( team, game["strings"]["target_destroyed"] );
 }

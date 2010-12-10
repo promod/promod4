@@ -22,7 +22,7 @@ create()
 	promod_ver.alignY = "middle";
 	promod_ver.fontScale = 1.4;
 	promod_ver.hidewheninmenu = true;
-	promod_ver.color = (.8, 1, 1);
+	promod_ver.color = (0.8, 1, 1);
 	promod_ver setText( game["PROMOD_VERSION"] );
 
 	promod_mode = newHudElem();

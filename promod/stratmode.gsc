@@ -43,7 +43,7 @@ monitorKeys()
 			while ( self useButtonPressed() && !self meleeButtonPressed() )
 			{
 				useButtonTime += 0.05;
-				wait ( 0.05 );
+				wait 0.05;
 			}
 
 			if ( useButtonTime > 0.5 || !useButtonTime )
@@ -67,7 +67,7 @@ monitorKeys()
 			while ( self meleeButtonPressed() && !self useButtonPressed() )
 			{
 				meleeButtonTime += 0.05;
-				wait ( 0.05 );
+				wait 0.05;
 			}
 
 			if ( meleeButtonTime > 0.5 || !meleeButtonTime )
@@ -93,7 +93,7 @@ monitorKeys()
 			while ( bothButtonTime < 0.5 && self meleeButtonPressed() && self useButtonPressed() )
 			{
 				bothButtonTime += 0.05;
-				wait ( 0.05 );
+				wait 0.05;
 			}
 
 			if ( bothButtonTime > 0.35 )
@@ -102,15 +102,15 @@ monitorKeys()
 				{
 					self.nofly = true;
 					self.hint1 setText( "Enable: Hold ^3[{+melee}] ^7+ ^3[{+activate}]" );
-					self.hint2.color = (.5, .5, .5);
-					self.hint3.color = (.5, .5, .5);
+					self.hint2.color = (0.5, 0.5, 0.5);
+					self.hint3.color = (0.5, 0.5, 0.5);
 				}
 				else
 				{
 					self.nofly = undefined;
 					self.hint1 setText( "Disable: Hold ^3[{+melee}] ^7+ ^3[{+activate}]" );
-					self.hint2.color = (.8, 1, 1);
-					self.hint3.color = (.8, 1, 1);
+					self.hint2.color = (0.8, 1, 1);
+					self.hint3.color = (0.8, 1, 1);
 				}
 			}
 
@@ -246,7 +246,7 @@ createHUD()
 	self.hint1.alignY = "middle";
 	self.hint1.fontScale = 1.4;
 	self.hint1.font = "default";
-	self.hint1.color = (.8, 1, 1);
+	self.hint1.color = (0.8, 1, 1);
 	self.hint1.hidewheninmenu = true;
 	self.hint1 setText( "Disable: Hold ^3[{+melee}] ^7+ ^3[{+activate}]" );
 
@@ -259,7 +259,7 @@ createHUD()
 	self.hint2.alignY = "middle";
 	self.hint2.fontScale = 1.4;
 	self.hint2.font = "default";
-	self.hint2.color = (.8, 1, 1);
+	self.hint2.color = (0.8, 1, 1);
 	self.hint2.hidewheninmenu = true;
 	self.hint2 setText( "Stop: Press ^3[{+attack}]" );
 
@@ -272,7 +272,7 @@ createHUD()
 	self.hint3.alignY = "middle";
 	self.hint3.fontScale = 1.4;
 	self.hint3.font = "default";
-	self.hint3.color = (.8, 1, 1);
+	self.hint3.color = (0.8, 1, 1);
 	self.hint3.hidewheninmenu = true;
 	self.hint3 setText( "Return: Press ^3[{+activate}]" );
 
@@ -285,7 +285,7 @@ createHUD()
 	self.hint4.alignY = "middle";
 	self.hint4.fontScale = 1.4;
 	self.hint4.font = "default";
-	self.hint4.color = (.8, 1, 1);
+	self.hint4.color = (0.8, 1, 1);
 	self.hint4.hidewheninmenu = true;
 	self.hint4 setText( "Save: Press ^3[{+melee}] ^7twice" );
 
@@ -298,7 +298,7 @@ createHUD()
 	self.hint5.alignY = "middle";
 	self.hint5.fontScale = 1.4;
 	self.hint5.font = "default";
-	self.hint5.color = (.8, 1, 1);
+	self.hint5.color = (0.8, 1, 1);
 	self.hint5.hidewheninmenu = true;
 	self.hint5 setText( "Load: Press ^3[{+activate}] ^7twice" );
 }
@@ -314,7 +314,7 @@ createServerHUD()
 	nadetraining.alignY = "middle";
 	nadetraining.fontScale = 1.4;
 	nadetraining.font = "default";
-	nadetraining.color = (.8, 1, 1);
+	nadetraining.color = (0.8, 1, 1);
 	nadetraining.hidewheninmenu = true;
 	nadetraining setText( "Nadetraining" );
 
@@ -327,7 +327,7 @@ createServerHUD()
 	position.alignY = "middle";
 	position.fontScale = 1.4;
 	position.font = "default";
-	position.color = (.8, 1, 1);
+	position.color = (0.8, 1, 1);
 	position.hidewheninmenu = true;
 	position setText( "Position" );
 }

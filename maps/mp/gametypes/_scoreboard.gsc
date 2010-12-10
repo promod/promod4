@@ -15,7 +15,7 @@ init()
 		case "sas":
 			precacheShader("faction_128_sas");
 			setdvar("g_TeamIcon_Allies", "faction_128_sas");
-			setdvar("g_TeamColor_Allies", ".5 .5 .5");
+			setdvar("g_TeamColor_Allies", "0.5 0.5 0.5");
 			setdvar("g_ScoresColor_Allies", "0 0 0");
 			break;
 
@@ -55,8 +55,8 @@ init()
 		setdvar("g_TeamName_Axis", &"PROMOD_ATTACK_NAME");
 	}
 
-	setdvar("g_ScoresColor_Spectator", ".25 .25 .25");
-	setdvar("g_ScoresColor_Free", ".76 .78 .10");
-	setdvar("g_teamColor_MyTeam", ".6 .8 .6" );
-	setdvar("g_teamColor_EnemyTeam", "1 .45 .5" );
+	setdvar("g_ScoresColor_Spectator", "0.25 0.25 0.25");
+	setdvar("g_ScoresColor_Free", "0.76 0.78 0.1");
+	setdvar("g_teamColor_MyTeam", "0.6 0.8 0.6" );
+	setdvar("g_teamColor_EnemyTeam", "1 0.45 0.5" );
 }

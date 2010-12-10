@@ -111,9 +111,7 @@ makeType( destructibleType )
 
 getInfoIndex( destructibleType )
 {
-	if ( !isdefined( level.destructible_type ) )
-		return -1;
-	if ( !level.destructible_type.size )
+	if ( !isdefined( level.destructible_type ) || !level.destructible_type.size )
 		return -1;
 
 	for( i = 0 ; i < level.destructible_type.size ; i++ )

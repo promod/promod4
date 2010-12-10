@@ -55,7 +55,7 @@ main()
 updateObjectiveHintMessages( alliesObjective, axisObjective )
 {
 	game["strings"]["objective_hint_allies"] = alliesObjective;
-	game["strings"]["objective_hint_axis"  ] = axisObjective;
+	game["strings"]["objective_hint_axis"] = axisObjective;
 
 	for ( i = 0; i < level.players.size; i++ )
 	{
@@ -90,13 +90,9 @@ getRespawnDelay()
 			self.lowerMessageOverride = &"MP_WAITING_FOR_HQ";
 
 		if ( level.delayPlayer )
-		{
 			return min( level.spawnDelay, timeRemaining );
-		}
 		else
-		{
 			return (int(timeRemaining) % level.spawnDelay);
-		}
 	}
 }
 
@@ -183,7 +179,7 @@ HQMainLoop()
 		return;
 
 	while ( level.inPrematchPeriod )
-		wait ( 0.05 );
+		wait 0.05;
 
 	wait 5;
 
@@ -195,21 +191,21 @@ HQMainLoop()
 	timerDisplay["allies"].archived = false;
 	timerDisplay["allies"].hideWhenInMenu = true;
 
-	timerDisplay["axis"  ] = createServerTimer( "objective", 1.4, "axis" );
-	timerDisplay["axis"  ] setPoint( "TOPRIGHT", "TOPRIGHT", 0, 0 );
-	timerDisplay["axis"  ].label = hqSpawningInStr;
-	timerDisplay["axis"  ].alpha = 0;
-	timerDisplay["axis"  ].archived = false;
-	timerDisplay["axis"  ].hideWhenInMenu = true;
+	timerDisplay["axis"] = createServerTimer( "objective", 1.4, "axis" );
+	timerDisplay["axis"] setPoint( "TOPRIGHT", "TOPRIGHT", 0, 0 );
+	timerDisplay["axis"].label = hqSpawningInStr;
+	timerDisplay["axis"].alpha = 0;
+	timerDisplay["axis"].archived = false;
+	timerDisplay["axis"].hideWhenInMenu = true;
 
 	thread hideTimerDisplayOnGameEnd( timerDisplay["allies"] );
-	thread hideTimerDisplayOnGameEnd( timerDisplay["axis"  ] );
+	thread hideTimerDisplayOnGameEnd( timerDisplay["axis"] );
 
 	locationObjID = maps\mp\gametypes\_gameobjects::getNextObjID();
 
 	objective_add( locationObjID, "invisible", (0,0,0) );
 
-	while( 1 )
+	for(;;)
 	{
 		radio = PickRadioToSpawn();
 
@@ -236,9 +232,9 @@ HQMainLoop()
 			timerDisplay["allies"].label = hqSpawningInStr;
 			timerDisplay["allies"] setTimer( level.hqSpawnTime );
 			timerDisplay["allies"].alpha = 1;
-			timerDisplay["axis"  ].label = hqSpawningInStr;
-			timerDisplay["axis"  ] setTimer( level.hqSpawnTime );
-			timerDisplay["axis"  ].alpha = 1;
+			timerDisplay["axis"].label = hqSpawningInStr;
+			timerDisplay["axis"] setTimer( level.hqSpawnTime );
+			timerDisplay["axis"].alpha = 1;
 
 			wait level.hqSpawnTime;
 
@@ -247,7 +243,7 @@ HQMainLoop()
 		}
 
 		timerDisplay["allies"].alpha = 0;
-		timerDisplay["axis"  ].alpha = 0;
+		timerDisplay["axis"].alpha = 0;
 
 		waittillframeend;
 
@@ -281,23 +277,17 @@ HQMainLoop()
 			timerDisplay[otherTeam] setTimer( level.hqAutoDestroyTime );
 		}
 		else
-		{
 			level.hqDestroyedByTimer = false;
-		}
 
-		while( 1 )
+		for(;;)
 		{
 			ownerTeam = radioObject maps\mp\gametypes\_gameobjects::getOwnerTeam();
 			otherTeam = getOtherTeam( ownerTeam );
 
 			if ( ownerTeam == "allies" )
-			{
 				updateObjectiveHintMessages( level.objectiveHintDefendHQ, level.objectiveHintDestroyHQ );
-			}
 			else
-			{
 				updateObjectiveHintMessages( level.objectiveHintDestroyHQ, level.objectiveHintDefendHQ );
-			}
 
 			radioObject maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
 			radioObject maps\mp\gametypes\_gameobjects::set2DIcon( "friendly", "compass_waypoint_defend" );
@@ -336,15 +326,15 @@ HQMainLoop()
 		radioObject maps\mp\gametypes\_gameobjects::setModelVisibility( false );
 
 		timerDisplay["allies"].alpha = 0;
-		timerDisplay["axis"  ].alpha = 0;
+		timerDisplay["axis"].alpha = 0;
 
 		level.radioObject = undefined;
 
-		wait .05;
+		wait 0.05;
 
 		thread forceSpawnTeam( ownerTeam );
 
-		wait 3.0;
+		wait 3;
 	}
 }
 
@@ -356,10 +346,9 @@ hideTimerDisplayOnGameEnd( timerDisplay )
 
 forceSpawnTeam( team )
 {
-	players = level.players;
-	for ( i = 0; i < players.size; i++ )
+	for ( i = 0; i < level.players.size; i++ )
 	{
-		player = players[i];
+		player = level.players[i];
 		if ( !isdefined( player ) )
 			continue;
 
@@ -367,7 +356,7 @@ forceSpawnTeam( team )
 		{
 			player.lowerMessageOverride = undefined;
 			player notify( "force_spawn" );
-			wait .1;
+			wait 0.1;
 		}
 	}
 }
@@ -377,9 +366,7 @@ onBeginUse( player )
 	ownerTeam = self maps\mp\gametypes\_gameobjects::getOwnerTeam();
 
 	if ( ownerTeam == "neutral" )
-	{
 		self.objPoints[player.pers["team"]] thread maps\mp\gametypes\_objpoints::startFlashing();
-	}
 	else
 	{
 		self.objPoints["allies"] thread maps\mp\gametypes\_objpoints::startFlashing();
@@ -483,9 +470,9 @@ awardHQPoints( team )
 	while ( !level.gameEnded )
 	{
 		[[level._setTeamScore]]( team, [[level._getTeamScore]]( team ) + seconds );
-		for ( index = 0; index < level.players.size; index++ )
+		for ( i = 0; i < level.players.size; i++ )
 		{
-			player = level.players[index];
+			player = level.players[i];
 
 			if ( player.pers["team"] == team )
 			{
@@ -548,9 +535,7 @@ SetupRadios()
 
 		otherVisuals = getEntArray( radio.target, "targetname" );
 		for ( j = 0; j < otherVisuals.size; j++ )
-		{
 			visuals[visuals.size] = otherVisuals[j];
-		}
 
 		radio.gameObject = maps\mp\gametypes\_gameobjects::createUseObject( "neutral", radio.trig, visuals, (radio.origin - radio.trigorigin) + level.iconoffset );
 		radio.gameObject maps\mp\gametypes\_gameobjects::disableObject();
@@ -573,9 +558,7 @@ setUpNearbySpawns()
 	spawns = level.spawn_all;
 
 	for ( i = 0; i < spawns.size; i++ )
-	{
 		spawns[i].distsq = distanceSquared( spawns[i].origin, self.origin );
-	}
 
 	for ( i = 1; i < spawns.size; i++ )
 	{
@@ -592,9 +575,7 @@ setUpNearbySpawns()
 
 	thirdSize = spawns.size / 3;
 	for ( i = 0; i <= thirdSize; i++ )
-	{
 		first[ first.size ] = spawns[i];
-	}
 	for ( ; i < spawns.size; i++ )
 	{
 		outer[ outer.size ] = spawns[i];
@@ -640,7 +621,7 @@ PickRadioToSpawn()
 	}
 
 	avgpos["allies"] = avgpos["allies"] / num["allies"];
-	avgpos["axis"  ] = avgpos["axis"  ] / num["axis"  ];
+	avgpos["axis"] = avgpos["axis"] / num["axis"];
 
 	bestradio = undefined;
 	lowestcost = undefined;
@@ -651,9 +632,7 @@ PickRadioToSpawn()
 		cost = abs( distance( radio.origin, avgpos["allies"] ) - distance( radio.origin, avgpos["axis"] ) );
 
 		if ( isdefined( level.prevradio ) && radio == level.prevradio )
-		{
 			continue;
-		}
 		if ( isdefined( level.prevradio2 ) && radio == level.prevradio2 )
 		{
 			if ( level.radios.size > 2 )

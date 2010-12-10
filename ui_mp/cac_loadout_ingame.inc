@@ -49,4 +49,4 @@
 	PREPROC_SHADER_DRAW_ALIGNED( 32 178 32 32 LOADOUT_ALIGN, ORIGIN_LOADOUT, "weapon_flashbang", 1 1 1 1, 0, 1, 1 1 1 1 visible when( dvarInt( weap_allow_flash_grenade ) != 0 && dvarString( loadout_grenade ) == "flash_grenade" ) )
 
 	PREPROC_TEXT_DRAW_ALIGNED_EXP( 0 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarInt( weap_allow_frag_grenade ) != "0" ) )
-	PREPROC_TEXT_DRAW_ALIGNED_EXP( 30 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarInt( weap_allow_flash_grenade ) != "0" && dvarInt( weap_allow_smoke_grenade ) != "0"  ) )
+	PREPROC_TEXT_DRAW_ALIGNED_EXP( 30 183 (LOADOUT_WIDTH+8) 20 LOADOUT_ALIGN, ORIGIN_LOADOUT, 1, TEXTSIZE_SMALL, 0, 0, ITEM_ALIGN_MIDDLE_LEFT, COLOR_TITLE visible when( dvarInt( weap_allow_flash_grenade ) != "0" && dvarInt( weap_allow_smoke_grenade ) != "0" ) )

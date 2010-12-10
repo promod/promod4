@@ -35,7 +35,7 @@ flashRumbleLoop( duration )
 	while ( getTime() < goalTime )
 	{
 		self PlayRumbleOnEntity( "damage_heavy" );
-		wait( 0.05 );
+		wait 0.05;
 	}
 }
 
@@ -44,7 +44,7 @@ monitorFlash()
 	self endon("disconnect");
 
 	self.flashEndTime = 0;
-	while(1)
+	for(;;)
 	{
 		self waittill( "flashbang", amount_distance, amount_angle, attacker );
 
@@ -77,15 +77,15 @@ monitorFlash()
 				continue;
 			else if(level.friendlyfire == 2)
 			{
-				duration = duration * .5;
-				rumbleduration = rumbleduration * .5;
+				duration = duration * 0.5;
+				rumbleduration = rumbleduration * 0.5;
 				hurtvictim = false;
 				hurtattacker = true;
 			}
 			else if(level.friendlyfire == 3)
 			{
-				duration = duration * .5;
-				rumbleduration = rumbleduration * .5;
+				duration = duration * 0.5;
+				rumbleduration = rumbleduration * 0.5;
 				hurtattacker = true;
 			}
 		}
@@ -110,7 +110,7 @@ applyFlash(duration, rumbleduration)
 	if ( !isDefined( self.flashRumbleDuration ) || rumbleduration > self.flashRumbleDuration )
 		self.flashRumbleDuration = rumbleduration;
 
-	wait .05;
+	wait 0.05;
 
 	if ( isDefined( self.flashDuration ) )
 	{
@@ -121,9 +121,7 @@ applyFlash(duration, rumbleduration)
 	self thread overlapProtect(duration);
 
 	if ( isDefined( self.flashRumbleDuration ) )
-	{
 		self thread flashRumbleLoop( self.flashRumbleDuration );
-	}
 
 	self.flashRumbleDuration = undefined;
 }

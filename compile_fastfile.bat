@@ -8,6 +8,9 @@
 
 @echo off
 
+SET work_directory=%~dp0
+cd %work_directory%
+
 xcopy maps ..\..\raw\maps\ /SY
 xcopy promod ..\..\raw\promod\ /SY
 xcopy shock ..\..\raw\shock\ /SY
@@ -21,7 +24,7 @@ copy promod.str ..\..\raw\english\localizedstrings /Y
 cd ..\..\bin
 linker_pc.exe -language english -compress -cleanup mod -verbose
 
-cd ..\mods\promodlive205
+cd ..\mods\promodlive210
 copy ..\..\zone\english\mod.ff
 
 pause
