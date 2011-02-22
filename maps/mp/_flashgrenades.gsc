@@ -70,8 +70,7 @@ monitorFlash()
 		else
 			rumbleduration = 0.25;
 
-		assert(isdefined(self.pers["team"]));
-		if (level.teamBased && isdefined(attacker) && isdefined(attacker.pers["team"]) && attacker.pers["team"] == self.pers["team"] && attacker != self)
+		if (level.teamBased && isdefined(attacker) && isdefined(attacker.pers["team"]) && isdefined(self.pers["team"]) && attacker.pers["team"] == self.pers["team"] && attacker != self)
 		{
 			if(!level.friendlyfire)
 				continue;

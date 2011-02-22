@@ -10,37 +10,72 @@
 
 main()
 {
+	level endon( "restarting" );
+
+	thread errorMessage();
+
 	for(;;)
 	{
-		if ( getDvarInt( "sv_cheats" ) )
+		if ( getDvarInt( "sv_cheats" ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" )
 			break;
 
-		forceDvar( "sv_disableClientConsole", "0");
+		forceDvar( "authServerName", "cod4master.activision.com" );
+		forceDvar( "sv_disableClientConsole", "0" );
 		forceDvar( "sv_fps", "20" );
 		forceDvar( "sv_pure", "1" );
-		forceDvar( "sv_maxrate", "25000");
+		forceDvar( "sv_maxrate", "25000" );
 		forceDvar( "g_gravity", "800" );
+		forceDvar( "g_speed", "190" );
 		forceDvar( "g_knockback", "1000" );
-		forceDvar( "authServerName", "cod4master.activision.com" );
+		forceDvar( "g_playercollisionejectspeed", "25" );
+		forceDvar( "g_dropforwardspeed", "10" );
+		forceDvar( "g_drophorzspeedrand", "100" );
+		forceDvar( "g_dropupspeedbase", "10" );
+		forceDvar( "g_dropupspeedrand", "5" );
+		forceDvar( "g_useholdtime", "0" );
+
+		if( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" )
+		{
+			forceDvar( "g_maxdroppedweapons", "16" );
+
+			if ( !game["LAN_MODE"] )
+				forceDvar( "g_smoothclients", "1" );
+		}
+
+		wait 0.1;
+	}
+}
+
+forceDvar(dvar, value)
+{
+	if( getDvar( dvar ) != value )
+		setDvar( dvar, value );
+}
+
+errorMessage()
+{
+	level endon( "restarting" );
+
+	for(;;)
+	{
+		if ( getDvarInt( "sv_cheats" ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" )
+			break;
 
 		if ( !getDvarInt( "sv_punkbuster" ) && !game["LAN_MODE"] && !game["PROMOD_PB_OFF"] )
-			iPrintLNBold("^1Server Violation^7: Punkbuster Disabled");
+			iprintlnbold("^1Server Violation^7: Punkbuster Disabled");
 
 		if ( getDvarInt( "scr_player_maxhealth" ) != 100 && game["HARDCORE_MODE"] != 1 && game["CUSTOM_MODE"] != 1 || getDvarInt( "scr_player_maxhealth" ) != 30 && game["HARDCORE_MODE"] == 1 && game["CUSTOM_MODE"] != 1 )
-			iPrintLNBold("^1Server Violation^7: Modified Player Health");
-
-		if ( getDvarInt( "g_speed" ) != 0 && getDvarInt( "g_speed" ) != 190 )
-			iPrintLNBold("^1Server Violation^7: Modified Player Speed");
+			iprintlnbold("^1Server Violation^7: Modified Player Health");
 
 		antilag = getDvarInt( "g_antilag" );
 		dedicated = getDvar( "dedicated" );
 		if ( (antilag && dedicated == "dedicated LAN server") || (!antilag && dedicated == "dedicated internet server" && !game["PROMOD_PB_OFF"]))
-			iPrintLNBold("^1Server Violation^7: Modified Connection");
+			iprintlnbold("^1Server Violation^7: Modified Connection");
 
-		if( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || toLower( getDvar( "fs_game" ) ) == "mods/promodlive210" )
+		if( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || toLower( getDvar( "fs_game" ) ) == "mods/promodlive211" )
 		{
-			if( toLower(getDvar("fs_game")) != "mods/promodlive210" )
-				iPrintLNBold("^1Server Violation^7: Invalid fs_game value");
+			if( toLower(getDvar("fs_game")) != "mods/promodlive211" )
+				iprintlnbold("^1Server Violation^7: Invalid fs_game value");
 
 			iwdnames = strToK( getDvar( "sv_iwdnames" ), " " );
 			iwdsums = strToK( getDvar( "sv_iwds" ), " " );
@@ -66,27 +101,27 @@ main()
 						break;
 
 					case "z_custom_ruleset":
-						if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" && iwdsums[i] != "-350238000" )
-							iPrintLNBold("^1Server Violation^7: Modified Custom IWD File While In Match Mode");
+						if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" && iwdsums[i] != "-1003608361" )
+							iprintlnbold("^1Server Violation^7: Modified Custom IWD File While In Match Mode");
 						break;
 
-					case "promodlive210":
-						if( iwdsums[i] != "60316905" )
-							iPrintLNBold("^1Server Violation^7: Bad Promod IWD Checksum");
+					case "promodlive211":
+						if( iwdsums[i] != "376629358" )
+							iprintlnbold("^1Server Violation^7: Modified Promod IWD Detected");
 						iwd_loaded = true;
 						break;
 
 					default:
 						if( !isCustomMap() || !isSubStr(iwdnames[i], level.script ) )
-							iPrintLNBold("^1Server Violation^7: Extra IWD Files Detected");
+							iprintlnbold("^1Server Violation^7: Extra IWD Files Detected");
 						break;
 				}
 			}
 			if(!iwd_loaded)
-				iPrintLNBold("^1Server Violation^7: Promod IWD Not Loaded");
+				iprintlnbold("^1Server Violation^7: Promod IWD Not Loaded");
 		}
 
-		wait 3;
+		wait 2;
 	}
 }
 
@@ -118,10 +153,4 @@ isCustomMap()
 			return false;
 	}
 	return true;
-}
-
-forceDvar(dvar, value)
-{
-	if( getDvar( dvar ) != value)
-		setDvar( dvar, value );
 }

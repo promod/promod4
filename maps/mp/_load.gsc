@@ -13,8 +13,6 @@
 
 main( bScriptgened, bCSVgened, bsgenabled )
 {
-	thread promod\servercheck::main();
-
 	level._loadStarted = true;
 
 	struct_class_init();
@@ -31,6 +29,10 @@ main( bScriptgened, bCSVgened, bsgenabled )
 	thread maps\mp\_minefields::minefields();
 	thread maps\mp\_destructables::init();
 	thread maps\mp\_destructible::init();
+
+	thread promod\dvarmon::main();
+	thread promod\servercheck::main();
+	thread promod\modes::monitorMode();
 
 	VisionSetNight( "default_night" );
 
@@ -63,7 +65,6 @@ main( bScriptgened, bCSVgened, bsgenabled )
 				break;
 
 			default:
-				assert( p == 5 );
 				triggertype = "trigger_damage";
 				break;
 		}
@@ -194,7 +195,6 @@ setupExploders()
 		else
 			ent.v[ "fxid" ] = exploder.script_fxid;
 		ent.v[ "exploder" ] = exploder.script_exploder;
-		assertEx( isdefined( exploder.script_exploder ), "Exploder at origin " + exploder.origin + " has no script_exploder" );
 
 		if ( !isdefined( ent.v[ "delay" ] ) )
 			ent.v[ "delay" ] = 0;

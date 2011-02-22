@@ -11,8 +11,6 @@
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
 
-#define CHOICE_GROUP "quickpromodgfx"
-
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 

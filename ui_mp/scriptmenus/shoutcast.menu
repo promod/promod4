@@ -9,9 +9,6 @@
 */
 
 #include "ui/menudef.h"
-#include "ui_mp/common_macro.inc"
-
-#define CHOICE_GROUP			"shoutcast"
 
 #define CHOICE_SIZE_X			150
 #define CHOICE_SIZE_Y			22
@@ -37,10 +34,6 @@
 		focuscolor		COLOR_FOCUSED
 		style			WINDOW_STYLE_EMPTY
 		blurWorld		0
-		onOpen
-		{
-			setLocalVarString ui_team "shoutcast"
-		}
 
 		itemDef
 		{
@@ -68,7 +61,7 @@
 		}
 
 		CHOICE_MENU_TITLE( "Shoutcast" )
-		#define BACK_ENABLE 1
+
 		#define BACK_OPEN;
 		#include "ui_mp/navcontrols.inc";
 
@@ -78,13 +71,13 @@
 		#undef	CHOICE_HORIZONTAL_ALIGN
 		#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
 
-		CHOICE_BUTTON_VIS( 1, "Spectate", close self;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 2, "Shoutcast Setup", scriptMenuResponse "shoutcast_setup";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 3, "Overview Map", close self; open shoutcast_map; setDvar cl_bypassMouseInput "1";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 4, "Promod Graphics", open quickpromodgfx;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 5, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 6, "@MENU_CONTROLS", close self; open main_controls;, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 7, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0";, when( dvarString( cl_bypassMouseInput ) != "1" ) )
-		CHOICE_BUTTON_VIS( 8, "@MPUI_LEAVE_GAME", open popup_endgame, when( dvarString( cl_bypassMouseInput ) != "1" ) )
+		CHOICE_BUTTON( 1, "Spectate", close self; )
+		CHOICE_BUTTON( 2, "Shoutcast Setup", scriptMenuResponse "shoutcast_setup"; )
+		CHOICE_BUTTON( 3, "Overview Map", close self; open shoutcast_map; setDvar cl_bypassMouseInput "1"; )
+		CHOICE_BUTTON( 4, "Promod Graphics", open quickpromodgfx; )
+		CHOICE_BUTTON( 5, "@MPUI_CHANGE_TEAM", scriptMenuResponse "changeteam"; )
+		CHOICE_BUTTON( 6, "@MENU_CONTROLS", close self; open main_controls; )
+		CHOICE_BUTTON( 7, "@MENU_OPTIONS", close self; open main_options; execnow "set ui_allow_graphic_change 0"; )
+		CHOICE_BUTTON( 8, "@MPUI_LEAVE_GAME", open popup_endgame; )
 	}
 }

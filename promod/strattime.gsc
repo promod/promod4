@@ -18,10 +18,7 @@ main()
 		return;
 	}
 
-	setDvar( "g_speed", 0 );
-
-	level thread Strat_Time();
-	level thread Strat_Time_Timer();
+	thread stratTime();
 
 	level waittill( "strat_over" );
 
@@ -49,14 +46,14 @@ main()
 				player giveWeapon( "smoke_grenade_mp" );
 			}
 
-			player shellShock( "damage_mp", 0.01 );
 			player allowsprint(true);
+			player setMoveSpeedScale( 1.0 - 0.05 * int( player.pers["class"] == "assault" ) );
+			player allowjump(true);
 		}
 	}
 
-	setDvar( "g_speed", 190 );
 	setDvar( "player_sustainAmmo", 0 );
-	setClientNameMode("manual_change");
+	UpdateClientNames();
 
 	if ( game["promod_timeout_called"] )
 	{
@@ -65,54 +62,45 @@ main()
 	}
 }
 
-Strat_Time()
+stratTime()
 {
+	thread stratTimer();
+
 	level.strat_over = false;
-	level.strat_time_left = game["PROMOD_STRATTIME"];
-	time_increment = 0.25;
+	strat_time_left = game["PROMOD_STRATTIME"] + level.prematchPeriod * int( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" );
 
 	setDvar( "player_sustainAmmo", 1 );
-	setClientNameMode("auto_change");
 
 	while ( !level.strat_over )
 	{
-		wait time_increment;
-
-		level.strat_time_left -= time_increment;
-
 		players = getentarray("player", "classname");
 		for ( i = 0; i < players.size; i++ )
 		{
 			player = players[i];
 
-			if ( player.pers["team"] == "allies" || player.pers["team"] == "axis" && player.sessionstate == "playing" )
-				player allowsprint(false);
+			if ( ( player.pers["team"] == "allies" || player.pers["team"] == "axis" ) && !isDefined( player.pers["class"] ) )
+				player.statusicon = "hud_status_dead";
 		}
 
-		if ( level.strat_time_left <= 0 )
-		{
-			level notify( "kill_strat_timer" );
-			level.strat_over = true;
-		}
+		wait 0.25;
 
-		if ( game["promod_timeout_called"] )
-		{
-			level notify( "kill_strat_timer" );
+		strat_time_left -= 0.25;
+
+		if ( strat_time_left <= 0 || game["promod_timeout_called"] )
 			level.strat_over = true;
-		}
 	}
 
 	level notify( "strat_over" );
 }
 
-Strat_Time_Timer()
+stratTimer()
 {
 	matchStartText = createServerFontString( "objective", 1.5 );
-	matchStartText setPoint( "CENTER", "CENTER", 0, -20 );
+	matchStartText setPoint( "CENTER", "CENTER", 0, -60 );
 	matchStartText.sort = 1001;
 
 	if( isDefined(game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] )
-		matchStartText setText( "Starting Knife Round" );
+		matchStartText setText( "Knife Round" );
 	else
 		matchStartText setText( "Strat Time" );
 
@@ -120,13 +108,13 @@ Strat_Time_Timer()
 	matchStartText.hidewheninmenu = false;
 
 	matchStartTimer = createServerTimer( "objective", 1.4 );
-	matchStartTimer setPoint( "CENTER", "CENTER", 0, 0 );
-	matchStartTimer setTimer( game["PROMOD_STRATTIME"] );
+	matchStartTimer setPoint( "CENTER", "CENTER", 0, -45 );
+	matchStartTimer setTimer( game["PROMOD_STRATTIME"] + level.prematchPeriod * int( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" ) );
 	matchStartTimer.sort = 1001;
 	matchStartTimer.foreground = false;
 	matchStartTimer.hideWhenInMenu = false;
 
-	level waittill( "kill_strat_timer" );
+	level waittill( "strat_over" );
 
 	if ( isDefined( matchStartText ) )
 		matchStartText destroy();

@@ -9,7 +9,6 @@
 */
 
 #include "ui/menudef.h"
-#include "ui_mp/common_macro.inc"
 
 #define CHOICE_X_START			0
 #define CHOICE_Y_START			192
@@ -87,7 +86,7 @@
 			forecolor		1 1 1 1
 			style			WINDOW_STYLE_SHADER
 			background		"logo_cod2"
-			visible 		when( !localvarBool( ui_hideBack ) );
+			visible			when( !localvarBool( ui_hideBack ) );
 			decoration
 		}
 

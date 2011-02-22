@@ -92,7 +92,7 @@ onPlayerSpawned()
 			self.hud_rankscroreupdate.vertAlign = "middle";
 			self.hud_rankscroreupdate.alignX = "center";
 			self.hud_rankscroreupdate.alignY = "middle";
-	 		self.hud_rankscroreupdate.x = 0;
+			self.hud_rankscroreupdate.x = 0;
 			self.hud_rankscroreupdate.y = -60;
 			self.hud_rankscroreupdate.font = "default";
 			self.hud_rankscroreupdate.fontscale = 2.0;

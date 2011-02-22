@@ -9,7 +9,6 @@
 */
 
 #include "ui/menudef.h"
-#include "ui_mp/common_macro.inc"
 
 #define CHOICE_SIZE_X
 #define CHOICE_SIZE_Y			22
@@ -44,12 +43,12 @@
 		blurWorld		7.0
 		onOpen
 		{
+			focusFirst;
 			setLocalVarString ui_team "opfor"
-			scriptMenuResponse "classavailability";
 		}
 		onEsc
 		{
-			scriptMenuResponse "back";
+			close self;
 		}
 
 		itemDef
@@ -95,7 +94,7 @@
 		CHOICE_BUTTON_VIS( 4, "4. Sniper", scriptMenuResponse "sniper";, when( dvarBool( axis_allow_sniper ) || dvarString( loadout_curclass ) == "sniper" ) )
 		CHOICE_DBUTTON_VIS( 4, "4. Sniper", when( !dvarBool( axis_allow_sniper ) && dvarString( loadout_curclass ) != "sniper" ) )
 
-		CHOICE_BUTTON( 6, "5. Killspec", scriptMenuResponse "killspec"; )
+		CHOICE_BUTTON( 6, "5. Spectate Team", scriptMenuResponse "killspec"; )
 
 		execKey "1" { scriptMenuResponse "assault"; }
 		execKey "2" { scriptMenuResponse "specops"; }

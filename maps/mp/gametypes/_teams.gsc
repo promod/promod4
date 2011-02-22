@@ -10,17 +10,13 @@
 
 init()
 {
-	if(game["allies"] == "marines") precacheShader("mpflag_american");
-
-	precacheShader("mpflag_russian");
-	precacheShader("mpflag_spectator");
-
 	setPlayerModels();
 }
 
 setPlayerModels()
 {
 	game["allies_model"] = [];
+	game["axis_model"] = [];
 
 	alliesCharSet = tableLookup( "mp/mapsTable.csv", 0, getDvar( "mapname" ), 1 );
 	if ( !isDefined( alliesCharSet ) || alliesCharSet == "" )
@@ -42,8 +38,6 @@ setPlayerModels()
 
 	if ( game["allies_soldiertype"] == "desert" )
 	{
-		assert( game["allies"] == "marines" );
-
 		mptype\mptype_ally_cqb::precache();
 		mptype\mptype_ally_sniper::precache();
 		mptype\mptype_ally_engineer::precache();
@@ -58,8 +52,6 @@ setPlayerModels()
 	}
 	else if ( game["allies_soldiertype"] == "urban" )
 	{
-		assert( game["allies"] == "sas" );
-
 		mptype\mptype_ally_urban_sniper::precache();
 		mptype\mptype_ally_urban_support::precache();
 		mptype\mptype_ally_urban_assault::precache();
@@ -74,8 +66,6 @@ setPlayerModels()
 	}
 	else
 	{
-		assert( game["allies"] == "sas" );
-
 		mptype\mptype_ally_woodland_assault::precache();
 		mptype\mptype_ally_woodland_recon::precache();
 		mptype\mptype_ally_woodland_sniper::precache();
@@ -91,15 +81,11 @@ setPlayerModels()
 
 	if ( game["axis_soldiertype"] == "desert" )
 	{
-		assert( game["axis"] == "opfor" || game["axis"] == "arab" );
-
 		mptype\mptype_axis_cqb::precache();
 		mptype\mptype_axis_sniper::precache();
 		mptype\mptype_axis_engineer::precache();
 		mptype\mptype_axis_rifleman::precache();
 		mptype\mptype_axis_support::precache();
-
-		game["axis_model"] = [];
 
 		game["axis_model"]["SNIPER"] = mptype\mptype_axis_sniper::main;
 		game["axis_model"]["SUPPORT"] = mptype\mptype_axis_support::main;
@@ -109,8 +95,6 @@ setPlayerModels()
 	}
 	else if ( game["axis_soldiertype"] == "urban" )
 	{
-		assert( game["allies"] == "sas" );
-
 		mptype\mptype_axis_urban_sniper::precache();
 		mptype\mptype_axis_urban_support::precache();
 		mptype\mptype_axis_urban_assault::precache();
@@ -125,8 +109,6 @@ setPlayerModels()
 	}
 	else
 	{
-		assert( game["allies"] == "sas" );
-
 		mptype\mptype_axis_woodland_rifleman::precache();
 		mptype\mptype_axis_woodland_cqb::precache();
 		mptype\mptype_axis_woodland_sniper::precache();

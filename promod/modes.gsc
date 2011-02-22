@@ -16,6 +16,7 @@ main()
 		mode = "comp_public";
 		setDvar( "promod_mode", mode );
 	}
+
 	setMode(mode);
 }
 
@@ -87,7 +88,7 @@ monitorMode()
 		mode = toLower( getDvar( "promod_mode" ) );
 		cheats = getDvarInt( "sv_cheats" );
 
-		if ( mode != o_mode || cheats != o_cheats )
+		if ( mode != o_mode )
 		{
 			if ( isDefined( game["state"] ) && game["state"] == "postgame" )
 			{
@@ -98,21 +99,30 @@ monitorMode()
 			if ( validMode( mode ) )
 			{
 				level notify ( "restarting" );
+
 				iPrintLN( "Changing To Mode: ^1" + mode + "\nPlease Wait While It Loads..." );
 				setMode( mode );
+
 				wait 2;
+
 				map_restart( false );
-				return;
+				setDvar( "promod_mode", mode );
 			}
 			else
 			{
 				if ( isDefined( mode ) && mode != "" )
 					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax:\nmatch|knockout_lan|pb_hc_knife_1v1|2v2_mr#,\nNormal Modes: comp_public, comp_public_hc, custom_public, strat" );
+
 				setDvar( "promod_mode", o_mode );
 			}
 		}
+		else if ( cheats != o_cheats )
+		{
+			map_restart( false );
+			break;
+		}
 
-		wait 0.5;
+		wait 0.1;
 	}
 }
 
@@ -176,7 +186,6 @@ setMode( mode )
 					break;
 				case "knockout":
 					knockout_mode = 1;
-					game["PROMOD_STRATTIME"] = 10;
 					game["PROMOD_MATCH_MODE"] = "match";
 					break;
 				case "lan":
@@ -218,11 +227,16 @@ setMode( mode )
 	else if ( game["PROMOD_MATCH_MODE"] == "match" )
 		game["PROMOD_MODE_HUD"] += "^4Match";
 
+	if( game["PROMOD_KNIFEROUND"] && game["PROMOD_MATCH_MODE"] == "match" )
+		game["PROMOD_MODE_HUD"] += " ^5Knife";
+
 	if ( game["LAN_MODE"] )
 	{
 		setDvar( "g_antilag", 0 );
 		setDvar( "g_smoothClients", 0 );
 		game["PROMOD_MODE_HUD"] += " ^4LAN";
+		if( knockout_mode )
+			game["PROMOD_STRATTIME"] = 10;
 	}
 
 	if ( game["HARDCORE_MODE"] )

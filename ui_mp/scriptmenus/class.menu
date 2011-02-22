@@ -42,7 +42,7 @@
 		}
 		onEsc
 		{
-			scriptMenuResponse "back";
+			close self;
 		}
 
 		itemDef
@@ -119,7 +119,6 @@
 
 		#define BACK_OPEN;
 		#include "ui_mp/navcontrols.inc"
-
 		#include "ui_mp/teamicon.inc"
 
 		#undef CHOICE_X_START

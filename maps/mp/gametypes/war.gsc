@@ -78,9 +78,7 @@ onSpawnPlayer()
 			spawnPoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( spawnPoints );
 		}
 		else
-		{
 			spawnPoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random( spawnPoints );
-		}
 	}
 	else
 	{

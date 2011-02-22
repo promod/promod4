@@ -91,10 +91,7 @@ playerHealthRegen()
 	self endon("end_healthregen");
 
 	if ( self.health <= 0 )
-	{
-		assert( !isalive( self ) );
 		return;
-	}
 
 	maxhealth = self.health;
 	oldhealth = maxhealth;

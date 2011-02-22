@@ -226,7 +226,6 @@ onSpawnPlayer()
 {
 	self.isPlanting = false;
 	self.isDefusing = false;
-	self.isBombCarrier = false;
 
 	spawnteam = self.pers["team"];
 
@@ -255,8 +254,6 @@ onSpawnPlayer()
 
 		self setClientDvar( "g_compassShowEnemies", 1 );
 	}
-
-	assert( isDefined(spawnpoint) );
 
 	self spawn( spawnpoint.origin, spawnpoint.angles );
 }
@@ -300,7 +297,6 @@ sabotage()
 		level.sabBomb.objIDPingEnemy = true;
 		level.sabBomb.onPickup = ::onPickup;
 		level.sabBomb.onDrop = ::onDrop;
-		level.sabBomb.allowWeapons = true;
 		level.sabBomb.objPoints["allies"].archived = true;
 		level.sabBomb.objPoints["axis"].archived = true;
 		level.sabBomb.autoResetTime = 60.0;
@@ -386,8 +382,6 @@ onPickup( player )
 
 	excludeList[0] = player;
 
-	player.isBombCarrier = true;
-
 	if ( team == self maps\mp\gametypes\_gameobjects::getOwnerTeam() )
 	{
 		printOnTeamArg( &"MP_EXPLOSIVES_RECOVERED_BY", team, player );
@@ -460,15 +454,12 @@ onUse( player )
 
 	if ( !self maps\mp\gametypes\_gameobjects::isFriendlyTeam( player.pers["team"] ) )
 	{
-		level notify ( "bomb_planted" );
-
 		if ( !level.hardcoreMode )
 			iPrintLn( &"MP_EXPLOSIVES_PLANTED_BY", player.name );
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "plant", player );
 
-		for ( i = 0; i < level.players.size; i++ )
-			level.players[i] playLocalSound("promod_planted");
+		playSoundOnPlayers("promod_planted");
 
 		player thread [[level.onXPEvent]]( "plant" );
 		level thread bombPlanted( self, player.pers["team"] );
@@ -494,8 +485,7 @@ onUse( player )
 
 		maps\mp\gametypes\_globallogic::givePlayerScore( "defuse", player );
 
-		for ( i = 0; i < level.players.size; i++ )
-			level.players[i] playLocalSound("promod_defused");
+		playSoundOnPlayers("promod_defused");
 
 		player thread [[level.onXPEvent]]( "defuse" );
 		level thread bombDefused( self );

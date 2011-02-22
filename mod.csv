@@ -6,19 +6,21 @@
 # Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
 # Terms of license can be found in LICENSE.md document bundled with the project.
 
-localize,promod
+localize,cgame
 
 menufile,ui_mp/scriptmenus/changeclass_marines_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_opfor_mw.menu
 menufile,ui_mp/scriptmenus/class.menu
 menufile,ui_mp/scriptmenus/echo.menu
+menufile,ui_mp/scriptmenus/demo.menu
 menufile,ui_mp/scriptmenus/quickpromod.menu
 menufile,ui_mp/scriptmenus/quickpromodgfx.menu
 menufile,ui_mp/scriptmenus/scoreboard.menu
 menufile,ui_mp/scriptmenus/shoutcast.menu
 menufile,ui_mp/scriptmenus/shoutcast_map.menu
 menufile,ui_mp/scriptmenus/shoutcast_setup.menu
+menufile,ui_mp/scriptmenus/shoutcast_setup_binds.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor_flipped.menu
 menufile,ui_mp/promod.txt
@@ -100,7 +102,6 @@ rawfile,maps/mp/mp_vacant.gsc
 rawfile,promod/client.gsc
 rawfile,promod/comp.gsc
 rawfile,promod/dvarmon.gsc
-rawfile,promod/header.gsc
 rawfile,promod/messagecenter.gsc
 rawfile,promod/modes.gsc
 rawfile,promod/readyup.gsc

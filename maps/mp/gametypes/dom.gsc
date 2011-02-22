@@ -165,8 +165,6 @@ onSpawnPlayer()
 			spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_Random(level.spawn_allies_start);
 	}
 
-	assert( isDefined(spawnpoint) );
-
 	self spawn(spawnpoint.origin, spawnpoint.angles);
 }
 
@@ -360,8 +358,6 @@ onUse( player )
 	self resetFlagBaseEffect();
 
 	level.useStartSpawns = false;
-
-	assert( team != "neutral" );
 
 	if ( oldTeam == "neutral" )
 	{

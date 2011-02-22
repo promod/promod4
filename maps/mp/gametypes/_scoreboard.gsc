@@ -46,13 +46,13 @@ init()
 
 	if ( game["attackers"] == "allies" && game["defenders"] == "axis" )
 	{
-		setdvar("g_TeamName_Allies", &"PROMOD_ATTACK_NAME");
-		setdvar("g_TeamName_Axis", &"PROMOD_DEFENCE_NAME");
+		setdvar("g_TeamName_Allies", "Attack");
+		setdvar("g_TeamName_Axis", "Defence");
 	}
 	else
 	{
-		setdvar("g_TeamName_Allies", &"PROMOD_DEFENCE_NAME");
-		setdvar("g_TeamName_Axis", &"PROMOD_ATTACK_NAME");
+		setdvar("g_TeamName_Allies", "Defence");
+		setdvar("g_TeamName_Axis", "Attack");
 	}
 
 	setdvar("g_ScoresColor_Spectator", "0.25 0.25 0.25");

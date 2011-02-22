@@ -19,15 +19,15 @@ main()
 		qBarrels = true;
 	if (qBarrels)
 	{
-		level.breakables_fx["barrel"]["explode"] 	= loadfx ("props/barrelExp");
+		level.breakables_fx["barrel"]["explode"] = loadfx ("props/barrelExp");
 		level.breakables_fx["barrel"]["burn_start"]	= loadfx ("props/barrel_ignite");
-		level.breakables_fx["barrel"]["burn"]	 	= loadfx ("props/barrel_fire_top");
+		level.breakables_fx["barrel"]["burn"] = loadfx ("props/barrel_fire_top");
 	}
 	oilspill = getentarray ("oil_spill","targetname");
 	if(isdefined(oilspill) && oilspill.size > 0)
 	{
-		level.breakables_fx["oilspill"]["burn"]		= loadfx ("props/barrel_fire");
-		level.breakables_fx["oilspill"]["spark"]	= loadfx("impacts/small_metalhit_1");
+		level.breakables_fx["oilspill"]["burn"]	= loadfx ("props/barrel_fire");
+		level.breakables_fx["oilspill"]["spark"] = loadfx("impacts/small_metalhit_1");
 	}
 
 	level.barrelExpSound = "explo_metal_rand";
@@ -351,10 +351,8 @@ getstruct(name, type)
 	if(!isdefined(array))
 		return undefined;
 	if(array.size > 1)
-	{
-		assertMsg ("getstruct used for more than one struct of type " + type + " called " + name +".");
 		return undefined;
-	}
+
 	return array[0];
 }
 

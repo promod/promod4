@@ -73,8 +73,6 @@ Run_Messages()
 
 				if (message == "<*nextmap*>")
 					message = Get_Next_Map();
-				else if (message == "<*gtrules*>")
-					message = GameTypeRules();
 
 				if (!isDefined(message))
 				{
@@ -102,19 +100,6 @@ Run_Messages()
 
 		wait loopdelay;
 	}
-}
-
-GameTypeRules()
-{
-	if (!isdefined(level.gametype) || level.gametype == "")
-		return undefined;
-
-	message = getDvar("promod_mc_rules_" + level.gametype);
-
-	if (message == "")
-		return undefined;
-	else
-		return message;
 }
 
 Get_Next_Map()
@@ -201,18 +186,14 @@ strip(s)
 		return "";
 
 	for(;i<s.size;i++)
-	{
 		s2 += s[i];
-	}
 
 	i=s2.size-1;
 	while(s2[i]==" " && i>0)
 		i--;
 
 	for(j=0;j<=i;j++)
-	{
 		s3 += s2[j];
-	}
 
 	return s3;
 }

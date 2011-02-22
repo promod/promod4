@@ -12,24 +12,23 @@
 
 #define TEAM_IS_MARINES		(localVarString( ui_team ) == "marines")
 #define TEAM_IS_OPFOR		(localVarString( ui_team ) == "opfor")
-#define ALLIES_AXIS			 (localVarString( ui_team ) == "marines" || localVarString( ui_team ) == "opfor")
 #define NOT_SPECTATING		(!spectatingClient())
-#define DVAR_ENFORCER_SOUND	( !dvarint( sv_cheats ) && ALLIES_AXIS && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate ) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarint( developer ) ) || dvarint( r_zfeather ) != 1 )
-#define DVAR_ENFORCER		( !dvarint( sv_cheats ) && ALLIES_AXIS && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate ) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarint( developer ) || dvarint( r_zfeather ) != 1 || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) || dvarint( aim_automelee_enabled ) ) )
+#define DVAR_ENFORCER		( !dvarint( sv_cheats ) && team( name ) != "TEAM_SPECTATOR" && ( dvarint( com_maxfps ) > 250 || dvarint( com_maxfps ) < 40 || dvarint( cl_maxpackets ) != 100 || dvarint( rate ) != 25000 || dvarint( dynent_active ) || dvarfloat( cg_hudDamageIconWidth ) != 128 || dvarfloat( cg_hudDamageIconHeight ) != 64 || dvarint( cg_huddamageiconinscope ) || dvarfloat( cg_huddamageiconoffset ) != 128 || dvarint( cg_huddamageicontime ) != 2000 || dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1 || dvarint( r_filmtweakInvert ) || dvarint( r_dlightlimit ) || dvarfloat( r_lodscalerigid ) != 1 || dvarfloat( r_lodscaleskinned ) != 1 || dvarint( sm_enable ) || dvarint( cg_nopredict ) || dvarint( developer ) || dvarint( r_zfeather ) || dvarfloat( phys_gravity ) != "-800" ) )
+#define DVAR_ENFORCER_NOSND ( !dvarint( sv_cheats ) && team( name ) != "TEAM_SPECTATOR" && ( dvarint( aim_automelee_enabled ) || dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ) || dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ) ) )
+#define DVAR_BLANK			( dvarString( ui_showmenuonly ) == "" )
 #define HUD_ALPHA 0.65
 #define HUD_FOREGROUND_ALPHA 0.75
 
 #define ENFORCE( condition, txt, position ) \
 		itemDef \
 		{ \
-			rect		0 0 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER \
-			exp			rect Y( position ); \
+			rect		0 position 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER \
 			origin		107 0 \
 			forecolor	1 0 0 1 \
 			backcolor	1 0 0 1 \
 			exp			text( txt ); \
 			textfont	UI_FONT_OBJECTIVE \
-			textscale	0.60 \
+			textscale	0.5 \
 			textalign	ITEM_ALIGN_CENTER \
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE \
 			visible		when( condition ) \
@@ -51,7 +50,7 @@
 		} \
 		itemDef \
 		{ \
-			rect			0 0 1 1 HB_RECT 1  \
+			rect			0 0 1 1 HB_RECT 1 \
 			origin			0 0 \
 			exp				rect X( (2*int(dvarName == "allies")-1) * 5 - 2* int(dvarName == "axis") ); \
 			exp				rect Y( 223 + n * 18 ); \
@@ -116,7 +115,7 @@
 		name			"MantleHint"
 		rect			0 105 40 40 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			when( !dvarInt( ui_hud_hardcore ) )
+		visible			when( !dvarInt( ui_hud_hardcore ) && NOT_SPECTATING )
 
 		itemDef
 		{
@@ -125,7 +124,7 @@
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			ownerdraw		CG_MANTLE_HINT
-			visible			when( NOT_SPECTATING )
+			visible			1
 			decoration
 		}
 	}
@@ -135,7 +134,7 @@
 		name			"Cursorhints"
 		rect			0 60 40 40 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			when( !dvarInt( ui_hud_hardcore ) && !ui_active() )
+		visible			when( !dvarInt( ui_hud_hardcore ) && !ui_active() && NOT_SPECTATING )
 
 		itemDef
 		{
@@ -144,7 +143,7 @@
 			textscale		TEXTSIZE_SMALL
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			ownerdraw		CG_CURSORHINT
-			visible			when( NOT_SPECTATING )
+			visible			1
 			decoration
 		}
 	}
@@ -154,7 +153,7 @@
 		name			"InvalidCmdHint"
 		rect			0 -150 0 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
-		visible			1
+		visible			when( NOT_SPECTATING )
 
 		itemDef
 		{
@@ -164,7 +163,7 @@
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			ownerdraw		CG_INVALID_CMD_HINT
 			textfont		UI_FONT_NORMAL
-			visible			when( NOT_SPECTATING )
+			visible			1
 			decoration
 		}
 	}
@@ -199,7 +198,7 @@
 		name			"Compass_old"
 		rect			RECT_COMPASS
 		fullScreen		0
-		visible			when ( DVAR_ENFORCER == false && !inkillcam() && !flashbanged() && !ui_active() && !scoped() && (dvarString( createfx ) != "on") && (!dvarint( ui_hud_hardcore ) || dvarInt( g_compassShowEnemies ) ) );
+		visible			when ( !inkillcam() && !flashbanged() && !ui_active() && !scoped() && DVAR_BLANK && (!dvarint( ui_hud_hardcore ) || dvarInt( g_compassShowEnemies ) ) );
 
 		itemDef
 		{
@@ -288,10 +287,161 @@
 
 	menuDef
 	{
+		name			"DPad"
+		backcolor		1 1 1 1
+		background		"$levelBriefing"
+		rect			FULLSCREEN_WIDE
+		style			WINDOW_STYLE_FILLED
+		fullScreen		MENU_FALSE
+		visible			when( team( name ) == "TEAM_FREE" && dvarString( g_gametype ) != "dm" )
+	}
+
+	menuDef
+	{
 		name		"xpbar"
 		fullScreen	0
-		visible		when( DVAR_ENFORCER_SOUND );
+		visible		when( DVAR_ENFORCER );
 		soundloop	"weap_ak47_fire_plr"
+	}
+
+	menuDef
+	{
+		name			"FullScreenMap"
+		fullScreen		0
+		visible 		when( dvarString( self_ready ) != "" && !ui_active() );
+
+		itemDef
+		{
+			rect			-37 88 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Waiting On"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.8 1 1 1
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 108 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			exp				text(dvarint(waiting_on))
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.98 0.98 0.6 1
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 128 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Players"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.8 1 1 1
+			visible			when( dvarInt( waiting_on ) > 1 )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 128 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Player"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.8 1 1 1
+			visible			when( dvarInt( waiting_on ) < 2 )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 153 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Status"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.8 1 1 1
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 168 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Ready"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.73 0.99 0.73 1
+			visible			when ( dvarInt( self_ready ) )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 168 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Not Ready"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		1.00 0.66 0.66 1
+			visible			when ( !dvarInt( self_ready ) )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 318 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Killing"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.8 1 1 1
+			visible			when ( dvarString( self_kills ) == "" && team( name ) != "TEAM_SPECTATOR" )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 333 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Disabled"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		1 0.66 0.66 1
+			visible			when ( dvarString( self_kills ) == "" && team( name ) != "TEAM_SPECTATOR" )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 318 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			text			"Kills"
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		0.8 1 1 1
+			visible			when ( dvarString( self_kills ) != "" && team( name ) != "TEAM_SPECTATOR" )
+			decoration
+		}
+		itemDef
+		{
+			rect			-37 333 2 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			exp				text(dvarint(self_kills))
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		0.35
+			textfont		UI_FONT_DEFAULT
+			forecolor		1 0.66 0.66 1
+			visible			when ( dvarString( self_kills ) != "" && team( name ) != "TEAM_SPECTATOR" )
+			decoration
+		}
 	}
 
 	#define SCORE_OFFSET_X	4
@@ -713,10 +863,9 @@
 	menuDef
 	{
 		name			"weaponinfo"
-		rect			BOTTOM_RECT_X BOTTOM_RECT_Y 0 0 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-		exp				rect Y( BOTTOM_RECT_Y - 10 );
+		rect			BOTTOM_RECT_X (BOTTOM_RECT_Y - 10) 0 0 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
 		fullScreen		0
-		visible			when( !inkillcam() && !dvarBool( ammoCounterHide ) && !flashbanged() && !ui_active() && !dvarint( ui_hud_hardcore ) && NOT_SPECTATING && ALLIES_AXIS );
+		visible			when( !inkillcam() && !dvarBool( ammoCounterHide ) && !flashbanged() && !ui_active() && !dvarint( ui_hud_hardcore ) && DVAR_BLANK && team( name ) != "TEAM_SPECTATOR" && NOT_SPECTATING );
 
 		itemDef
 		{
@@ -733,7 +882,7 @@
 		itemDef
 		{
 			name			"clipGraphic"
-			rect			(WEAPINFO_X - 33) (WEAPINFO_Y + 32 -6) 1 1
+			rect			(WEAPINFO_X - 33) (WEAPINFO_Y + 26) 1 1
 			forecolor		1 1 1 HUD_ALPHA
 			ownerdraw		CG_PLAYER_WEAPON_AMMO_CLIP_GRAPHIC
 			visible			when ( !dvarint( cg_drawBreathHint ) )
@@ -812,92 +961,70 @@
 	menuDef
 	{
 		name			"amitalking"
-		backcolor		1 1 1 1
-		background		"$levelBriefing"
-		rect			FULLSCREEN_WIDE
-		style			WINDOW_STYLE_FILLED
-		fullScreen		MENU_FALSE
-		visible			when( DVAR_ENFORCER )
+		rect			0 45 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
+		fullScreen		0
+		visible			when ( dvarint( hud_enable ) && !dvarint( ui_hud_hardcore ) && !ui_active() && DVAR_BLANK && ( team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS" ) )
 
-		ENFORCE( dvarint( cl_maxpackets ) != 100, "SET CL_MAXPACKETS TO 100", -200 );
-		ENFORCE( dvarint( r_dlightlimit ), "SET R_DLIGHTLIMIT TO 0", -175 );
-		ENFORCE( dvarint( com_maxfps ) < 40 || dvarint( com_maxfps ) > 250, "SET COM_MAXFPS WITHIN 40-250", -150 );
-		ENFORCE( dvarfloat( r_lodscaleskinned ) != 1, "SET R_LODSCALESKINNED TO 1", -50 );
-		ENFORCE( dvarfloat( r_lodscalerigid ) != 1, "SET R_LODSCALERIGID TO 1", -175 );
-		ENFORCE( dvarint( rate ) != 25000, "SET RATE TO 25000", -100 );
-		ENFORCE( dvarint( dynent_active ), "SET DYNENT_ACTIVE TO 0", -75 );
-		ENFORCE( dvarfloat( cg_hudDamageIconHeight ) != 64, "SET CG_HUDDAMAGEICONHEIGHT TO 64", -50 );
-		ENFORCE( dvarfloat( cg_hudDamageIconWidth ) != 128, "SET CG_HUDDAMAGEICONWIDTH TO 128", -25 );
-		ENFORCE( dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1, "SET CG_VIEWZSMOOTHING VALUES TO STOCK", 0 );
-		ENFORCE( dvarint( r_filmtweakInvert ), "SET R_FILMTWEAKINVERT TO 0", 25 );
-		ENFORCE( dvarint( sm_enable ), "SET SM_ENABLE TO 0", 50 );
-		ENFORCE( dvarint( cg_nopredict ), "SET CG_NOPREDICT TO 0", 75 );
-		ENFORCE( dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ), "SET COMPASSPLAYERHEIGHT/WIDTH EQUAL", 100 );
-		ENFORCE( dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ), "SET COMPASSFRIENDLYHEIGHT/WIDTH EQUAL", 125 );
-		ENFORCE( dvarint( developer ), "SET DEVELOPER TO 0", 150 );
-		ENFORCE( dvarint( aim_automelee_enabled ), "PLEASE RECONNECT TO THE SERVER", 175 );
-		ENFORCE( dvarint( r_zfeather ) != 1, "SET R_ZFEATHER TO 1", 50 );
+		itemDef
+		{
+			rect		-60 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
+			origin		0 0
+			forecolor	0.73 0.99 0.73 1
+			exp			text( dvarint(self_alive) );
+			textfont	TEXTSIZE_SMALL
+			textscale	0.48
+			textalign	ITEM_ALIGN_CENTER
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			visible		1
+			decoration
+		}
+		itemDef
+		{
+			rect		-29 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
+			origin		0 0
+			forecolor	1 0.66 0.66 1
+			exp			text( dvarint(opposing_alive) );
+			textfont	TEXTSIZE_SMALL
+			textscale	0.48
+			textalign	ITEM_ALIGN_CENTER
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			visible		1
+			decoration
+		}
 	}
 
 	menuDef
 	{
 		name			"talkers"
-		rect			0 45 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-		fullScreen		0
-		visible			when ( DVAR_ENFORCER == false && dvarint( hud_enable ) && !dvarint( ui_hud_hardcore ) && !ui_active() )
+		backcolor		1 1 1 1
+		background		"$levelBriefing"
+		rect			FULLSCREEN_WIDE
+		style			WINDOW_STYLE_FILLED
+		fullScreen		MENU_FALSE
+		visible			when( DVAR_ENFORCER || DVAR_ENFORCER_NOSND )
 
-		itemDef
-		{
-			rect		-60 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-			origin		0 0
-			forecolor	0.73 0.99 0.73 1
-			exp			text( dvarint(allies_alive) );
-			textfont	TEXTSIZE_SMALL
-			textscale	0.48
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			visible		when ( (team( name ) == "TEAM_ALLIES" ) )
-			decoration
-		}
-		itemDef
-		{
-			rect		-29 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-			origin		0 0
-			forecolor	1 0.66 0.66 1
-			exp			text( dvarint(axis_alive) );
-			textfont	TEXTSIZE_SMALL
-			textscale	0.48
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			visible		when ( (team( name ) == "TEAM_ALLIES" ) )
-			decoration
-		}
-		itemDef
-		{
-			rect		-60 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-			origin		0 0
-			forecolor	0.73 0.99 0.73 1
-			exp			text( dvarint(axis_alive) );
-			textfont	TEXTSIZE_SMALL
-			textscale	0.48
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			visible		when ( (team( name ) == "TEAM_AXIS" ) )
-			decoration
-		}
-		itemDef
-		{
-			rect		-29 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-			origin		0 0
-			forecolor	1 0.66 0.66 1
-			exp			text( dvarint(allies_alive) );
-			textfont	TEXTSIZE_SMALL
-			textscale	0.48
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			visible		when ( (team( name ) == "TEAM_AXIS" ) )
-			decoration
-		}
+		ENFORCE( dvarint( cl_maxpackets ) != 100, "SET CL_MAXPACKETS TO 100", -210 );
+		ENFORCE( dvarint( r_dlightlimit ), "SET R_DLIGHTLIMIT TO 0", -190 );
+		ENFORCE( dvarint( com_maxfps ) < 40 || dvarint( com_maxfps ) > 250, "SET COM_MAXFPS WITHIN 40-250", -170 );
+		ENFORCE( dvarfloat( r_lodscaleskinned ) != 1, "SET R_LODSCALESKINNED TO 1", -150 );
+		ENFORCE( dvarfloat( r_lodscalerigid ) != 1, "SET R_LODSCALERIGID TO 1", -130 );
+		ENFORCE( dvarint( rate ) != 25000, "SET RATE TO 25000", -110 );
+		ENFORCE( dvarint( dynent_active ), "SET DYNENT_ACTIVE TO 0", -90 );
+		ENFORCE( dvarfloat( cg_hudDamageIconHeight ) != 64, "SET CG_HUDDAMAGEICONHEIGHT TO 64", -70 );
+		ENFORCE( dvarfloat( cg_hudDamageIconWidth ) != 128, "SET CG_HUDDAMAGEICONWIDTH TO 128", -50 );
+		ENFORCE( dvarint( cg_huddamageiconinscope ), "SET CG_HUDDAMAGEICONINSCOPE TO 0", -30 );
+		ENFORCE( dvarfloat( cg_huddamageiconoffset ) != 128, "SET CG_HUDDAMAGEICONOFFSET TO 128", -10 );
+		ENFORCE( dvarint( cg_huddamageicontime ) != 2000, "SET CG_HUDDAMAGEICONTIME TO 2000", 10 );
+		ENFORCE( dvarfloat( cg_viewZSmoothingMin ) != 1 || dvarfloat( cg_viewZSmoothingMax ) != 16 || dvarfloat( cg_viewZSmoothingTime ) != 0.1, "SET CG_VIEWZSMOOTHING VALUES TO STOCK", 30 );
+		ENFORCE( dvarint( r_filmtweakInvert ), "SET R_FILMTWEAKINVERT TO 0", 50 );
+		ENFORCE( dvarint( sm_enable ), "SET SM_ENABLE TO 0", 70 );
+		ENFORCE( dvarint( cg_nopredict ), "SET CG_NOPREDICT TO 0", 90 );
+		ENFORCE( dvarfloat( compassplayerwidth ) != dvarfloat( compassplayerheight ), "SET COMPASSPLAYERHEIGHT/WIDTH EQUAL", 110 );
+		ENFORCE( dvarfloat( compassfriendlywidth ) != dvarfloat( compassfriendlyheight ), "SET COMPASSFRIENDLYHEIGHT/WIDTH EQUAL", 130 );
+		ENFORCE( dvarint( developer ), "SET DEVELOPER TO 0", 150 );
+		ENFORCE( dvarint( r_zfeather ), "SET R_ZFEATHER TO 0", 170 );
+		ENFORCE( dvarfloat( phys_gravity ) != "-800", "SET PHYS_GRAVITY TO -800", 190 );
+		ENFORCE( dvarint( aim_automelee_enabled ), "PLEASE RECONNECT TO THE SERVER", 210 );
 	}
 
 	menuDef
@@ -944,9 +1071,10 @@
 	menuDef
 	{
 		name			"CenterObituary"
-		rect			0 180 0 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
+		rect			0 0 0 0 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 		fullScreen		0
 		visible			1
+		exp				rect Y(180 + dvarInt(sv_cheats) * dvarint(promod_centermessage_position));
 
 		itemDef
 		{
@@ -1028,7 +1156,7 @@
 		name			"gamemessages"
 		rect			6 -65 10 10 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
 		fullScreen		0
-		visible			when( !inkillcam() );
+		visible			when( !inkillcam() && dvarint( ui_hud_obituaries ) && !ui_active() );
 
 		itemDef
 		{
@@ -1040,7 +1168,7 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_LEFT
 			textscale			(TEXTSIZE_SMALL*0.75)
-			visible				when ( dvarint( ui_hud_obituaries ) && !ui_active() );
+			visible				1
 		}
 	}
 
@@ -1049,7 +1177,7 @@
 		name			"boldgamemessages"
 		rect			0 -60 10 10 HORIZONTAL_ALIGN_CENTER_SAFEAREA VERTICAL_ALIGN_CENTER_SAFEAREA
 		fullScreen		0
-		visible			when( !inkillcam() );
+		visible			when( !inkillcam() && dvarint( ui_hud_obituaries ) && !ui_active() );
 
 		itemDef
 		{
@@ -1061,7 +1189,7 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_CENTER
 			textscale			0.417
-			visible				when ( dvarint( ui_hud_obituaries ) && !ui_active() );
+			visible				1
 		}
 	}
 
@@ -1070,7 +1198,7 @@
 		name			"subtitles"
 		rect			200 400 10 10 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_TOP
 		fullScreen		0
-		visible			when( !inkillcam() );
+		visible			when( !inkillcam() && dvarint( ui_hud_obituaries ) && !ui_active() && !dvarint( ui_hud_hardcore ) );
 
 		itemDef
 		{
@@ -1082,7 +1210,7 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textalign			ITEM_ALIGN_LEFT
 			textscale			TEXTSIZE_SMALL
-			visible				when ( dvarint( ui_hud_obituaries ) && !ui_active() && !dvarint( ui_hud_hardcore ) );
+			visible				1
 		}
 	}
 }

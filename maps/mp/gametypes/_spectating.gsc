@@ -82,7 +82,6 @@ getOtherTeam( team )
 setSpectatePermissions()
 {
 	team = self.sessionteam;
-
 	spectateType = maps\mp\gametypes\_tweakables::getTweakableValue( "game", "spectatetype" );
 
 	switch( spectateType )
@@ -91,7 +90,7 @@ setSpectatePermissions()
 			self allowSpectateTeam( "allies", false );
 			self allowSpectateTeam( "axis", false );
 			self allowSpectateTeam( "freelook", false );
-			self allowSpectateTeam( "none", true );
+			self allowSpectateTeam( "none", false );
 			break;
 		case 1:
 			if ( !level.teamBased )
@@ -101,18 +100,25 @@ setSpectatePermissions()
 				self allowSpectateTeam( "none", true );
 				self allowSpectateTeam( "freelook", true );
 			}
-			else if ( isDefined( team ) && (team == "allies" || team == "axis") )
+			else if ( isDefined( team ) && ( team == "allies" || team == "axis" ) )
 			{
 				self allowSpectateTeam( team, true );
 				self allowSpectateTeam( getOtherTeam( team ), false );
 				self allowSpectateTeam( "freelook", false );
 				self allowSpectateTeam( "none", false );
 			}
-			else
+			else if ( isDefined( team ) && ( team == "spectator" ) )
 			{
 				self allowSpectateTeam( "allies", true );
 				self allowSpectateTeam( "axis", true );
 				self allowSpectateTeam( "freelook", true );
+				self allowSpectateTeam( "none", true );
+			}
+			else
+			{
+				self allowSpectateTeam( "allies", false );
+				self allowSpectateTeam( "axis", false );
+				self allowSpectateTeam( "freelook", false );
 				self allowSpectateTeam( "none", false );
 			}
 			break;
@@ -120,16 +126,7 @@ setSpectatePermissions()
 			self allowSpectateTeam( "allies", true );
 			self allowSpectateTeam( "axis", true );
 			self allowSpectateTeam( "freelook", true );
-			self allowSpectateTeam( "none", false );
+			self allowSpectateTeam( "none", true );
 			break;
-	}
-
-	if ( isDefined( team ) && (team == "axis" || team == "allies") )
-	{
-		if ( isdefined(level.spectateOverride[team].allowFreeSpectate) )
-			self allowSpectateTeam( "freelook", true );
-
-		if (isdefined(level.spectateOverride[team].allowEnemySpectate))
-			self allowSpectateTeam( getOtherTeam( team ), true );
 	}
 }

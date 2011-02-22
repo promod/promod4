@@ -25,10 +25,10 @@ main()
 	setDvar( "scr_dom_numlives", 0 );
 	setDvar( "scr_dom_playerrespawndelay", 7 );
 	setDvar( "scr_dom_roundlimit", 2 );
+	setDvar( "scr_dom_roundswitch", 1 );
 	setDvar( "scr_dom_scorelimit", 0 );
 	setDvar( "scr_dom_timelimit", 15 );
 	setDvar( "scr_dom_waverespawndelay", 0 );
-	setDvar( "scr_dom_roundswitch", 1 );
 
 	setDvar( "koth_autodestroytime", 120 );
 	setDvar( "koth_capturetime", 20 );
@@ -61,9 +61,9 @@ main()
 	setDvar( "scr_war_playerrespawndelay", 0 );
 	setDvar( "scr_war_roundlimit", 2 );
 	setDvar( "scr_war_scorelimit", 0 );
+	setDvar( "scr_war_roundswitch", 1 );
 	setDvar( "scr_war_timelimit", 15 );
 	setDvar( "scr_war_waverespawndelay", 0 );
-	setDvar( "scr_war_roundswitch", 1 );
 
 	setDvar( "scr_dm_numlives", 0 );
 	setDvar( "scr_dm_playerrespawndelay", 0 );
@@ -115,6 +115,10 @@ main()
 	setDvar( "attach_allow_pistol_none", 1 );
 	setDvar( "attach_allow_pistol_silencer", 1 );
 
+	setDvar( "weap_allow_flash_grenade", 1 );
+	setDvar( "weap_allow_frag_grenade", 1 );
+	setDvar( "weap_allow_smoke_grenade", 1 );
+
 	setDvar( "class_assault_primary", "ak47" );
 	setDvar( "class_assault_primary_attachment", "none" );
 	setDvar( "class_assault_secondary", "deserteagle" );
@@ -143,9 +147,8 @@ main()
 	setDvar( "class_sniper_grenade", "smoke_grenade" );
 	setDvar( "class_sniper_camo", "camo_none" );
 
+	setDvar( "scr_team_fftype", 1 );
 	setDvar( "scr_team_teamkillpointloss", 5 );
-	setDvar( "scr_team_teamkillspawndelay", 0 );
-
 	setDvar( "scr_game_deathpointloss", 0 );
 	setDvar( "scr_game_suicidepointloss", 0 );
 	setDvar( "scr_player_suicidespawndelay", 0 );
@@ -154,13 +157,9 @@ main()
 	setDvar( "bg_fallDamageMinHeight", 140 );
 	setDvar( "bg_fallDamageMaxHeight", 350 );
 
-	setDvar( "scr_game_matchstarttime", 5 );
+	setDvar( "scr_game_matchstarttime", 10 );
 	setDvar( "scr_enable_hiticon", 2 );
 	setDvar( "scr_enable_scoretext", 1 );
-
-	setDvar( "weap_allow_flash_grenade", 1 );
-	setDvar( "weap_allow_frag_grenade", 1 );
-	setDvar( "weap_allow_smoke_grenade", 1 );
 
 	setDvar( "logfile", 1 );
 	setDvar( "g_log", "games_mp.log" );
@@ -177,16 +176,15 @@ main()
 	setDvar( "sv_reconnectlimit", 3 );
 	setDvar( "sv_timeout", 240 );
 	setDvar( "sv_zombietime", 2 );
-	setDvar( "sv_floodprotect", 1 );
+	setDvar( "sv_floodprotect", 4 );
 	setDvar( "sv_kickBanTime", 0 );
 	setDvar( "sv_disableClientConsole", 0 );
 	setDvar( "sv_voice", 0 );
+	setDvar( "sv_clientarchive", 1 );
+	setDvar( "timescale", 1 );
 
 	setDvar( "g_allowVote", 0 );
 	setDvar( "scr_game_allowkillcam", 0 );
 	setDvar( "scr_game_spectatetype", 1 );
-	setDvar( "scr_team_fftype", 1 );
-	setDvar( "scr_drawfriend", 1 );
 	setDvar( "scr_hardcore", 0 );
-	setDvar( "g_maxDroppedWeapons", 16 );
 }

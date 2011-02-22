@@ -107,6 +107,7 @@ onPlayerConnect()
 	for(;;)
 	{
 		level waittill( "connecting", player );
+		player thread initClassLoadouts();
 		player thread updateServerDvars();
 	}
 }
@@ -117,6 +118,8 @@ setClassChoice( classType )
 	self.class = classType;
 
 	self setClientDvar( "loadout_class", classType );
+
+	self initClassLoadouts();
 	self setDvarsFromClass( classType );
 
 	switch ( classType )
@@ -194,15 +197,12 @@ setServerDvarDefault( dvarName, setVal, minVal, maxVal )
 	level.serverDvars[dvarName] = setVal;
 }
 
-setServerInfoDvarDefault( dvarName, setVal, minVal, maxVal )
-{
-	makeDvarServerInfo( dvarName, setVal );
-
-	setVal = setDvarDefault( dvarName, setVal, minVal, maxVal );
-}
-
 initClassLoadouts()
 {
+	self endon ("disconnect");
+
+	wait 0.05;
+
 	self initLoadoutForClass( "assault" );
 	self initLoadoutForClass( "specops" );
 	self initLoadoutForClass( "demolitions" );
@@ -228,51 +228,60 @@ initLoadoutForClass( classType )
 	CLASS_GRENADE = SSALC + "_GRENADE";
 	CLASS_CAMO = SSALC + "_CAMO";
 
-	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_PRIMARY, 0 ) ) ) )
-		self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
-	else if ( validClass( classType, get_config( CLASS_PRIMARY ), "loadout_primary" ) )
-		self.pers[classType]["loadout_primary"] = get_config( CLASS_PRIMARY );
-	else
-		self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
+	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_primary"] ) )
+	{
+		if ( validClass( classType, get_config( CLASS_PRIMARY ), "loadout_primary" ) )
+			self.pers[classType]["loadout_primary"] = get_config( CLASS_PRIMARY );
+		else
+			self.pers[classType]["loadout_primary"] = getDvar( "class_" + classType + "_primary" );
+	}
 
-	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_PRIMARY_ATTACHMENT, 0 ) ) ) )
-		self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
-	else if ( validClass( classType, get_config( CLASS_PRIMARY_ATTACHMENT ), "loadout_primary_attachment" ) )
-		self.pers[classType]["loadout_primary_attachment"] = get_config( CLASS_PRIMARY_ATTACHMENT );
-	else
-		self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
+	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_primary_attachment"] ) )
+	{
+		if ( validClass( classType, get_config( CLASS_PRIMARY_ATTACHMENT ), "loadout_primary_attachment" ) )
+			self.pers[classType]["loadout_primary_attachment"] = get_config( CLASS_PRIMARY_ATTACHMENT );
+		else
+			self.pers[classType]["loadout_primary_attachment"] = getDvar( "class_" + classType + "_primary_attachment" );
+	}
 
-	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_SECONDARY, 0 ) ) ) )
-		self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
-	else if ( validClass( classType, get_config( CLASS_SECONDARY ), "loadout_secondary" ) )
-		self.pers[classType]["loadout_secondary"] = get_config( CLASS_SECONDARY );
-	else
-		self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
+	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_secondary"] ) )
+	{
+		if ( validClass( classType, get_config( CLASS_SECONDARY ), "loadout_secondary" ) )
+			self.pers[classType]["loadout_secondary"] = get_config( CLASS_SECONDARY );
+		else
+			self.pers[classType]["loadout_secondary"] = getDvar( "class_" + classType + "_secondary" );
+	}
 
-	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_SECONDARY_ATTACHMENT, 0 ) ) ) )
-		self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
-	else if ( validClass( classType, get_config( CLASS_SECONDARY_ATTACHMENT ), "loadout_secondary_attachment" ) )
-		self.pers[classType]["loadout_secondary_attachment"] = get_config( CLASS_SECONDARY_ATTACHMENT );
-	else
-		self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
+	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_secondary_attachment"] ) )
+	{
+		if ( validClass( classType, get_config( CLASS_SECONDARY_ATTACHMENT ), "loadout_secondary_attachment" ) )
+			self.pers[classType]["loadout_secondary_attachment"] = get_config( CLASS_SECONDARY_ATTACHMENT );
+		else
+			self.pers[classType]["loadout_secondary_attachment"] = getDvar( "class_" + classType + "_secondary_attachment" );
+	}
 
-	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_GRENADE, 0 ) ) ) )
-		self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
-	else if ( validClass( classType, get_config( CLASS_GRENADE ), "loadout_grenade" ) )
-		self.pers[classType]["loadout_grenade"] = get_config( CLASS_GRENADE );
-	else
-		self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
+	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_grenade"] ) )
+	{
+		if ( validClass( classType, get_config( CLASS_GRENADE ), "loadout_grenade" ) )
+			self.pers[classType]["loadout_grenade"] = get_config( CLASS_GRENADE );
+		else
+			self.pers[classType]["loadout_grenade"] = getDvar( "class_" + classType + "_grenade" );
+	}
 
-	if ( !self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, CLASS_CAMO, 0 ) ) ) )
-		self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
-	else if ( validClass( classType, get_config( CLASS_CAMO ), "loadout_camo" ) )
-		self.pers[classType]["loadout_camo"] = get_config( CLASS_CAMO );
-	else
-		self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
+	if ( !isDefined( self.pers[classType] ) || !isDefined( self.pers[classType]["loadout_camo"] ) )
+	{
+		if ( validClass( classType, get_config( CLASS_CAMO ), "loadout_camo" ) )
+			self.pers[classType]["loadout_camo"] = get_config( CLASS_CAMO );
+		else
+			self.pers[classType]["loadout_camo"] = getDvar( "class_" + classType + "_camo" );
+	}
 }
 
 validClass( classType, preServed, type )
 {
+	if ( preServed == "" )
+		return false;
+
 	loadout_primary = "";
 	loadout_primary_attachment = "";
 	loadout_secondary = "";
@@ -385,12 +394,15 @@ setDvarsFromClass( classType )
 
 processLoadoutResponse( respString )
 {
+	if ( !isDefined( self.pers["class"] ) )
+		return;
+
 	commandTokens = strTok( respString, "," );
 
 	for ( i = 0; i < commandTokens.size; i++ )
 	{
 		subTokens = strTok( commandTokens[i], ":" );
-		if( subTokens.size <= 1 )
+		if( subTokens.size < 2 )
 			return;
 
 		switch ( subTokens[0] )
@@ -499,36 +511,22 @@ verifyClassChoice( teamName, classType )
 {
 	if ( teamName == "allies" || teamName == "axis" )
 	{
-		if ( !getDvarInt( "class_" + classType + "_limit" ) )
-			return false;
-
 		if ( isDefined( self.pers["class"] ) && self.pers["class"] == classType )
 			return true;
 
 		game[teamName + "_" + classType + "_count"] = 0;
 		for ( i = 0; i < level.players.size; i++ )
-		{
-			player = level.players[i];
-
-			if ( player.team == self.team && isDefined( player.class ) && player.class == classType )
+			if ( level.players[i].team == teamName && isDefined( level.players[i].class ) && level.players[i].class == classType )
 				game[teamName + "_" + classType + "_count"]++;
-		}
 
-		if ( getDvarInt( "class_" + classType + "_limit" ) > 0 )
-		{
-			if ( game[teamName + "_" + classType + "_count"] >= getDvarInt( "class_" + classType + "_limit" ) )
-				return false;
-		}
-
-		return true;
+		return ( game[teamName + "_" + classType + "_count"] < getDvarInt( "class_" + classType + "_limit" ) );
 	}
+
+	return false;
 }
 
 updateClassAvailability( teamName )
 {
-	if ( teamName != "allies" && teamName != "axis" )
-		return;
-
 	game[teamName + "_assault_count"] = 0;
 	game[teamName + "_specops_count"] = 0;
 	game[teamName + "_demolitions_count"] = 0;
@@ -570,12 +568,12 @@ menuAcceptClass( response )
 
 	if ( self.sessionstate == "playing" )
 	{
-		if ( level.inGracePeriod && !self.hasDoneCombat || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
+		if ( level.inGracePeriod && isDefined( self.hasDoneCombat ) && !self.hasDoneCombat && isDefined( game["PROMOD_KNIFEROUND"] ) && !game["PROMOD_KNIFEROUND"] || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
 		else
 		{
 			if ( !isDefined( response) || response != "apply" )
-				self iPrintLnBold( game["strings"]["change_class"] );
+				self iprintlnbold( game["strings"]["change_class"] );
 
 			self setClientDvar( "loadout_curclass", self.pers["class"] );
 		}

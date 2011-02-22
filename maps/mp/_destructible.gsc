@@ -10,7 +10,6 @@
 
 #include maps\mp\_utility;
 #include common_scripts\utility;
-#using_animtree( "vehicles" );
 init()
 {
 	level.destructibleSpawnedEntsLimit = 25;
@@ -23,8 +22,6 @@ init()
 
 destructible_create( type, health, validAttackers, validDamageZone, validDamageCause )
 {
-	assert( isdefined( type ) );
-
 	if( !isdefined( level.destructible_type ) )
 		level.destructible_type = [];
 
@@ -46,11 +43,8 @@ destructible_create( type, health, validAttackers, validDamageZone, validDamageC
 destructible_part( tagName, modelName, health, noDraw, validDamageZone, validDamageCause, alsoDamageParent, physicsOnExplosion )
 {
 	destructibleIndex = ( level.destructible_type.size - 1 );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts.size ) );
 
 	partIndex = level.destructible_type[ destructibleIndex ].parts.size;
-	assert( partIndex > 0 );
 
 	stateIndex = 0;
 
@@ -68,21 +62,12 @@ destructible_state( tagName, modelName, health, noDraw, validDamageZone, validDa
 
 destructible_fx( tagName, fxName, useTagAngles )
 {
-	assert( isdefined( tagName ) );
-	assert( isdefined( fxName ) );
-
 	if ( !isdefined( useTagAngles ) )
 		useTagAngles = true;
 
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
 
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "fx_filename" ] = fxName;
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "fx_tag" ] = tagName;
@@ -91,20 +76,9 @@ destructible_fx( tagName, fxName, useTagAngles )
 
 destructible_loopfx( tagName, fxName, loopRate )
 {
-	assert( isdefined( tagName ) );
-	assert( isdefined( fxName ) );
-	assert( isdefined( loopRate ) );
-	assert( loopRate > 0 );
-
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
 
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "loopfx_filename" ] = fxName;
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "loopfx_tag" ] = tagName;
@@ -113,17 +87,9 @@ destructible_loopfx( tagName, fxName, loopRate )
 
 destructible_healthdrain( amount, interval )
 {
-	assert( isdefined( amount ) );
-
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
 
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "healthdrain_amount" ] = amount;
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "healthdrain_interval" ] = interval;
@@ -131,17 +97,9 @@ destructible_healthdrain( amount, interval )
 
 destructible_sound( soundAlias, soundCause )
 {
-	assert( isdefined( soundAlias ) );
-
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
 
 	if ( !isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "sound" ] ) )
 	{
@@ -156,17 +114,9 @@ destructible_sound( soundAlias, soundCause )
 
 destructible_loopsound( soundAlias, loopsoundCause )
 {
-	assert( isdefined( soundAlias ) );
-
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
 
 	if ( !isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "loopsound" ] ) )
 	{
@@ -179,37 +129,11 @@ destructible_loopsound( soundAlias, loopsoundCause )
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "loopsoundCause" ][ index ] = loopsoundCause;
 }
 
-destructible_anim( animName, animTree, animType )
-{
-	assert( isdefined( anim ) );
-	assert( isdefined( animtree ) );
-
-	destructibleIndex = ( level.destructible_type.size - 1 );
-	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
-	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
-
-	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "anim" ] = animName;
-	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "animTree" ] = animtree;
-	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "animType" ] = animType;
-}
-
 destructible_physics()
 {
 	destructibleIndex = ( level.destructible_type.size - 1 );
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
-
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
 
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "physics" ] = true;
 }
@@ -220,12 +144,6 @@ destructible_explode( force_min, force_max, range, mindamage, maxdamage )
 	partIndex = ( level.destructible_type[ destructibleIndex ].parts.size - 1 );
 	stateIndex = ( level.destructible_type[ destructibleIndex ].parts[ partIndex ].size - 1 );
 
-	assert( isdefined( level.destructible_type ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ] ) );
-	assert( isdefined( level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ] ) );
-
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "explode_force_min" ] = force_min;
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "explode_force_max" ] = force_max;
 	level.destructible_type[ destructibleIndex ].parts[ partIndex ][ stateIndex ].v[ "explode_range" ] = range;
@@ -235,11 +153,6 @@ destructible_explode( force_min, force_max, range, mindamage, maxdamage )
 
 destructible_info( partIndex, stateIndex, tagName, modelName, health, noDraw, validDamageZone, validDamageCause, alsoDamageParent, physicsOnExplosion )
 {
-	assert( isdefined( partIndex ) );
-	assert( isdefined( stateIndex ) );
-	assert( isdefined( level.destructible_type ) );
-	assert( level.destructible_type.size > 0 );
-
 	if ( isDefined( modelName ) )
 		modelName = toLower( modelName );
 
@@ -288,7 +201,6 @@ precache_destructibles()
 setup_destructibles()
 {
 	destuctableInfo = undefined;
-	assertEx( isdefined( self.destructible_type ), "Destructible object with targetname 'destructible' does not have a 'destructible_type' key/value" );
 
 	self.destuctableInfo = maps\mp\_destructible_types::makeType( self.destructible_type );
 
@@ -327,7 +239,7 @@ setup_destructibles()
 		}
 	}
 
-	if(	self.classname != "script_vehicle" )
+	if( self.classname != "script_vehicle" )
 		self setCanDamage( true );
 	self thread destructible_think();
 }
@@ -360,14 +272,10 @@ destructible_think()
 			self.damageOwner = attacker;
 
 		type = getDamageType( type );
-		assert( isdefined( type ) );
 
-		assert( isdefined( modelName ) );
 		if ( modelName == "" )
-		{
-			assert( isdefined( self.model ) );
 			modelName = self.model;
-		}
+
 		if ( isdefined( tagName ) && tagName == "" )
 		{
 			if ( isdefined( partName ) && partName != "" && partName != "tag_body" )
@@ -395,7 +303,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 
 	partIndex = -1;
 	stateIndex = -1;
-	assert( isdefined( self.model ) );
+
 	if ( ( tolower( modelName ) == tolower( self.model ) ) && ( !isdefined( tagName ) ) )
 	{
 		modelName = self.model;
@@ -417,7 +325,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			break;
 		}
 	}
-	assert( stateIndex >= 0 );
 
 	if ( partIndex < 0 )
 		return;
@@ -446,17 +353,13 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			self.destructible_parts[ partIndex ].v[ "health" ] = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "health" ];
 		updateHealthValue = false;
 
-		validAttacker = self isAttackerValid( partIndex, stateIndex, attacker );
-		if ( validAttacker )
+		validDamageCause = self isValidDamageCause( partIndex, stateIndex, damageType );
+		if ( validDamageCause )
 		{
-			validDamageCause = self isValidDamageCause( partIndex, stateIndex, damageType );
-			if ( validDamageCause )
-			{
-				if ( damageType == "melee" || damageType == "impact" )
-					damage = 100000;
+			if ( damageType == "melee" || damageType == "impact" )
+				damage = 100000;
 
-				self.destructible_parts[ partIndex ].v[ "health" ] -= damage;
-			}
+			self.destructible_parts[ partIndex ].v[ "health" ] -= damage;
 		}
 
 		if ( self.destructible_parts[ partIndex ].v[ "health" ] > 0 )
@@ -502,7 +405,6 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx" ] ) )
 		{
-			assert( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx_tag" ] ) );
 			fx = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx" ];
 			fx_tag = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "fx_tag" ];
 			self notify( "FX_State_Change" + partIndex );
@@ -518,24 +420,11 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx" ] ) )
 		{
-			assert( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx_tag" ] ) );
 			loopfx = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx" ];
 			loopfx_tag = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx_tag" ];
 			loopRate = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "loopfx_rate" ];
 			self notify( "FX_State_Change" + partIndex );
 			self thread loopfx_onTag( loopfx, loopfx_tag, loopRate, partIndex );
-		}
-
-		if ( !isdefined( self.exploded ) && isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ] ) )
-		{
-			animName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "anim" ];
-			animTree = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "animTree" ];
-			if ( !isdefined( self.animsApplied ) )
-				self.animsApplied = [];
-			self.animsApplied[ self.animsApplied.size ] = animName;
-
-			if ( !partIndex )
-				self thread explodeAnim();
 		}
 
 		if ( !isdefined( self.exploded ) && isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "sound" ] ) )
@@ -577,15 +466,12 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "healthdrain_amount" ] ) )
 		{
 			self notify( "Health_Drain_State_Change" + partIndex );
-			healthdrain_amount 		= level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "healthdrain_amount" ];
-			healthdrain_interval 	= level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "healthdrain_interval" ];
-			healthdrain_modelName 	= level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "modelName" ];
-			healthdrain_tagName 	= level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "tagName" ];
+			healthdrain_amount = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "healthdrain_amount" ];
+			healthdrain_interval = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "healthdrain_interval" ];
+			healthdrain_modelName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "modelName" ];
+			healthdrain_tagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "tagName" ];
 			if ( healthdrain_amount > 0 )
-			{
-				assert( ( isdefined( healthdrain_interval ) ) && ( healthdrain_interval > 0 ) );
 				self thread health_drain( healthdrain_amount, healthdrain_interval, partIndex, healthdrain_modelName, healthdrain_tagName );
-			}
 		}
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ actionStateIndex ].v[ "explode_force_min" ] ) )
@@ -625,7 +511,6 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 				if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "modelName" ] ) )
 				{
 					modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "modelName" ];
-					assert( isdefined( modelName ) );
 
 					if ( !i )
 					{
@@ -635,7 +520,6 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 					else
 					{
 						tagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "tagName" ];
-						assert( isdefined( tagName ) );
 						d = distance( point, self getTagOrigin( tagName ) );
 					}
 
@@ -674,11 +558,6 @@ isValidSoundCause( soundCauseVar, partIndex, stateIndex, soundIndex, damageType 
 		return true;
 
 	return false;
-}
-
-isAttackerValid( partIndex, stateIndex, attacker )
-{
-	return true;
 }
 
 isValidDamageCause( partIndex, stateIndex, damageType )
@@ -749,10 +628,9 @@ health_drain( amount, interval, partIndex, modelName, tagName )
 
 explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 {
-	assert( isdefined( force_min ) );
-	assert( isdefined( force_max ) );
 	if ( isdefined( self.exploded ) )
 		return;
+
 	self.exploded = true;
 
 	if(self.classname == "script_vehicle")
@@ -829,13 +707,4 @@ hideapart( tagName )
 showapart( tagName )
 {
 	self showpart( tagName );
-}
-
-explodeAnim()
-{
-	self moveZ( 16, 0.3, 0, 0.2 );
-	self rotatePitch( 10, 0.3, 0, 0.2 );
-	wait 0.3;
-	self moveZ( -16, 0.3, 0.15, 0 );
-	self rotatePitch( -10, 0.3, 0.15, 0 );
 }

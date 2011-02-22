@@ -11,8 +11,6 @@
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
 
-#define CHOICE_GROUP "quickpromod"
-
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 
@@ -97,11 +95,28 @@
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textscale		TEXTSIZE_SMALL
 			textaligny		8
-			text			"4. Killspec"
+			text			"4. Spectate Team"
 			visible			1
 			decoration
 		}
 		execKey "4" { scriptMenuResponse "killspec"; close quickpromod }
+
+		itemDef
+		{
+			name			"window"
+			group			ingamebox
+			rect			16 84 0 0
+			origin			ORIGIN_QUICKMESSAGEWINDOW
+			forecolor		1 1 1 1
+			textfont		UI_FONT_NORMAL
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			textscale		TEXTSIZE_SMALL
+			textaligny		8
+			text			"5. Record Reminder"
+			visible			1
+			decoration
+		}
+		execKey "5" { scriptMenuResponse "4"; close quickpromod }
 
 		itemDef
 		{

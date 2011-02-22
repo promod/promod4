@@ -19,4 +19,6 @@ main()
 	game["defenders"] = "axis";
 	game["allies_soldiertype"] = "urban";
 	game["axis_soldiertype"] = "urban";
+
+	level.sunlight = 0.75;
 }

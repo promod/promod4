@@ -9,7 +9,6 @@
 */
 
 #include maps\mp\_destructible;
-#using_animtree( "vehicles" );
 
 makeType( destructibleType )
 {
@@ -100,12 +99,10 @@ makeType( destructibleType )
 			vehicle_small_hatch( "white" );
 			break;
 		default:
-			assertMsg( "Destructible object 'destructible_type' key/value of '" + destructibleType + "' is not valid" );
 			break;
 	}
 
 	infoIndex = getInfoIndex( destructibleType );
-	assert( infoIndex >= 0 );
 	return infoIndex;
 }
 
@@ -140,7 +137,6 @@ vehicle_80s_sedan1( color )
 				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 375, 20, 300 );
-				destructible_loopfx( "tag_hood_fx", "smoke/car_damage_blacksmoke_fire", 9999 );
 			destructible_state( undefined, "vehicle_80s_sedan1_" + color + "_destroyed", undefined, 32, "no_melee" );
 
 		tag = "tag_hood";
@@ -239,7 +235,6 @@ vehicle_80s_wagon1( color )
 				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, 20, 300 );
-				destructible_loopfx( "tag_hood_fx", "smoke/car_damage_blacksmoke_fire", 9999 );
 			destructible_state( undefined, "vehicle_80s_wagon1_" + color + "_destroyed", undefined, 32, "no_melee" );
 
 		tag = "tag_hood";
@@ -348,7 +343,6 @@ vehicle_80s_hatch1( color )
 				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, 20, 300 );
-				destructible_loopfx( "tag_hood_fx", "smoke/car_damage_blacksmoke_fire", 9999 );
 			destructible_state( undefined, "vehicle_80s_hatch1_" + color + "_destroyed", undefined, 32, "no_melee" );
 
 		tag = "tag_hood";
@@ -441,7 +435,6 @@ vehicle_small_wagon( color )
 				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, 20, 300 );
-				destructible_loopfx( "tag_hood_fx", "smoke/car_damage_blacksmoke_fire", 9999 );
 			destructible_state( undefined, "vehicle_small_wagon_" + color + "_destroyed", undefined, 32, "no_melee" );
 
 		tag = "tag_hood";
@@ -534,7 +527,6 @@ vehicle_small_hatch( color )
 				destructible_fx( "tag_death_fx", "explosions/small_vehicle_explosion", false );
 				destructible_sound( "car_explode" );
 				destructible_explode( 4000, 5000, 250, 20, 300 );
-				destructible_loopfx( "tag_hood_fx", "smoke/car_damage_blacksmoke_fire", 9999 );
 			destructible_state( undefined, "vehicle_small_hatch_" + color + "_destroyed", undefined, 32, "no_melee" );
 
 		tag = "tag_hood";

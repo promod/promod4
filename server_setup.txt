@@ -8,7 +8,21 @@ dedicated [0-3] (listen, LAN, internet)
 net_ip [xxx.xxx.xxx.xxx]
 net_port [1-65535] (standard is 28960)
 
-<path to iw3mp.exe> +set dedicated 2 +set net_ip localhost +set net_port 28960 +set sv_punkbuster 1 +set fs_game mods/promodlive210 +exec server.cfg +map_rotate
+<path to iw3mp.exe> +set dedicated 2 +set net_ip localhost +set net_port 28960 +set sv_punkbuster 1 +set fs_game mods/promodlive211 +exec server.cfg +set rcon_password password +map_rotate
 
-Make sure you put the server config (server.cfg) in the main-folder.
-Included is also a iwd.cfg which you can put in the pb-folder, it contains checksums for the stock iwd-files for preventing custom skins and such and can be loaded by typing "\rcon pb_sv_load iwd.cfg".
+Make sure you put the server config (server.cfg) in the main-folder or specify correct path to it.
+Please note that we also define the rcon password to the server here to prevent someone from downloading your config from server and thus view ("hack") your rcon password.
+
+The dvar fs_game "mods/promodlive211" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/promodlive211" for example "mods/promodlive211_custom", it's not restricted and you are free to modify files as well.
+
+Included with Promod is two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
+
+In order to be automatically-executed, the list of checks needs to be included into the automatically-executed PunkBuster configuration files on your server (pbsv.cfg or pbsvuser.cfg):
+
+pb_sv_load stock_iwd_md5.cfg
+pb_sv_load promod_iwd_md5.cfg // match-server only
+
+In case your server doesn't have any pbsv.cfg, go in-game and type: "\rcon pb_sv_writecfg". Depending on if your server is streaming to any third-party anti-cheat site(s) you may or may not already have a pbsvuser.cfg, if you don't you can just copy all three files included to your servers PB-folder, or if the file exist add above lines to it.
+
+We STRONGLY encourage use of these MD5-checks! (This goes for leagues as well!)

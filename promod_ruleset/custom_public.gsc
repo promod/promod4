@@ -109,11 +109,8 @@ main()
 	setDvar( "weap_allow_winchester1200", 1 );
 
 	// sniper
-	setDvar( "weap_allow_dragunov", 0 );
 	setDvar( "weap_allow_m40a3", 1 );
-	setDvar( "weap_allow_barrett", 0 );
 	setDvar( "weap_allow_remington700", 1 );
-	setDvar( "weap_allow_m21", 0 );
 
 	// pistol
 	setDvar( "weap_allow_beretta", 1 );
@@ -125,6 +122,11 @@ main()
 	// pistol attachments
 	setDvar( "attach_allow_pistol_none", 1 );
 	setDvar( "attach_allow_pistol_silencer", 1 );
+
+	// grenades
+	setDvar( "weap_allow_flash_grenade", 1 );
+	setDvar( "weap_allow_frag_grenade", 1 );
+	setDvar( "weap_allow_smoke_grenade", 1 );
 
 	// assault class default loadout (preserved)
 	setDvar( "class_assault_primary", "ak47" );
@@ -161,7 +163,6 @@ main()
 	// team killing
 	setDvar( "scr_team_fftype", 1 ); // [0-3] (disabled, enabled, reflect, shared)
 	setDvar( "scr_team_teamkillpointloss", 5 ); // [0->] (points)
-	setDvar( "scr_team_teamkillspawndelay", 0 ); // [0->] (seconds)
 
 	// player death/respawn settings
 	setDvar( "scr_player_forcerespawn", 1 ); // [0-1] (require player to press use key to spawn, do not require use key to spawn)
@@ -172,11 +173,6 @@ main()
 	// player fall damage
 	setDvar( "bg_fallDamageMinHeight", 140 ); // [1->] (min height to inflict min fall damage)
 	setDvar( "bg_fallDamageMaxHeight", 350 ); // [1->] (max height to inflict max fall damage)
-
-	// grenades
-	setDvar( "weap_allow_flash_grenade", 1 );
-	setDvar( "weap_allow_frag_grenade", 1 );
-	setDvar( "weap_allow_smoke_grenade", 1 );
 
 	// logging (not likely to be changed)
 	setDvar( "logfile", 1 );
@@ -195,17 +191,19 @@ main()
 	setDvar( "sv_reconnectlimit", 3 );
 	setDvar( "sv_timeout", 240 );
 	setDvar( "sv_zombietime", 2 );
-	setDvar( "sv_floodprotect", 1 );
+	setDvar( "sv_floodprotect", 4 );
 	setDvar( "sv_kickBanTime", 0 );
 	setDvar( "sv_disableClientConsole", 0 );
 	setDvar( "sv_voice", 0 );
+	setDvar( "sv_clientarchive", 1 );
+	setDvar( "timescale", 1 );
 
 	// various
 	setDvar( "g_allowVote", 0 ); // [0-1]
+	setDvar( "g_deadChat", 1 ); // [0-1]
 	setDvar( "scr_game_allowkillcam", 0 ); // [0-1]
 	setDvar( "scr_game_spectatetype", 1 ); // [0-2] (disabled, team only, all)
 	setDvar( "scr_game_matchstarttime", 10 ); // [0->] (seconds)
-	setDvar( "scr_drawfriend", 1 ); // [0-1] (draw team icon over teammates)
 	setDvar( "scr_enable_hiticon", 2 ); // [0-2] (disabled, hit icon on, hit icon on but not through walls)
 	setDvar( "scr_enable_scoretext", 1 ); // [0-1] (exp popups, +5 etc)
 	setDvar( "promod_allow_strattime", 0 ); // [0-1] (sd only)

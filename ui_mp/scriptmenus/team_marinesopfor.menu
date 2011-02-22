@@ -36,9 +36,13 @@
 		style			WINDOW_STYLE_EMPTY
 		blurWorld		7.0
 		legacySplitScreenScale
+		onOpen
+		{
+			focusFirst;
+		}
 		onEsc
 		{
-			scriptMenuResponse "back";
+			close self;
 		}
 
 		itemDef
@@ -68,7 +72,7 @@
 
 		CHOICE_MENU_TITLE( "@MPUI_CHOOSE_TEAM" )
 
-		#define BACK_ENABLE 0
+		#define BACK_OPEN;
 		#include "ui_mp/navcontrols.inc";
 		#include "ui_mp/tactical_map.inc";
 
@@ -84,11 +88,13 @@
 		CHOICE_BUTTON_VIS( 2, "2. Defence", play "mouse_click"; scriptMenuResponse "axis";, when( team( name ) == "TEAM_ALLIES" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
 		CHOICE_DBUTTON_VIS( 2, "2. Defence", when( team( name ) == "TEAM_AXIS" ) )
 
-		CHOICE_BUTTON_EX( 3, "3. Auto-Assign", play "mouse_click"; scriptMenuResponse "autoassign";, name "auto_assign" )
+		CHOICE_BUTTON( 3, "3. Auto-Assign", play "mouse_click"; scriptMenuResponse "autoassign"; )
 
 		CHOICE_SEPARATOR( CHOICE_SEP_1 )
 
-		CHOICE_BUTTON( 4, "4. Shoutcaster", scriptMenuResponse "shoutcast"; )
+		CHOICE_BUTTON_VIS( 4, "4. Shoutcaster", scriptMenuResponse "shoutcast";, when( team( name ) != "TEAM_SPECTATOR" ) )
+		CHOICE_DBUTTON_VIS( 4, "4. Shoutcaster", when( team( name ) == "TEAM_SPECTATOR" ) )
+
 		CHOICE_BUTTON_VIS( 5, "@MPUI_LEAVE_GAME", open popup_endgame, when( team( name ) == "TEAM_FREE" ) )
 
 		execKey "1" { scriptMenuResponse "allies"; }

@@ -1,6 +1,6 @@
-Promod LIVE V2.10 EU - README
+Promod LIVE V2.11 EU - README
 http://www.codpromod.com
-2010-12-10 <promod [at] codpromod.com>
+2011-02-22 <promod [at] codpromod.com>
 #codpromod @ QuakeNet
 
 Developers: Trivve & Ingram
@@ -13,17 +13,49 @@ In association with Vita Nova
 http://www.thevitanova.org
 #Vita-Nova @ QuakeNet
 
-In this zip-package (promodlive210_eu.zip):
+Zip-package (promodlive211_eu.zip) contains:
 
-promodlive210\mod.ff
-promodlive210\promodlive210.iwd
-promodlive210\z_custom_ruleset.iwd
+LICENSE
+promodlive211\mod.ff
+promodlive211\promodlive211.iwd
+promodlive211\z_custom_ruleset.iwd
+pb\stock_iwd_md5.cfg
+pb\promod_iwd_md5.cfg
+pb\pbsvuser.cfg
 readme.txt
 server_setup.txt
 server.cfg
-iwd.cfg
 
-CHANGES
+LIVE V2.11:
+
+- Soften smoke edges (also known as r_zfeather) is back to being forced off
+- Dead chat is no longer automatically handled in public-modes
+- Promod will properly force player to reconnect to the server if "vid_restart" was called
+- The "You killed..." text's Y-position can be modified in devmap for movie-makers (see below)
+- Removed player head-icons from Marines and SAS (stock bug, as opposing teams don't have head-icons)
+- Fixed planted/defused/destroyed announcer sounds
+- Promod header will inform about the usage of knife round feature
+- Specular effect on car-glasses made transparent
+- Better overall handling of player status icons
+- The bomb-briefcase is no longer visible in timeout or knife-round
+- Ability to cancel timeouts by the caller (by calling another timeout)
+- Ready-up hud will always display own status (important for shoutcasters)
+- Shoutcaster will automatically follow another player when current player dies
+- Shoutcasters have ability to spectate another shoutcaster when that shoutcaster is using follow-player-binds
+- Full map restart is called when server admin changes game type and issues a fast restart
+- Fixed a bug where a player could sprint longer after planting/defusing
+- Ragdolls removed because of random behaviour
+- Added an option for custom map developers to specify default sunlight (level.sunlight) in map script to correctly set with Promod "stock" sunlight option
+- Strattime and knife round in public-modes are now working properly
+- Scorebot improvements and fixes, see FAQ for comprehensive documentation
+- Different game menu adjustments
+- Dvar-monitor will now display both the old and the new value when change is detected
+- Before a match starts, a list of dvar changes during ready-up mode is displayed
+- Some additions to strictly forced server settings
+- Fixed several issues with bomb-drop
+- Added training-dummy feature for strat mode, which will only work on listen/local servers with PunkBuster turned off
+- Added a record-menu which will popup once a player is ready, this menu can optionally be disabled in the quickmessage menu: B-4-5
+- Added a sound notification to the last player to ready-up
 
 LIVE V2.10:
 
@@ -54,38 +86,6 @@ LIVE V2.04:
 - Small fix in the scorebot
 - Weapon class availability fixed on halftime
 
-LIVE V2.03:
-
-After one hotfix and several release candidates:
-
-- Added delay in the end of the round for movie-makers
-- Several minor bugs fixed
-- Prevention for "spec-nading"
-- Updated promod modes
-- Forcing for maxpackets (100) removed, it's now possible to use 60 - 100 (some regions need this, if leagues need fixed values, use punkbuster scripts to force)
-- Team auto-balancing has been removed, which was causing severe issues, for instance HUD-disappearing and invariability bug
-- The in-game stats has been removed, due to big inaccuracies in values
-
-Big thanks to the community for reporting bugs and other issues.
-Especially thanks to paradox-, and other that we might forgot. Also thanks to giunuz and SirXenos for extensive bug testing.
-
-LIVE V2:
-
-Except various bug fixes and code-enhancements:
-
-- Fully functional shoutcaster overlay for all resolutions and aspect ratios
-- Class loadouts are preserved in the rank file
-- Class related binds
-- Enhanced client- and server-security
-- Small changes/improvements to the hud and menus
-- Players left-HUD is rebuilt and therefore possible to get rid of for those nice-looking frag-movies
-- Full Hardcore-mode support, including support for all gametypes, HC mode will also use cook-nades
-- Red enemy crosshair glitch through smoke fixed
-- Added a strat mode (promod_mode strat) with nadetraining possibility, similar to AM4PAM
-- Client-side scorebot functionality implemented, similar to the PAM4 ditto.
-- Disabled ammo-sharing between SMG-class and M9 Beretta, as well as reduced weapon switch on M16
-- All taunt sounds removed
-
 FAQ
 
 Q: What about the hardcore, and support for all gametypes, how do I use them?
@@ -94,11 +94,11 @@ A: For a complete list of "promod_modes", see below.
 Q: Can the rulesets be customized to fit my needs?
 A: Promod has always been about an unified ruleset. Therefore they only thing you can change in the regular match-modes is mr-rating (SD and SAB only).
 
-Q: I want to run my own custom promod-server with skins etc, how?
-A: In order to run your own custom promod-server you'll need to change the fs_game to anything besides "mods/promodlive210" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
+Q: I want to run my own custom Promod-server with skins etc, how?
+A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive211" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
 
 Q: Can I use this mod as a movie mod?
-A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected (with one exception, see below). Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect"). If you only having black screen, change "r_contrast" to "1" as well as "r_brightness" to "0".
+A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected. Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect").
 
 Q: How do I get the scorebot running?
 A: See below how to enable scorebot.
@@ -106,23 +106,29 @@ A: See below how to enable scorebot.
 Q: Class related binds, how do they work?
 A: See below for a list of commands.
 
+Q: What's the difference between the EU and NE version of Promod?
+A: The NE version of Promod has rate and cl_maxpackets settings unlocked and radar does not display enemy indicators while shooting. NE stands for Non-Europe.
+
 Q: My question is not answered here.
 A: Easiest way to contact us is via mail or join #codpromod @ QuakeNet.
 
+Q: How do I get the training-dummy to work?
+A: First put up a local home-hosted server without PB (start game, launch Promod 2.11 from the mods-menu and load a map with the console or menu). The default button for spawning a bot is the "N" button (bind X "+actionslot 1").
+
 PROMOD MODES
 
-The promod_mode dvar follows a specific syntax. However the game accepts the bits between underscores (_) in any order.
+The promod_mode dvar follows a specific syntax. However the game accepts the bits between underscores ( _ ) in any order.
 
 match: standard match mode, conflicts with knockout mode. Round limit = mr#*2
 knockout: knockout match mode, conflicts with standard match mode. Score limit = mr#+1
 mr#: maxrounds - see above for use. Default is 10. Works only in Search & Destroy and Sabotage.
-lan: lan mode - g_antilag 0, punkbuster messages turned off. Conflicts with pb mode.
+lan: lan mode - g_antilag 0, PunkBuster messages turned off. Conflicts with pb mode.
 hc: hardcore mode (disables some HUD elements and reduces health level to 30).
 knife: knife round - adds a knife round and an extra ready-up mode to Search & Destroy matches.
 1v1/2v2: used for 1v1 and 2v2 matches, disables Demolitions and Sniper classes.
-pb: disables punkbuster warnings for online modes. Conflicts with lan mode.
+pb: disables PunkBuster warnings for online modes. Conflicts with lan mode.
 
-For example "promod_mode match_mr10_knife_pb" will enable knife round and disable punkbuster warnings in standard maxrounds 10 mode.
+For example "promod_mode match_mr10_knife_pb" will enable knife round and disable PunkBuster warnings in standard maxrounds 10 mode.
 
 There are also some other modes:
 
@@ -133,13 +139,71 @@ strat
 
 SCOREBOT
 
-To enable scorebot, add this line to your server-config:
+The "ticker" is updating events every 10 seconds, each event is starting with a number from 0-10.
+Messages are delimited by the "SOH" character (start of header).
+To enable scorebot, add this line to the server-config:
 
 seta promod_enable_scorebot "1"
+
+Static info:
+
+attack_score "SOH" player_name "SOH" player_alive "SOH" player_kills "SOH" player_assists "SOH" player_deaths "SOH" player_bombcarrier
+defence_score "SOH" player_name "SOH" player_alive "SOH" player_kills "SOH" player_assists "SOH" player_deaths "SOH" player_bombcarrier
+
+Ticker events:
+
+"SOH" "round_winner" "SOH" winners "SOH" attack_score "SOH" defence_score
+"SOH" "map_complete" "SOH" "attack" "SOH" attack_score "SOH" "defence" "SOH" defence_score
+"SOH" "knife_round"
+"SOH" start_text "SOH" starting_round
+"SOH" "map" "SOH" mapname "SOH" gametype
+"SOH" "kill" "SOH" killer_name "SOH" weapon "SOH" killed_name "SOH" headshot
+"SOH" "assist_by" "SOH" player_name
+"SOH" rdy_text
+"SOH" "timeout_cancelled" "SOH" timeout_team "SOH" player_name
+"SOH" "timeout_called" "SOH" timeout_team "SOH" player_name
+"SOH" "captured" label "SOH" player_name //dom
+"SOH" "hq_captured" "SOH" player_name //hq
+"SOH" "hq_destroyed" "SOH" player_name //hq
+"SOH" "pickup_bomb" "SOH" player_name //sab, sd
+"SOH" "dropped_bomb" "SOH" player_name //sab, sd
+"SOH" "defused_by" "SOH" player_name //sab, sd
+"SOH" "bomb_exploded" //sab, sd
+
+Definitions:
+
+attack_score = score of the attacking side, integer
+defence_score = score of the defending side, integer
+player_name = name of the player
+player_alive = if player is alive, integer
+player_assists = number of assists, integer
+player_deaths = number of deaths, integer
+player_bombcarrier = if player is carrying bomb, integer
+winners = attack, defence or tie
+start_text = "1st_half_started", "2nd_half_started", "match_resumed" (from timeout), "round_start"
+starting_round = the round starting, integer
+mapname = the map name in "mp_" format
+gametype = the gametype in short format
+killer_name = the name of the killer
+weapon = weapon used by the killer
+killed_name = the name of the player who got killed
+headshot = if it was a headshot, integer
+rdy_text = 1st_half_ready_up, 2nd_half_ready_up, timeout_ready_up
+timeout_team = the team of the player who made a timeout
+label = A, B, C etc
+
+Broadcasted dvars:
+
+__promod_attack_score
+__promod_defence_score
+__promod_mode
+__promod_ticker
+__promod_version
 
 FORCED COMMANDS
 
 All these dvars are forced by Promod (automatically), make sure they stay untouched/within range to avoid being punished!
+Note that these does not apply to Shoutcasters.
 
 dynent_active 0
 rate 25000
@@ -149,39 +213,57 @@ r_dlightLimit 0
 r_lodscalerigid 1
 r_lodscaleskinned 1
 r_filmtweakInvert 0
-r_zfeather 1
+r_zfeather 0
 cg_viewzsmoothingmin 1
 cg_viewzsmoothingmax 16
 cg_viewzsmoothingtime 0.1
 cg_huddamageiconheight 64
 cg_huddamageiconwidth 128
+cg_huddamageiconinscope 0
+cg_huddamageiconoffset 128
+cg_huddamageicontime 2000
 developer 0
+phys_gravity -800
 
 com_maxfps 40 - 250
 cl_maxpackets 60 - 100
 compassplayerwidth EQUAL TO compassplayerheight
 compassfriendlywidth EQUAL TO compassfriendlyheight
 
+DEMO VIEWING
+
+There are some special dvars made to control hud-elements for demo/movie purposes.
+They will only work in maps loaded with cheats. Don't forget the "set" prefix to add new dvars in the console.
+
+These include:
+
+promod_movie_hidescorebar // [0-1] (hides the mini-scorebar completely including timer)
+promod_centermessage_position // [x+-] (overrides default Y-position of the "You killed..." text)
+
 CLASS BINDS
 
-You can bind them via the in-game menu. (Controls - Multiplayer Controls…)
+It is possible to bind these via the in-game menu (Controls - Multiplayer Controls...).
 Alternatively you can manually bind them in the console/config.
 
 bind [KEY] [COMMAND]
 
-openscriptmenu quickpromod silencer //toggles silencer on/off on the primary weapon
-openscriptmenu quickpromod grenade //toggles between flash/smoke-grenade
+Commands:
+
 openscriptmenu quickpromod assault
 openscriptmenu quickpromod specops
 openscriptmenu quickpromod demolitions
 openscriptmenu quickpromod sniper
+openscriptmenu quickpromod silencer //toggles silencer on/off on the primary weapon
+openscriptmenu quickpromod grenade //toggles between flash/smoke-grenade
 
 SHOUTCASTER BINDS
 
-You can bind them via the Shoutcaster main-menu.
+You can bind them via the in-game menu (Shoutcast Setup).
 Alternatively you can manually bind them in the console/config.
 
 bind [KEY] [COMMAND]
+
+Commands:
 
 openscriptmenu shoutcast_setup number
 openscriptmenu shoutcast_setup assault
@@ -189,11 +271,15 @@ openscriptmenu shoutcast_setup specops
 openscriptmenu shoutcast_setup demolitions
 openscriptmenu shoutcast_setup sniper
 
-Number being 1-10, it's very easy to understand which player corresponds the correct number.
-1-5 symbolizes players on Attacking side from top to down looking at the shoutcaster-bars.
+Number being 1-10 for players, it's very easy to understand which player corresponds the correct number.
+1-5 symbolizes players on Attacking side from top to bottom looking at the Shoutcaster-bars.
 6-10 same goes here, players on Defending side.
 
-Putting the class instead of a number will cycle through players using that class.
+If you set the number higher than 10 (11+) you will be able to follow another Shoutcaster.
+This requires the Shoutcaster you want to follow was using the player-binds to follow that player.
+You will get a confirmation message which Shoutcaster you are following.
+
+Setting a class (lowercase) instead of a number will cycle through players using that class.
 
 CUSTOM MAPS
 
@@ -202,9 +288,21 @@ For example map "mp_dahman_b3" contains a file called "mp_dahman_b3.iwd" and the
 
 NOTES FOR SERVER-ADMINS AND SERVER-HOSTING COMPANIES
 
-The dvar fs_game "mods/promodlive210" is forced for match-servers and do not rename any files or modify contents of them.
-We recommend using the iwd.cfg which you can put in the pb-folder, it contains checksums for the stock iwd-files for preventing custom skins and such and can be loaded by typing "rcon pb_sv_load iwd.cfg".
-However custom servers with skins etc. must use something else than "mods/promodlive210" for example "mods/promodlive210_custom", it's not restricted and you are free to modify files as well.
+The dvar fs_game "mods/promodlive211" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/promodlive211" for example "mods/promodlive211_custom", it's not restricted and you are free to modify files as well.
+
+Included with Promod is two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
+
+In order to be automatically-executed, the list of checks needs to be included into the automatically-executed PunkBuster configuration files on your server (pbsv.cfg or pbsvuser.cfg):
+
+pb_sv_load stock_iwd_md5.cfg
+pb_sv_load promod_iwd_md5.cfg // match-server only
+
+In case your server doesn't have any pbsv.cfg file, go in-game and type: "\rcon pb_sv_writecfg". Depending on if your server is streaming to any third-party anti-cheat site(s) you may or may not already have a pbsvuser.cfg, if you don't you can just copy all three files included to your server's PB-folder, or if the file exist add above lines to it.
+
+We STRONGLY encourage use of these MD5-checks! (This goes for leagues as well!)
+
+Due to several game engine exploits, we recommend to specify the rcon-password in the command-line of your server. If this is not possible, rename the server-config to something other than server.cfg, which would make finding rcon password more difficult.
 
 On another note of security, the IWD-file "z_custom_ruleset.iwd" is now running integrity checks if server is running match-mode which means you have to decide whether the server should run "promod_mode custom_public" or not.
 If you later want to run match-modes you will have to use the original unmodified "z_custom_ruleset.iwd" supplied in this package. Sorry for any inconvenience caused.

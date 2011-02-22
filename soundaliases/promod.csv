@@ -1,4 +1,4 @@
-name,file,channel,type,masterslave,loadspec,startdelay,speakermap
-promod_defused,promod/defused.mp3,announcer,streamed,master,all_mp,,announcer
-promod_destroyed,promod/destroyed.mp3,announcer,streamed,master,all_mp,1400,announcer
-promod_planted,promod/planted.mp3,announcer,streamed,master,all_mp,,announcer
+name,file,type,dist_min,dist_max,channel,loadspec,startdelay,speakermap
+promod_defused,promod/defused.wav,streamed,80,5000,announcer,all_mp,,announcer
+promod_destroyed,promod/destroyed.wav,streamed,80,5000,announcer,all_mp,1400,announcer
+promod_planted,promod/planted.wav,streamed,80,5000,announcer,all_mp,,announcer

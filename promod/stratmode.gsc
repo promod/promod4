@@ -11,6 +11,7 @@
 
 main()
 {
+	precacheItem( "radar_mp" );
 	thread onPlayerConnect();
 	thread createServerHUD();
 }
@@ -23,6 +24,94 @@ onPlayerConnect()
 		player thread nadeTraining();
 		player thread createHUD();
 		player thread monitorKeys();
+		if(getDvar("dedicated") == "listen server" && !getDvarInt( "sv_punkbuster" ))
+			player thread bots();
+	}
+}
+
+spawnthing()
+{
+	self endon("disconnect");
+
+	for(;;)
+	{
+		if(!self HasWeapon("radar_mp"))
+		{
+			self SetActionSlot( 1, "weapon", "radar_mp" );
+			self giveWeapon("radar_mp");
+		}
+
+		wait 0.5;
+	}
+}
+
+bots()
+{
+	self endon("disconnect");
+
+	self thread spawnthing();
+	lastWeapon = undefined;
+	for(;;)
+	{
+		self waittill( "weapon_change" );
+		if(self getCurrentWeapon() == "radar_mp")
+		{
+			if((!isDefined(self.inAction) || !self.inAction) && self isOnGround())
+			{
+				origin = self getOrigin();
+				angles = self getPlayerAngles();
+				self.inAction = true;
+
+				if(isDefined(self.bot))
+				{
+					self iprintln("You have 3 seconds to move");
+					wait 3;
+					self.bot setOrigin( origin );
+					self.bot SetPlayerAngles( angles );
+				}
+				else
+				{
+					newBot = addTestClient();
+
+					wait 0.05;
+
+					if(isdefined(newBot))
+					{
+						self iprintln("You have 3 seconds to move");
+						wait 2.75;
+
+						newBot.pers["isBot"] = true;
+						self.bot = newBot;
+						while( !isDefined( newBot.pers ) || !isDefined( newBot.pers["team"] ) )
+							wait 0.05;
+						newBot notify( "menuresponse", game["menu_team"], self.pers["team"] );
+						while(newBot.pers["team"] != "axis" && newBot.pers["team"] != "allies")
+							wait 0.05;
+						newBot notify( "menuresponse", game["menu_changeclass_" + newBot.pers["team"] ], "assault" );
+						while(!isDefined(newBot.pers["class"]))
+							wait 0.05;
+						newBot notify( "menuresponse", game["menu_changeclass"] , "go" );
+						while(!isAlive(newBot))
+							wait 0.05;
+
+						newBot SetMoveSpeedScale( 0 );
+						newBot freezeControls( true );
+						newBot setOrigin( origin );
+						newBot SetPlayerAngles( angles );
+						newBot.maxhealth = 999999999;
+						newBot.health = newBot.maxhealth;
+						self.hint6 setText( "Move: Press ^3[{+actionslot 1}]" );
+					}
+					else
+						self iprintln("Couldn't add bot");
+				}
+				self.inAction = false;
+			}
+
+			if(isDefined(lastWeapon))
+				self SwitchToWeapon(lastWeapon);
+		}
+		lastWeapon = self getCurrentWeapon();
 	}
 }
 
@@ -122,6 +211,8 @@ monitorKeys()
 
 loadPos()
 {
+	self endon( "disconnect" );
+
 	if ( !isDefined( self.savedorg ) )
 		self iprintln("No Previous Position Saved");
 	else
@@ -166,7 +257,7 @@ nadeTraining()
 				if ( distance( grenades[i].origin, self.origin ) < 140 )
 				{
 					self.flying = true;
-					grenades[i] thread nadeFlying( self );
+					grenades[i] thread nadeFlying( self, weaponName );
 				}
 			}
 		}
@@ -175,9 +266,18 @@ nadeTraining()
 	}
 }
 
-nadeFlying( player )
+nadeFlying( player, weaponName )
 {
 	player endon( "disconnect" );
+
+	time = 3;
+
+	if ( weaponName == "frag_grenade_mp" )
+		time = 3;
+	else if ( weaponName == "flash_grenade_mp" )
+		time = 1.5;
+	else
+		time = 1;
 
 	old_player_origin = player.origin;
 
@@ -209,13 +309,21 @@ nadeFlying( player )
 	if ( stop_flying || return_flying )
 		wait 0.1;
 	else
-		wait 3;
+	{
+		for ( i = 0; i < time - 0.5; i += 0.1 )
+		{
+			wait 0.1;
+
+			if ( player useButtonPressed() )
+				break;
+		}
+	}
 
 	player.flyobject unlink();
 
 	if ( stop_flying )
 	{
-		for ( i = 0; i < 3.5; i += 0.1 )
+		for ( i = 0; i < time + 0.4; i += 0.1 )
 		{
 			wait 0.1;
 
@@ -301,6 +409,29 @@ createHUD()
 	self.hint5.color = (0.8, 1, 1);
 	self.hint5.hidewheninmenu = true;
 	self.hint5 setText( "Load: Press ^3[{+activate}] ^7twice" );
+
+	if(getDvar("dedicated") == "listen server")
+	{
+		self.hint6 = newClientHudElem(self);
+		self.hint6.x = -7;
+		self.hint6.y = 235;
+		self.hint6.horzAlign = "right";
+		self.hint6.vertAlign = "top";
+		self.hint6.alignX = "right";
+		self.hint6.alignY = "middle";
+		self.hint6.fontScale = 1.4;
+		self.hint6.font = "default";
+		self.hint6.color = (0.8, 1, 1);
+		self.hint6.hidewheninmenu = true;
+
+		if(!getDvarInt( "sv_punkbuster" ))
+			self.hint6 setText( "Spawn: Press ^3[{+actionslot 1}]" );
+		else
+		{
+			self.hint6 setText( "Spawn: Disable Punkbuster" );
+			self.hint6.color = (0.5, 0.5, 0.5);
+		}
+	}
 }
 
 createServerHUD()
@@ -330,4 +461,20 @@ createServerHUD()
 	position.color = (0.8, 1, 1);
 	position.hidewheninmenu = true;
 	position setText( "Position" );
+
+	if(getDvar("dedicated") == "listen server")
+	{
+		traindummy = newHudElem();
+		traindummy.x = -7;
+		traindummy.y = 215;
+		traindummy.horzAlign = "right";
+		traindummy.vertAlign = "top";
+		traindummy.alignX = "right";
+		traindummy.alignY = "middle";
+		traindummy.fontScale = 1.4;
+		traindummy.font = "default";
+		traindummy.color = (0.8, 1, 1);
+		traindummy.hidewheninmenu = true;
+		traindummy setText( "Training Dummy" );
+	}
 }

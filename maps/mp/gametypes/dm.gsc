@@ -16,8 +16,6 @@ main()
 
 	level.onStartGameType = ::onStartGameType;
 	level.onSpawnPlayer = ::onSpawnPlayer;
-
-	game["dialog"]["gametype"] = "freeforall";
 }
 
 onStartGameType()

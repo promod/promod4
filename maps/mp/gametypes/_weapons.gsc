@@ -48,7 +48,6 @@ init()
 	precacheItem( "destructible_car" );
 	precacheShellShock( "default" );
 	thread maps\mp\_flashgrenades::main();
-	thread maps\mp\_entityheadicons::init();
 	level thread onPlayerConnect();
 }
 
@@ -72,14 +71,6 @@ onPlayerSpawned()
 		self.hasDoneCombat = false;
 		self thread watchGrenadeUsage();
 	}
-}
-
-isHackWeapon( weapon )
-{
-	if ( weapon == "briefcase_bomb_mp" )
-		return true;
-
-	return false;
 }
 
 dropWeaponForDeath( attacker )
@@ -130,9 +121,6 @@ dropWeaponForDeath( attacker )
 
 	item ItemWeaponSetAmmo( clipAmmo, stockAmmo );
 
-	item.owner = self;
-	item.ownersattacker = attacker;
-
 	if( !isDefined(game["PROMOD_MATCH_MODE"]) || game["PROMOD_MATCH_MODE"] != "match" || (game["PROMOD_MATCH_MODE"] == "match" && level.gametype != "sd") || game["promod_do_readyup"] )
 		item thread deletePickupAfterAWhile();
 }
@@ -147,39 +135,6 @@ deletePickupAfterAWhile()
 		return;
 
 	self delete();
-}
-
-getItemWeaponName()
-{
-	classname = self.classname;
-	assert( getsubstr( classname, 0, 7 ) == "weapon_" );
-	weapname = getsubstr( classname, 7 );
-	return weapname;
-}
-
-getFragGrenadeCount()
-{
-	if ( level.hardcoreMode )
-		grenadetype = "frag_grenade_short_mp";
-	else
-		grenadetype = "frag_grenade_mp";
-
-	count = self getammocount(grenadetype);
-	return count;
-}
-
-getSmokeGrenadeCount()
-{
-	grenadetype = "smoke_grenade_mp";
-	count = self getammocount(grenadetype);
-	return count;
-}
-
-getFlashGrenadeCount()
-{
-	grenadetype = "flash_grenade_mp";
-	count = self getammocount(grenadetype);
-	return count;
 }
 
 watchGrenadeUsage()
@@ -204,15 +159,10 @@ beginGrenadeTracking()
 	self endon ( "death" );
 	self endon ( "disconnect" );
 
-	startTime = getTime();
-
 	self waittill ( "grenade_fire", grenade, weaponName );
 
 	if ( weaponName == "frag_grenade_mp" || weaponName == "frag_grenade_short_mp" )
-	{
 		grenade thread maps\mp\gametypes\_shellshock::grenade_earthQuake();
-		grenade.originalOwner = self;
-	}
 
 	self.throwingGrenade = false;
 }

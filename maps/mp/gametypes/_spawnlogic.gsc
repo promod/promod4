@@ -262,7 +262,6 @@ getAllAlliedAndEnemyPlayers( obj )
 		}
 		else
 		{
-			assert( self.pers["team"] == "axis" );
 			obj.allies = level.alivePlayers["axis"];
 			obj.enemies = level.alivePlayers["allies"];
 		}

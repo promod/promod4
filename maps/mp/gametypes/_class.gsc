@@ -142,10 +142,7 @@ giveLoadout( team, class )
 		}
 	}
 
-	if( class == "assault" )
-		self setMoveSpeedScale( 0.95 );
-	else
-		self setMoveSpeedScale( 1.0 );
+	self setMoveSpeedScale( ( 1.0 - 0.05 * int( class == "assault" ) ) * !int( isDefined( level.strat_over ) && !level.strat_over ) );
 }
 
 preserveClass( class )
@@ -157,13 +154,6 @@ preserveClass( class )
 	CLASS_GRENADE = "";
 	CLASS_CAMO = "";
 
-	CLASS_PRIMARY_VALUE = "";
-	CLASS_PRIMARY_ATTACHMENT_VALUE = "";
-	CLASS_SECONDARY_VALUE = "";
-	CLASS_SECONDARY_ATTACHMENT_VALUE = "";
-	CLASS_GRENADE_VALUE = "";
-	CLASS_CAMO_VALUE = "";
-
 	if ( class == "assault" )
 	{
 		CLASS_PRIMARY = "ASSAULT_PRIMARY";
@@ -172,13 +162,6 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT = "ASSAULT_SECONDARY_ATTACHMENT";
 		CLASS_GRENADE = "ASSAULT_GRENADE";
 		CLASS_CAMO = "ASSAULT_CAMO";
-
-		CLASS_PRIMARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary"], 0 ) );
-		CLASS_PRIMARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary_attachment"], 0 ) );
-		CLASS_SECONDARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary"], 0 ) );
-		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
-		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
-		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
 	}
 	else if ( class == "specops" )
 	{
@@ -188,13 +171,6 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT = "SPECOPS_SECONDARY_ATTACHMENT";
 		CLASS_GRENADE = "SPECOPS_GRENADE";
 		CLASS_CAMO = "SPECOPS_CAMO";
-
-		CLASS_PRIMARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary"], 0 ) );
-		CLASS_PRIMARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary_attachment"], 0 ) );
-		CLASS_SECONDARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary"], 0 ) );
-		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
-		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
-		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
 	}
 	else if ( class == "demolitions" )
 	{
@@ -204,13 +180,6 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT = "DEMOLITIONS_SECONDARY_ATTACHMENT";
 		CLASS_GRENADE = "DEMOLITIONS_GRENADE";
 		CLASS_CAMO = "DEMOLITIONS_CAMO";
-
-		CLASS_PRIMARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary"], 0 ) );
-		CLASS_PRIMARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary_attachment"], 0 ) );
-		CLASS_SECONDARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary"], 0 ) );
-		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
-		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
-		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
 	}
 	else if ( class == "sniper" )
 	{
@@ -220,14 +189,14 @@ preserveClass( class )
 		CLASS_SECONDARY_ATTACHMENT = "SNIPER_SECONDARY_ATTACHMENT";
 		CLASS_GRENADE = "SNIPER_GRENADE";
 		CLASS_CAMO = "SNIPER_CAMO";
-
-		CLASS_PRIMARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary"], 0 ) );
-		CLASS_PRIMARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary_attachment"], 0 ) );
-		CLASS_SECONDARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary"], 0 ) );
-		CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
-		CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
-		CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
 	}
+
+	CLASS_PRIMARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary"], 0 ) );
+	CLASS_PRIMARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_primary_attachment"], 0 ) );
+	CLASS_SECONDARY_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary"], 0 ) );
+	CLASS_SECONDARY_ATTACHMENT_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_secondary_attachment"], 0 ) );
+	CLASS_GRENADE_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_grenade"], 0 ) );
+	CLASS_CAMO_VALUE = int( tablelookup( "promod/customStatsTable.csv", 1, self.pers[class]["loadout_camo"], 0 ) );
 
 	self set_config( CLASS_PRIMARY, CLASS_PRIMARY_VALUE );
 	self set_config( CLASS_PRIMARY_ATTACHMENT, CLASS_PRIMARY_ATTACHMENT_VALUE );
@@ -250,6 +219,7 @@ onPlayerConnecting()
 
 		if ( !isDefined( player.pers["class"] ) )
 			player.pers["class"] = undefined;
+
 		player.class = player.pers["class"];
 	}
 }
@@ -259,7 +229,7 @@ setClass( newClass )
 	self setClientDvar( "loadout_curclass", newClass );
 	self.curClass = newClass;
 
-	self thread promod\shoutcast::setShoutClass();
+	thread promod\shoutcast::setShoutClass();
 }
 
 cac_modified_damage( victim, attacker, damage, meansofdeath )

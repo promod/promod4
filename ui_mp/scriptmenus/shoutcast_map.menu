@@ -23,10 +23,9 @@
 		focuscolor		COLOR_FOCUSED
 		style			WINDOW_STYLE_EMPTY
 		blurWorld		7.0
-
 		onEsc
 		{
-			close self; open shoutcast;
+			close self;
 		}
 		onClose
 		{

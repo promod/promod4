@@ -222,9 +222,7 @@ showNotifyMessage( notifyData )
 		self.notifyIcon.alpha = 0;
 	}
 	else
-	{
 		waitRequireVisibility( duration );
-	}
 
 	self notify ( "notifyMessageDone" );
 	self.doingNotify = false;
@@ -244,6 +242,8 @@ showNotifyMessage( notifyData )
 
 waitRequireVisibility( waitTime )
 {
+	self endon("disconnect");
+
 	interval = 0.05;
 
 	while ( !self canReadText() )
@@ -369,32 +369,24 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 		outcomeTitle.glowColor = (0.2, 0.3, 0.7);
 		outcomeTitle setText( game["strings"]["halftime"] );
 		outcomeTitle.color = (1, 1, 1);
-
-		winner = "allies";
 	}
 	else if ( winner == "intermission" )
 	{
 		outcomeTitle.glowColor = (0.2, 0.3, 0.7);
 		outcomeTitle setText( game["strings"]["intermission"] );
 		outcomeTitle.color = (1, 1, 1);
-
-		winner = "allies";
 	}
 	else if ( winner == "roundend" )
 	{
 		outcomeTitle.glowColor = (0.2, 0.3, 0.7);
 		outcomeTitle setText( game["strings"]["roundend"] );
 		outcomeTitle.color = (1, 1, 1);
-
-		winner = "allies";
 	}
 	else if ( winner == "overtime" )
 	{
 		outcomeTitle.glowColor = (0.2, 0.3, 0.7);
 		outcomeTitle setText( game["strings"]["overtime"] );
 		outcomeTitle.color = (1, 1, 1);
-
-		winner = "allies";
 	}
 	else if ( winner == "tie" )
 	{
@@ -404,8 +396,6 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 		else
 			outcomeTitle setText( game["strings"]["draw"] );
 		outcomeTitle.color = (1, 1, 1);
-
-		winner = "allies";
 	}
 	else if ( isDefined( self.pers["team"] ) && winner == team )
 	{
@@ -470,7 +460,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 	rightScore.archived = false;
 	rightScore setPulseFX( 100, duration, 1000 );
 
-	if ( isDefined( level.swap_score ) && level.swap_score )
+	if ( winner == "halftime" )
 	{
 		leftIcon MoveOverTime( 2.5 );
 		leftIcon setPoint( "TOP", "BOTTOM", 60, spacing );

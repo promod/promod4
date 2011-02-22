@@ -1,0 +1,110 @@
+/*
+  Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+  Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+
+  This file is part of Call of Duty 4 Promod.
+
+  Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+  Terms of license can be found in LICENSE.md document bundled with the project.
+*/
+
+#include "ui/menudef.h"
+#include "ui_mp/common_macro.inc"
+
+#define CHOICE_SEP_1			31
+
+#define CHOICE_X_START			0
+#define CHOICE_Y_START			31
+
+#include "ui_mp/menustyle.inc"
+#include "ui/choices_setup_common.menu"
+
+{
+	menuDef
+	{
+		name			"shoutcast_setup_binds"
+		rect			0 0 640 480
+		focuscolor		COLOR_FOCUSED
+		style			WINDOW_STYLE_EMPTY
+		onEsc
+		{
+			close self;
+		}
+
+		itemDef
+		{
+			style			WINDOW_STYLE_FILLED
+			rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
+			backcolor		0 0 0 0.75
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			style			WINDOW_STYLE_SHADER
+			rect			0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+			background		"gradient_top"
+			visible			1
+			decoration
+		}
+		itemDef
+		{
+			style			WINDOW_STYLE_SHADER
+			rect			0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+			background		"gradient_bottom"
+			visible			1
+			decoration
+		}
+
+		#include "ui_mp/scriptmenus/shoutcast_setup.inc"
+
+		CHOICE_SECTION_TITLE( 1, dvarString("shout_attack_name") )
+
+		CHOICE_BIND( 2, "Player 1", "openscriptmenu shoutcast_setup 1", ; )
+		CHOICE_BIND( 3, "Player 2", "openscriptmenu shoutcast_setup 2", ; )
+		CHOICE_BIND( 4, "Player 3", "openscriptmenu shoutcast_setup 3", ; )
+		CHOICE_BIND( 5, "Player 4", "openscriptmenu shoutcast_setup 4", ; )
+		CHOICE_BIND( 6, "Player 5", "openscriptmenu shoutcast_setup 5", ; )
+
+		CHOICE_SECTION_TITLE( 7, dvarString("shout_defence_name") )
+
+		CHOICE_BIND( 8, "Player 1", "openscriptmenu shoutcast_setup 6", ; )
+		CHOICE_BIND( 9, "Player 2", "openscriptmenu shoutcast_setup 7", ; )
+		CHOICE_BIND( 10, "Player 3", "openscriptmenu shoutcast_setup 8", ; )
+		CHOICE_BIND( 11, "Player 4", "openscriptmenu shoutcast_setup 9", ; )
+		CHOICE_BIND( 12, "Player 5", "openscriptmenu shoutcast_setup 10", ; )
+
+		CHOICE_SECTION_TITLE( 21, "Shoutcaster" )
+
+		CHOICE_BIND( 22, "Shoutcaster 1", "openscriptmenu shoutcast_setup 11", ; )
+		CHOICE_BIND( 23, "Shoutcaster 2", "openscriptmenu shoutcast_setup 12", ; )
+		CHOICE_BIND( 24, "Shoutcaster 3", "openscriptmenu shoutcast_setup 13", ; )
+		CHOICE_BIND( 25, "Shoutcaster 4", "openscriptmenu shoutcast_setup 14", ; )
+		CHOICE_BIND( 26, "Shoutcaster 5", "openscriptmenu shoutcast_setup 15", ; )
+
+		CHOICE_SECTION_TITLE( 27, "Class" )
+
+		CHOICE_BIND( 28, "Assault", "openscriptmenu shoutcast_setup assault", ; )
+		CHOICE_BIND( 29, "Spec Ops", "openscriptmenu shoutcast_setup specops", ; )
+		CHOICE_BIND( 30, "Demolitions", "openscriptmenu shoutcast_setup demolitions", ; )
+		CHOICE_BIND( 31, "Sniper", "openscriptmenu shoutcast_setup sniper", ; )
+
+		CHOICE_SEPARATOR( CHOICE_SEP_1 )
+
+		CHOICE_BIND( 32, "Shoutcaster Menu", "openscriptmenu quickpromod shoutcaster", ; )
+		CHOICE_BIND( 33, "Overview Map", "openscriptmenu quickpromod overview", ; )
+
+		CHOICE_KEYBINDHELP
+
+		execKey "1" { scriptMenuResponse "1"; }
+		execKey "2" { scriptMenuResponse "2"; }
+		execKey "3" { scriptMenuResponse "3"; }
+		execKey "4" { scriptMenuResponse "4"; }
+		execKey "5" { scriptMenuResponse "5"; }
+		execKey "6" { scriptMenuResponse "6"; }
+		execKey "7" { scriptMenuResponse "7"; }
+		execKey "8" { scriptMenuResponse "8"; }
+		execKey "9" { scriptMenuResponse "9"; }
+		execKey "0" { scriptMenuResponse "10"; }
+	}
+}

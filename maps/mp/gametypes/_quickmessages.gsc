@@ -10,230 +10,88 @@
 
 init()
 {
-	game["menu_quickcommands"] = "quickcommands";
-	game["menu_quickstatements"] = "quickstatements";
-	game["menu_quickresponses"] = "quickresponses";
-	game["menu_quickpromod"] = "quickpromod";
-	game["menu_quickpromodgfx"] = "quickpromodgfx";
-
-	precacheMenu(game["menu_quickcommands"]);
-	precacheMenu(game["menu_quickstatements"]);
-	precacheMenu(game["menu_quickresponses"]);
-	precacheMenu(game["menu_quickpromod"]);
-	precacheMenu(game["menu_quickpromodgfx"]);
-	precacheHeadIcon("talkingicon");
-
-	precacheString( &"QUICKMESSAGE_FOLLOW_ME" );
-	precacheString( &"QUICKMESSAGE_MOVE_IN" );
-	precacheString( &"QUICKMESSAGE_FALL_BACK" );
-	precacheString( &"QUICKMESSAGE_SUPPRESSING_FIRE" );
-	precacheString( &"QUICKMESSAGE_ATTACK_LEFT_FLANK" );
-	precacheString( &"QUICKMESSAGE_ATTACK_RIGHT_FLANK" );
-	precacheString( &"QUICKMESSAGE_HOLD_THIS_POSITION" );
-	precacheString( &"QUICKMESSAGE_REGROUP" );
-	precacheString( &"QUICKMESSAGE_ENEMY_SPOTTED" );
-	precacheString( &"QUICKMESSAGE_ENEMIES_SPOTTED" );
-	precacheString( &"QUICKMESSAGE_IM_IN_POSITION" );
-	precacheString( &"QUICKMESSAGE_AREA_SECURE" );
-	precacheString( &"QUICKMESSAGE_GRENADE" );
-	precacheString( &"QUICKMESSAGE_SNIPER" );
-	precacheString( &"QUICKMESSAGE_NEED_REINFORCEMENTS" );
-	precacheString( &"QUICKMESSAGE_HOLD_YOUR_FIRE" );
-	precacheString( &"QUICKMESSAGE_YES_SIR" );
-	precacheString( &"QUICKMESSAGE_NO_SIR" );
-	precacheString( &"QUICKMESSAGE_IM_ON_MY_WAY" );
-	precacheString( &"QUICKMESSAGE_SORRY" );
-	precacheString( &"QUICKMESSAGE_GREAT_SHOT" );
-	precacheString( &"QUICKMESSAGE_TOOK_LONG_ENOUGH" );
-	precacheString( &"QUICKMESSAGE_ARE_YOU_CRAZY" );
-	precacheString( &"QUICKMESSAGE_WATCH_SIX" );
-	precacheString( &"QUICKMESSAGE_COME_ON" );
+	level.saytext[0] = &"QUICKMESSAGE_FOLLOW_ME";
+	level.saytext[1] = &"QUICKMESSAGE_MOVE_IN";
+	level.saytext[2] = &"QUICKMESSAGE_FALL_BACK";
+	level.saytext[3] = &"QUICKMESSAGE_SUPPRESSING_FIRE";
+	level.saytext[4] = &"QUICKMESSAGE_ATTACK_LEFT_FLANK";
+	level.saytext[5] = &"QUICKMESSAGE_ATTACK_RIGHT_FLANK";
+	level.saytext[6] = &"QUICKMESSAGE_HOLD_THIS_POSITION";
+	level.saytext[7] = &"QUICKMESSAGE_REGROUP";
+	level.saytext[8] = &"QUICKMESSAGE_ENEMY_SPOTTED";
+	level.saytext[9] = &"QUICKMESSAGE_ENEMIES_SPOTTED";
+	level.saytext[10] = &"QUICKMESSAGE_IM_IN_POSITION";
+	level.saytext[11] = &"QUICKMESSAGE_AREA_SECURE";
+	level.saytext[12] = &"QUICKMESSAGE_WATCH_SIX";
+	level.saytext[13] = &"QUICKMESSAGE_SNIPER";
+	level.saytext[14] = &"QUICKMESSAGE_NEED_REINFORCEMENTS";
+	level.saytext[15] = &"QUICKMESSAGE_YES_SIR";
+	level.saytext[16] = &"QUICKMESSAGE_NO_SIR";
+	level.saytext[17] = &"QUICKMESSAGE_IM_ON_MY_WAY";
+	level.saytext[18] = &"QUICKMESSAGE_SORRY";
+	level.saytext[19] = &"QUICKMESSAGE_GREAT_SHOT";
+	level.saytext[20] = &"QUICKMESSAGE_COME_ON";
+	for(i=0;i<21;i++) precacheString(level.saytext[i]);
+	level.soundalias = strtok("followme|movein|fallback|suppressfire|attackleftflank|attackrightflank|holdposition|regroup|enemyspotted|enemiesspotted|iminposition|areasecure|watchsix|sniper|needreinforcements|yessir|nosir|onmyway|sorry|greatshot|comeon", "|");
 }
 
-quickcommands(response)
+getSoundPrefixForTeam()
 {
-	self endon ( "disconnect" );
-
-	if(!isdefined(self.pers["team"]) || self.pers["team"] == "spectator" || isdefined(self.spamdelay))
-		return;
-
-	soundalias = "";
-	saytext = "";
-
-	switch(response)
+	a = "";
+	if ( self.pers["team"] == "allies" )
 	{
-		case "1":
-			soundalias = "mp_cmd_followme";
-			saytext = &"QUICKMESSAGE_FOLLOW_ME";
-			break;
-
-		case "2":
-			soundalias = "mp_cmd_movein";
-			saytext = &"QUICKMESSAGE_MOVE_IN";
-			break;
-
-		case "3":
-			soundalias = "mp_cmd_fallback";
-			saytext = &"QUICKMESSAGE_FALL_BACK";
-			break;
-
-		case "4":
-			soundalias = "mp_cmd_suppressfire";
-			saytext = &"QUICKMESSAGE_SUPPRESSING_FIRE";
-			break;
-
-		case "5":
-			soundalias = "mp_cmd_attackleftflank";
-			saytext = &"QUICKMESSAGE_ATTACK_LEFT_FLANK";
-			break;
-
-		case "6":
-			soundalias = "mp_cmd_attackrightflank";
-			saytext = &"QUICKMESSAGE_ATTACK_RIGHT_FLANK";
-			break;
-
-		case "7":
-			soundalias = "mp_cmd_holdposition";
-			saytext = &"QUICKMESSAGE_HOLD_THIS_POSITION";
-			break;
-
-		case "8":
-			soundalias = "mp_cmd_regroup";
-			saytext = &"QUICKMESSAGE_REGROUP";
-			break;
-
-		default:
-			soundalias = "";
+		if ( game["allies"] == "sas" )
+			a = "UK";
+		else
+			a = "US";
 	}
-
-	if ( soundalias == "" )
-		return;
-
-	self.spamdelay = true;
-
-	self saveHeadIcon();
-	self doQuickMessage(soundalias, saytext);
-
-	wait 3;
-	self.spamdelay = undefined;
-	self restoreHeadIcon();
+	else
+	{
+		if ( game["axis"] == "russian" )
+			a = "RU";
+		else
+			a = "AB";
+	}
+	return a+"_";
 }
 
-quickstatements(response)
+doQuickMessage( t, i )
 {
-	self endon ( "disconnect" );
-
-	if(!isdefined(self.pers["team"]) || self.pers["team"] == "spectator" || isdefined(self.spamdelay))
-		return;
-
-	soundalias = "";
-	saytext = "";
-
-	switch(response)
+	if( self.sessionstate == "playing" && isdefined(self.pers["team"]) && self.pers["team"] != "spectator" && !isdefined(self.spamdelay) )
 	{
-		case "1":
-			soundalias = "mp_stm_enemyspotted";
-			saytext = &"QUICKMESSAGE_ENEMY_SPOTTED";
-			break;
+		maxsize = 7;
+		offset = 8;
+		type = "stm";
 
-		case "2":
-			soundalias = "mp_stm_enemiesspotted";
-			saytext = &"QUICKMESSAGE_ENEMIES_SPOTTED";
-			break;
+		if(t == "quickcommands")
+		{
+			maxsize = 8;
+			offset = 0;
+			type = "cmd";
+		}
+		else if(t == "quickresponses")
+		{
+			maxsize = 6;
+			offset = 15;
+			type = "rsp";
+		}
+		if( i >= 0 && i < maxsize )
+		{
+			self.spamdelay = true;
 
-		case "3":
-			soundalias = "mp_stm_iminposition";
-			saytext = &"QUICKMESSAGE_IM_IN_POSITION";
-			break;
-
-		case "4":
-			soundalias = "mp_stm_areasecure";
-			saytext = &"QUICKMESSAGE_AREA_SECURE";
-			break;
-
-		case "5":
-			soundalias = "mp_stm_watchsix";
-			saytext = &"QUICKMESSAGE_WATCH_SIX";
-			break;
-
-		case "6":
-			soundalias = "mp_stm_sniper";
-			saytext = &"QUICKMESSAGE_SNIPER";
-			break;
-
-		case "7":
-			soundalias = "mp_stm_needreinforcements";
-			saytext = &"QUICKMESSAGE_NEED_REINFORCEMENTS";
-			break;
+			self playSound( self getSoundPrefixForTeam()+"mp_"+type+"_"+level.soundalias[offset+i] );
+			saytext = level.saytext[offset+i];
+			if(isdefined(level.QuickMessageToAll) && level.QuickMessageToAll)
+				self sayAll( saytext );
+			else
+			{
+				self sayTeam( saytext );
+				self pingPlayer();
+			}
+			wait 3;
+			self.spamdelay = undefined;
+		}
 	}
-
-	if ( soundalias == "" )
-		return;
-
-	self.spamdelay = true;
-
-	self saveHeadIcon();
-	self doQuickMessage(soundalias, saytext);
-
-	wait 3;
-	self.spamdelay = undefined;
-	self restoreHeadIcon();
-}
-
-quickresponses(response)
-{
-	self endon ( "disconnect" );
-
-	if(!isdefined(self.pers["team"]) || self.pers["team"] == "spectator" || isdefined(self.spamdelay))
-		return;
-
-	soundalias = "";
-	saytext = "";
-
-	switch(response)
-	{
-		case "1":
-			soundalias = "mp_rsp_yessir";
-			saytext = &"QUICKMESSAGE_YES_SIR";
-			break;
-
-		case "2":
-			soundalias = "mp_rsp_nosir";
-			saytext = &"QUICKMESSAGE_NO_SIR";
-			break;
-
-		case "3":
-			soundalias = "mp_rsp_onmyway";
-			saytext = &"QUICKMESSAGE_IM_ON_MY_WAY";
-			break;
-
-		case "4":
-			soundalias = "mp_rsp_sorry";
-			saytext = &"QUICKMESSAGE_SORRY";
-			break;
-
-		case "5":
-			soundalias = "mp_rsp_greatshot";
-			saytext = &"QUICKMESSAGE_GREAT_SHOT";
-			break;
-
-		case "6":
-			soundalias = "mp_rsp_comeon";
-			saytext = &"QUICKMESSAGE_COME_ON";
-			break;
-	}
-
-	if ( soundalias == "" )
-		return;
-
-	self.spamdelay = true;
-
-	self saveHeadIcon();
-	self doQuickMessage(soundalias, saytext);
-
-	wait 3;
-	self.spamdelay = undefined;
-	self restoreHeadIcon();
 }
 
 quickpromod(response)
@@ -243,73 +101,59 @@ quickpromod(response)
 	switch(response)
 	{
 		case "1":
-			self thread promod\timeout::Timeout_Call();
+			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
+				return;
+
+			self thread promod\timeout::timeoutCall();
 			break;
 
 		case "2":
-			if ( self.sessionstate != "playing" || ( !isDefined( self.isBombCarrier ) || !self.isBombCarrier ) || isDefined( self.isPlanting ) && self.isPlanting )
-				return;
-
-			self.carryObject thread maps\mp\gametypes\_gameobjects::setDropped();
-			self.isBombCarrier = false;
+			if ( self.sessionstate == "playing" && (!isDefined( self.isPlanting ) || !self.isPlanting) && !level.gameEnded && isDefined( self.carryObject ) )
+				self.carryObject thread maps\mp\gametypes\_gameobjects::setDropped();
 			break;
 
 		case "3":
 			self suicide();
 			break;
 
+		case "4":
+			a = "en";
+			if ( self promod\client::toggle("PROMOD_RECORD") )
+				a = "dis";
+			self iprintln("Record reminder has been "+a+"abled");
+			break;
+
 		case "silencer":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
+			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" || !isDefined( self.pers["class"] ) || !getDvarInt( "attach_allow_" + self.pers["class"] + "_silencer" ) || self.pers[self.pers["class"]]["loadout_primary"] == "mp44" || self.pers["class"] == "sniper" || self.pers["class"] == "demolitions" )
 				return;
 
-			if ( !isDefined( self.pers["class"] ) )
-				return;
-
-			classType = self.pers["class"];
-			primaryWeap = self.pers[classType]["loadout_primary"];
-
-			if ( !getDvarInt( "attach_allow_" + classType + "_silencer" ) )
-				return;
-
-			if ( primaryWeap == "mp44" || classType == "sniper" || classType == "demolitions" )
-				return;
-
-			if ( self.pers[classType]["loadout_primary_attachment"] != "silencer" )
+			attach = "none";
+			if(self.pers[self.pers["class"]]["loadout_primary_attachment"] == "none")
 			{
-				self.pers[classType]["loadout_primary_attachment"] = "silencer";
+				attach = "silencer";
 				self iprintln("Silencer attached");
 			}
 			else
-			{
-				self.pers[classType]["loadout_primary_attachment"] = "none";
 				self iprintln("Silencer detached");
-			}
+
+			self.pers[self.pers["class"]]["loadout_primary_attachment"] = attach;
 
 			self maps\mp\gametypes\_promod::menuAcceptClass( "go" );
 			break;
 
 		case "grenade":
-			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-				return;
-
-			if ( !isDefined( self.pers["class"] ) )
+			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" || !isDefined( self.pers["class"] ) )
 				return;
 
 			classType = self.pers["class"];
 
-			if ( self.pers[classType]["loadout_grenade"] == "smoke_grenade" )
+			if ( self.pers[classType]["loadout_grenade"] == "smoke_grenade" && getDvarInt( "weap_allow_flash_grenade" ) )
 			{
-				if ( !getDvarInt( "weap_allow_flash_grenade" ) )
-					return;
-
 				self.pers[classType]["loadout_grenade"] = "flash_grenade";
 				self iprintln("Flash selected");
 			}
-			else if ( self.pers[classType]["loadout_grenade"] == "flash_grenade" )
+			else if ( self.pers[classType]["loadout_grenade"] == "flash_grenade" && getDvarInt( "weap_allow_smoke_grenade" ) )
 			{
-				if ( !getDvarInt( "weap_allow_smoke_grenade" ) )
-					return;
-
 				self.pers[classType]["loadout_grenade"] = "smoke_grenade";
 				self iprintln("Smoke selected");
 			}
@@ -323,7 +167,7 @@ quickpromod(response)
 		case "specops":
 		case "demolitions":
 		case "sniper":
-			if ( ( self.pers["team"] != "axis" && self.pers["team"] != "allies" ) || ( isDefined(self.pers["class"]) && response == self.pers["class"] ) )
+			if ( ( self.pers["team"] != "axis" && self.pers["team"] != "allies" ) )
 				return;
 
 			if ( !self maps\mp\gametypes\_promod::verifyClassChoice( self.pers["team"], response ) )
@@ -332,26 +176,36 @@ quickpromod(response)
 				return;
 			}
 
+			if ( !isDefined( self.pers["class"] ) || self.pers["class"] != response )
+				self iprintln(chooseClassName(response)+" selected");
+
 			self maps\mp\gametypes\_promod::setClassChoice( response );
 			self maps\mp\gametypes\_promod::menuAcceptClass();
-			self iprintln(chooseClassName(response)+" selected");
 			break;
 
 		case "X":
 			if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
 				self openMenu( game["menu_changeclass_" + self.pers["team"] ] );
-			else if ( self.pers["team"] == "spectator" )
+			break;
+
+		case "shoutcaster":
+			if ( self.pers["team"] == "spectator" )
 				self openMenu( game["menu_shoutcast"] );
-			else
-				return;
+			break;
+
+		case "overview":
+			if ( self.pers["team"] == "spectator" )
+				self openmenu( game["menu_shoutcast_map"] );
 			break;
 
 		case "controls":
 			self openMenu("quickpromod");
 			break;
+
 		case "graphics":
-			self openmenu("quickpromodgfx");
+			self openMenu("quickpromodgfx");
 			break;
+
 		case "killspec":
 			self [[level.killspec]]();
 			break;
@@ -365,33 +219,36 @@ quickpromodgfx(response)
 	switch(response)
 	{
 		case "1":
-			self thread promod\client::toggle_sunlight();
+			self promod\client::setsunlight(self promod\client::loopthrough("PROMOD_SUNLIGHT", 2));
 			break;
 
 		case "2":
-			self thread promod\client::toggle_filmtweak();
+			self setclientdvar("r_filmusetweaks", self promod\client::toggle("PROMOD_FILMTWEAK"));
 			break;
 
 		case "3":
-			self thread promod\client::toggle_texture();
+			self setclientdvar("r_texfilterdisable", self promod\client::toggle("PROMOD_TEXTURE"));
 			break;
 
 		case "4":
-			self thread promod\client::toggle_normalmap();
+			self setclientdvar("r_normalmap", self promod\client::toggle("PROMOD_NORMALMAP"));
 			break;
 
 		case "5":
-			self thread promod\client::toggle_fovscale();
+			self setclientdvar("cg_fovscale", 1 + int(!self promod\client::toggle("PROMOD_FOVSCALE")) * 0.125);
 			break;
 
 		case "6":
-			self thread promod\client::toggle_gfxblur();
+			self setclientdvar("r_blur", 0.2 * self promod\client::loopthrough("PROMOD_GFXBLUR", 5));
 			break;
 	}
 }
 
 chooseClassName( classname )
 {
+	if ( !isDefined( classname ) )
+		return "";
+
 	switch( classname )
 	{
 		case "assault":
@@ -409,18 +266,17 @@ chooseClassName( classname )
 
 setFollow( response )
 {
-	if ( self.pers["team"] != "spectator" )
-		return;
+	self endon ( "disconnect" );
 
 	num = -1;
 	for ( i = 0; i < level.players.size; i++ )
 	{
 		players = level.players[i];
 		if ( isDefined( players.shoutNumber ) && int( response ) && isAlive( players ) && ( ( players.pers["team"] == "allies" && players.shoutNumber == int( response ) ) || ( ( players.pers["team"] == "axis" && players.shoutNumber == ( int( response ) -5 ) ) ) ) )
-			{
-				num = players getEntityNumber();
-				break;
-			}
+		{
+			num = players getEntityNumber();
+			break;
+		}
 	}
 
 	if ( num == -1 )
@@ -448,72 +304,71 @@ setFollow( response )
 		}
 	}
 
-	self.spectatorclient = num;
+	wait 0.05;
 
 	if ( num != -1 )
 	{
+		self notify ( "stop_follow" );
+
+		self.spectatorclient = num;
+		self.spectatorlast = num;
+		self.freelook = false;
+		self thread resetSpec();
+	}
+}
+
+setFollowSpec( response )
+{
+	self notify ( "followspec" );
+	self endon ( "followspec" );
+
+	self endon ( "disconnect" );
+	self endon ( "joined_team" );
+	self endon ( "stop_follow" );
+
+	num = -1;
+	o_num = -1;
+
+	name = "";
+	o_name = "";
+	for (;;)
+	{
+		for ( i = 0; i < level.players.size; i++ )
+		{
+			players = level.players[i];
+			if ( isDefined( players.spectatorlast ) && isDefined( players.specNumber ) && players != self && players.pers["team"] == "spectator" && players.specNumber == int( response ) )
+			{
+				num = players.spectatorlast;
+				name = players.name;
+				break;
+			}
+		}
+
 		wait 0.05;
-		self.spectatorclient = -1;
+
+		if ( num != o_num && num != -1 )
+		{
+			o_num = num;
+			self.spectatorclient = num;
+			self.spectatorlast = num;
+			self.freelook = false;
+			self thread resetSpec();
+
+			if ( name != o_name )
+			{
+				o_name = name;
+				self iprintln("You are following " + name);
+			}
+		}
+
+		wait 0.05;
 	}
 }
 
-doQuickMessage( soundalias, saytext )
+resetSpec()
 {
-	if(self.sessionstate != "playing")
-		return;
+	self endon ( "disconnect" );
 
-	if ( self.pers["team"] == "allies" )
-	{
-		if ( game["allies"] == "sas" )
-			prefix = "UK_";
-		else
-			prefix = "US_";
-	}
-	else
-	{
-		if ( game["axis"] == "russian" )
-			prefix = "RU_";
-		else
-			prefix = "AB_";
-	}
-
-	if(isdefined(level.QuickMessageToAll) && level.QuickMessageToAll)
-	{
-		self.headiconteam = "none";
-		self.headicon = "talkingicon";
-
-		self playSound( prefix+soundalias );
-		self sayAll(saytext);
-	}
-	else
-	{
-		if(self.sessionteam == "allies")
-			self.headiconteam = "allies";
-		else if(self.sessionteam == "axis")
-			self.headiconteam = "axis";
-
-		self.headicon = "talkingicon";
-
-		self playSound( prefix+soundalias );
-		self sayTeam( saytext );
-		self pingPlayer();
-	}
-}
-
-saveHeadIcon()
-{
-	if(isdefined(self.headicon))
-		self.oldheadicon = self.headicon;
-
-	if(isdefined(self.headiconteam))
-		self.oldheadiconteam = self.headiconteam;
-}
-
-restoreHeadIcon()
-{
-	if(isdefined(self.oldheadicon))
-		self.headicon = self.oldheadicon;
-
-	if(isdefined(self.oldheadiconteam))
-		self.headiconteam = self.oldheadiconteam;
+	wait 0.05;
+	self.spectatorclient = -1;
 }

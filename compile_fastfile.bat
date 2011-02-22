@@ -11,6 +11,7 @@
 SET work_directory=%~dp0
 cd %work_directory%
 
+xcopy localizedstrings ..\..\raw\english\localizedstrings\ /SY
 xcopy maps ..\..\raw\maps\ /SY
 xcopy promod ..\..\raw\promod\ /SY
 xcopy shock ..\..\raw\shock\ /SY
@@ -19,12 +20,11 @@ xcopy soundaliases ..\..\raw\soundaliases\ /SY
 xcopy ui_mp ..\..\raw\ui_mp\ /SY
 
 copy mod.csv ..\..\zone_source /Y
-copy promod.str ..\..\raw\english\localizedstrings /Y
 
 cd ..\..\bin
 linker_pc.exe -language english -compress -cleanup mod -verbose
 
-cd ..\mods\promodlive210
+cd ..\mods\promodlive211
 copy ..\..\zone\english\mod.ff
 
 pause

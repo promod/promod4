@@ -407,7 +407,6 @@ onRadioCapture( player )
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "hq_captured" + player.name;
-
 }
 
 onRadioDestroy( player )
@@ -440,7 +439,6 @@ onRadioDestroy( player )
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "hq_destroyed" + player.name;
-
 }
 
 DestroyHQAfterTime( time )
@@ -502,8 +500,6 @@ onSpawnPlayer()
 
 	if ( !isDefined( spawnpoint ) )
 		spawnpoint = maps\mp\gametypes\_spawnlogic::getSpawnpoint_NearTeam( level.spawn_all );
-
-	assert( isDefined(spawnpoint) );
 
 	self.lowerMessageOverride = undefined;
 
@@ -647,7 +643,6 @@ PickRadioToSpawn()
 			bestradio = radio;
 		}
 	}
-	assert( isdefined( bestradio ) );
 
 	level.prevradio2 = level.prevradio;
 	level.prevradio = bestradio;

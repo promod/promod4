@@ -20,5 +20,7 @@ main()
 	game["allies_soldiertype"] = "desert";
 	game["axis_soldiertype"] = "desert";
 
+	level.sunlight = 0.78;
+
 	maps\mp\_explosive_barrels::main();
 }

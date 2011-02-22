@@ -151,7 +151,7 @@
 			textscale	0.4
 			textalign	ITEM_ALIGN_LEFT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") )
+			visible		when ( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") )
 			decoration
 		}
 		itemDef
@@ -163,7 +163,7 @@
 			textscale	0.4
 			textalign	ITEM_ALIGN_LEFT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") )
+			visible		when ( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") )
 			decoration
 		}
 		itemDef
@@ -175,7 +175,7 @@
 			textscale	0.4
 			textalign	ITEM_ALIGN_LEFT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( team( name ) == "TEAM_FREE" )
+			visible		when ( team( name ) == "TEAM_FREE" )
 			decoration
 		}
 		itemDef
@@ -205,7 +205,7 @@
 			textscale	0.4
 			textalign	ITEM_ALIGN_LEFT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") )
+			visible		when ( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") )
 			decoration
 		}
 		itemDef
@@ -217,7 +217,7 @@
 			textscale	TEXTSIZE_SMALL
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") && team( score ) > otherteam( score ) && timeLeft() % 8 > 3 && !isIntermission() )
+			visible		when( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") && team( score ) > otherteam( score ) && timeLeft() % 8 > 3 && !isIntermission() )
 			decoration
 		}
 		itemDef
@@ -229,7 +229,7 @@
 			textscale	TEXTSIZE_SMALL
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") && team( score ) < otherteam( score ) && timeLeft() % 8 > 3 && !isIntermission() )
+			visible		when( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") && team( score ) < otherteam( score ) && timeLeft() % 8 > 3 && !isIntermission() )
 			decoration
 		}
 		itemDef
@@ -241,7 +241,7 @@
 			textscale	TEXTSIZE_SMALL
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") && team( score ) == otherteam( score ) && timeLeft() % 8 > 3 && !isIntermission() )
+			visible		when( (team( name ) == "TEAM_ALLIES" || team( name ) == "TEAM_AXIS") && team( score ) == otherteam( score ) && timeLeft() % 8 > 3 && !isIntermission() )
 			decoration
 		}
 		itemDef
@@ -253,7 +253,7 @@
 			textscale	TEXTSIZE_SMALL
 			textalign	ITEM_ALIGN_CENTER
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when( (timeLeft() % 8 < 4 || timeLeft() < 0) && !isIntermission() )
+			visible		when( (timeLeft() % 8 < 4 || timeLeft() < 0) && !isIntermission() )
 			decoration
 		}
 		itemDef
@@ -265,7 +265,7 @@
 			textscale	0.4
 			textalign	ITEM_ALIGN_LEFT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( team( name ) == "TEAM_SPECTATOR" )
+			visible		when ( team( name ) == "TEAM_SPECTATOR" )
 			decoration
 		}
 		itemDef
@@ -277,24 +277,24 @@
 			textscale	0.4
 			textalign	ITEM_ALIGN_LEFT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( team( name ) == "TEAM_SPECTATOR" )
+			visible		when ( team( name ) == "TEAM_SPECTATOR" )
 			decoration
 		}
 		itemDef
 		{
-			rect		0 4 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			rect		-3 4 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
 			origin		0 22
 			exp text	( secondsAsCountdown( timeLeft() ) );
 			textfont	UI_FONT_OBJECTIVE
 			textscale	0.4
 			textalign	ITEM_ALIGN_RIGHT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible 	when ( timeLeft() >= 30 );
+			visible		when ( timeLeft() >= 60 );
 			decoration
 		}
 		itemDef
 		{
-			rect		0 4 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			rect		-3 4 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
 			origin		0 22
 			exp text	( secondsAsCountdown( timeLeft() ) );
 			textfont	UI_FONT_OBJECTIVE
@@ -302,12 +302,12 @@
 			textalign	ITEM_ALIGN_RIGHT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
 			forecolor	1 0.75 0 1
-			visible 	when ( timeLeft() >= 10 && timeLeft() < 30 );
+			visible		when ( timeLeft() >= 10 && timeLeft() < 60 );
 			decoration
 		}
 		itemDef
 		{
-			rect		0 4 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
+			rect		-3 4 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_TOP
 			origin		0 22
 			exp text	( secondsAsCountdown( timeLeft() ) );
 			textfont	UI_FONT_OBJECTIVE
@@ -315,7 +315,7 @@
 			textalign	ITEM_ALIGN_RIGHT
 			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
 			forecolor	1 0.5 0 1
-			visible 	when ( timeLeft() >= 0 && timeLeft() < 10 );
+			visible		when ( timeLeft() >= 0 && timeLeft() < 10 );
 			decoration
 		}
 	}
