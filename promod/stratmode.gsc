@@ -90,7 +90,7 @@ bots()
 						newBot notify( "menuresponse", game["menu_changeclass_" + newBot.pers["team"] ], "assault" );
 						while(!isDefined(newBot.pers["class"]))
 							wait 0.05;
-						newBot notify( "menuresponse", game["menu_changeclass"] , "go" );
+						newBot notify( "menuresponse", game["menu_changeclass"] );
 						while(!isAlive(newBot))
 							wait 0.05;
 

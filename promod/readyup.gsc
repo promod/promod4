@@ -71,8 +71,10 @@ main()
 			{
 				player.update = true;
 
-				if ( !game["promod_first_readyup_done"] && ( isAlive( player ) && isDefined( player.pers["class"] ) && !isDefined( player.inrecmenu ) && !player promod\client::get_config( "PROMOD_RECORD" ) ) )
+				if ( !isDefined( player.pers["record_reminder_done"] ) && ( isAlive( player ) && isDefined( player.pers["class"] ) && !isDefined( player.inrecmenu ) && !player promod\client::get_config( "PROMOD_RECORD" ) ) )
 				{
+					player.pers["record_reminder_done"] = true;
+
 					player openMenu( game["menu_demo"] );
 					player.inrecmenu = true;
 				}

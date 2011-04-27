@@ -391,7 +391,10 @@ spawnPlayer()
 
 	prof_begin( "spawnPlayer_postUTS" );
 
-	self maps\mp\gametypes\_class::giveLoadout( self.team, self.class );
+	if ( isDefined( game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] && ( !isDefined( game["promod_do_readyup"] ) || isDefined( game["promod_do_readyup"] ) && !game["promod_do_readyup"] ) )
+		self thread removeWeapons();
+	else
+		self maps\mp\gametypes\_class::giveLoadout( self.team, self.class );
 
 	if ( level.inPrematchPeriod && game["promod_do_readyup"] )
 		self freezeControls( true );
@@ -437,6 +440,28 @@ spawnPlayer()
 	self thread promod\shoutcast::assignShoutID();
 
 	thread promod\shoutcast::setShoutClass();
+}
+
+removeWeapons()
+{
+	self endon("disconnect");
+
+	self maps\mp\gametypes\_class::giveLoadout( self.team, self.class );
+
+	wait 0.05;
+
+	attachment = "";
+	if(self.pers[self.pers["class"]]["loadout_secondary_attachment"] == "silencer")
+		attachment = "_silencer";
+
+	sidearmWeapon = self.pers[self.pers["class"]]["loadout_secondary"]+attachment+"_mp";
+
+	self takeAllWeapons();
+	self giveWeapon(sidearmWeapon, 0);
+	self setweaponammoclip(sidearmWeapon, 0);
+	self setweaponammostock(sidearmWeapon, 0);
+	self switchtoWeapon(sidearmWeapon);
+	self setclientdvar("g_compassShowEnemies", 1);
 }
 
 spawnSpectator( origin, angles )
@@ -1323,13 +1348,10 @@ closeMenus()
 	self closeInGameMenu();
 }
 
-beginClassChoice( forceNewChoice )
+beginClassChoice()
 {
-	if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" )
-		return;
-
-	team = self.pers["team"];
-	self openMenu( game[ "menu_changeclass_" + team ] );
+	if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
+		self openMenu( game[ "menu_changeclass_" + self.pers["team"] ] );
 }
 
 menuAllies()
@@ -2117,6 +2139,23 @@ openMainMenu()
 	}
 }
 
+clientCheck()
+{
+	self endon ( "disconnect" );
+
+	self openmenu("oob");
+
+	wait 0.05;
+
+	self.clientcheck = true;
+	self openmenu("clientcheck");
+
+	wait 0.1;
+
+	self setclientdvar( "g_scriptMainMenu", game["menu_team"] );
+	self openMenu( game["menu_team"] );
+}
+
 checkRestartMap()
 {
 	if ( getDvar( "o_gametype" ) == "" )
@@ -2178,25 +2217,6 @@ startGame()
 
 	if ( isDefined(game["PROMOD_KNIFEROUND"]) && game["PROMOD_KNIFEROUND"] )
 	{
-		for(i=0;i<level.players.size;i++)
-		{
-			player = level.players[i];
-			if( ( player.pers["team"] == "allies" || player.pers["team"] == "axis" ) && isDefined( player.pers["class"] ) )
-			{
-				attachment = "";
-				if(player.pers[player.pers["class"]]["loadout_secondary_attachment"] == "silencer")
-					attachment = "_silencer";
-
-				sidearmWeapon = player.pers[player.pers["class"]]["loadout_secondary"]+attachment+"_mp";
-				player takeAllWeapons();
-				player giveWeapon(sidearmWeapon, 0);
-				player setweaponammoclip(sidearmWeapon, 0);
-				player setweaponammostock(sidearmWeapon, 0);
-				player switchtoWeapon(sidearmWeapon);
-				player setclientdvar("g_compassShowEnemies", 1);
-			}
-		}
-
 		thread disableBombsites();
 
 		if(game["PROMOD_MATCH_MODE"] != "pub")
@@ -2931,8 +2951,7 @@ Callback_PlayerConnect()
 		thread maps\mp\gametypes\_promod::updateClassAvailability( "allies" );
 		thread maps\mp\gametypes\_promod::updateClassAvailability( "axis" );
 
-		self setclientdvar( "g_scriptMainMenu", game["menu_team"] );
-		self openMenu( game["menu_team"] );
+		self thread clientCheck();
 
 		if ( level.teamBased )
 		{
@@ -3058,6 +3077,9 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 		if ( self.ruptally < 0 )
 			return;
 	}
+
+	if ( isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && sMeansOfDeath != "MOD_MELEE" && !level.rdyup )
+		return;
 
 	if( !isDefined( vDir ) )
 		iDFlags |= level.iDFLAGS_NO_KNOCKBACK;

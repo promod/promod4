@@ -8,7 +8,7 @@
 
 @echo off
 
-SET mod_name=promodlive211
+SET mod_name=promodlive212
 SET work_directory=%~dp0
 cd %work_directory%
 

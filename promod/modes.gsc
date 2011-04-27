@@ -227,7 +227,7 @@ setMode( mode )
 	else if ( game["PROMOD_MATCH_MODE"] == "match" )
 		game["PROMOD_MODE_HUD"] += "^4Match";
 
-	if( game["PROMOD_KNIFEROUND"] && game["PROMOD_MATCH_MODE"] == "match" )
+	if ( game["PROMOD_KNIFEROUND"] && game["PROMOD_MATCH_MODE"] == "match" && level.gametype == "sd" )
 		game["PROMOD_MODE_HUD"] += " ^5Knife";
 
 	if ( game["LAN_MODE"] )

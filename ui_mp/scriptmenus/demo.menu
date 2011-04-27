@@ -10,7 +10,6 @@
 
 #include "ui/menudef.h"
 
-
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 

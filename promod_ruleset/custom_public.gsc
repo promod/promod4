@@ -178,7 +178,6 @@ main()
 	setDvar( "logfile", 1 );
 	setDvar( "g_log", "games_mp.log" );
 	setDvar( "g_logSync", 0 );
-	setDvar( "loc_warnings", 0 );
 
 	// server issues (not likely to be changed)
 	setDvar( "g_inactivity", 0 );

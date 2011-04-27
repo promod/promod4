@@ -221,20 +221,20 @@ setup_destructibles()
 			if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "health" ] ) )
 				self.destructible_parts[ i ].v[ "health" ] = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "health" ];
 
-			if ( !i )
-				continue;
-
-			modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "modelName" ];
-			tagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "tagName" ];
-
-			stateIndex = 1;
-			while ( isDefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ] ) )
+			if ( i )
 			{
-				stateTagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ];
-				stateModelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "modelName" ];
-				if ( isDefined( stateTagName ) && stateTagName != tagName )
-					self hideapart( stateTagName );
-				stateIndex++;
+				modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "modelName" ];
+				tagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ 0 ].v[ "tagName" ];
+
+				stateIndex = 1;
+				while ( isDefined( level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ] ) )
+				{
+					stateTagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "tagName" ];
+					stateModelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ stateIndex ].v[ "modelName" ];
+					if ( isDefined( stateTagName ) && stateTagName != tagName )
+						self hidepart( stateTagName );
+					stateIndex++;
+				}
 			}
 		}
 	}
@@ -387,19 +387,19 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 
 		if ( isdefined( level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ] ) )
 		{
-			if ( !partIndex )
+			if ( partIndex )
 			{
-				newModel = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "modelName" ];
-				self setModel( newModel );
-			}
-			else
-			{
-				self hideapart( tagName );
+				self hidepart( tagName );
 				modelName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "modelName" ];
 				tagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "tagName" ];
 
 				if ( isdefined( modelName ) && isdefined( tagName ) )
-					self showapart( tagName );
+					self showpart( tagName );
+			}
+			else
+			{
+				newModel = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "modelName" ];
+				self setModel( newModel );
 			}
 		}
 
@@ -489,6 +489,7 @@ destructible_update_part( damage, modelName, tagName, point, direction_vec, atta
 			return;
 
 		updateHealthValue = true;
+		wait 0.05;
 	}
 }
 
@@ -512,15 +513,15 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 				{
 					modelName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "modelName" ];
 
-					if ( !i )
-					{
-						d = distance( point, self.origin );
-						tagName = undefined;
-					}
-					else
+					if ( i )
 					{
 						tagName = level.destructible_type[ self.destuctableInfo ].parts[ i ][ j ].v[ "tagName" ];
 						d = distance( point, self getTagOrigin( tagName ) );
+					}
+					else
+					{
+						tagName = undefined;
+						d = distance( point, self.origin );
 					}
 
 					if ( ( !isdefined( closestPartDist ) ) || ( d < closestPartDist ) )
@@ -554,22 +555,14 @@ destructible_splash_damage( damage, point, direction_vec, attacker, damageType )
 isValidSoundCause( soundCauseVar, partIndex, stateIndex, soundIndex, damageType )
 {
 	soundCause = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ soundCauseVar ][ soundIndex ];
-	if ( !isdefined( soundCause ) || soundCause == damageType )
-		return true;
-
-	return false;
+	
+	return !isdefined( soundCause ) || soundCause == damageType;
 }
 
 isValidDamageCause( partIndex, stateIndex, damageType )
 {
 	validType = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ stateIndex ].v[ "validDamageCause" ];
-	if ( !isdefined( damageType ) || !isdefined( validType ) )
-		return true;
-
-	if ( ( validType == "no_melee" ) && damageType == "melee" || damageType == "impact" )
-		return false;
-
-	return true;
+	return !isdefined( damageType ) || !isdefined( validType ) || (validType != "no_melee" || damageType != "melee") && damageType != "impact";
 }
 
 getDamageType( type )
@@ -628,35 +621,35 @@ health_drain( amount, interval, partIndex, modelName, tagName )
 
 explode( partIndex, force_min, force_max, range, mindamage, maxdamage )
 {
-	if ( isdefined( self.exploded ) )
-		return;
-
-	self.exploded = true;
-
-	if(self.classname == "script_vehicle")
-		self notify ("death");
-
-	wait 0.05;
-
-	tagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ self.destructible_parts[ partIndex ].v[ "currentState" ] ].v[ "tagName" ];
-	if ( isdefined( tagName ) )
-		explosionOrigin = self getTagOrigin( tagName );
-	else
-		explosionOrigin = self.origin;
-
-	self notify( "damage", maxdamage, self, ( 0, 0, 0 ), explosionOrigin, "MOD_EXPLOSIVE", "", "" );
-
-	waittillframeend;
-
-	self notify( "stop_taking_damage" );
-	wait 0.05;
-
-	if ( !isDefined( self.damageOwner ) )
-		self radiusDamage( explosionOrigin + ( 0, 0, 80 ), range, maxdamage, mindamage );
-	else
+	if ( !isdefined( self.exploded ) )
 	{
-		self radiusDamage( explosionOrigin + ( 0, 0, 80 ), range, maxdamage, mindamage, self.damageOwner );
-		self.damageOwner notify ( "destroyed_car" );
+		self.exploded = true;
+
+		if(self.classname == "script_vehicle")
+			self notify ("death");
+
+		wait 0.05;
+
+		tagName = level.destructible_type[ self.destuctableInfo ].parts[ partIndex ][ self.destructible_parts[ partIndex ].v[ "currentState" ] ].v[ "tagName" ];
+		if ( isdefined( tagName ) )
+			explosionOrigin = self getTagOrigin( tagName );
+		else
+			explosionOrigin = self.origin;
+
+		self notify( "damage", maxdamage, self, ( 0, 0, 0 ), explosionOrigin, "MOD_EXPLOSIVE", "", "" );
+
+		waittillframeend;
+
+		self notify( "stop_taking_damage" );
+		wait 0.05;
+
+		if ( isDefined( self.damageOwner ) )
+		{
+			self radiusDamage( explosionOrigin + ( 0, 0, 80 ), range, maxdamage, mindamage, self.damageOwner );
+			self.damageOwner notify ( "destroyed_car" );
+		}
+		else
+			self radiusDamage( explosionOrigin + ( 0, 0, 80 ), range, maxdamage, mindamage );
 	}
 }
 
@@ -697,14 +690,4 @@ string( num )
 deleteEnt( ent )
 {
 	ent delete();
-}
-
-hideapart( tagName )
-{
-	self hidepart( tagName );
-}
-
-showapart( tagName )
-{
-	self showpart( tagName );
 }

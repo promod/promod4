@@ -11,7 +11,8 @@
 init()
 {
 	game["menu_team"] = "team_marinesopfor";
-	game["menu_team_flipped"] = "team_marinesopfor_flipped";
+	if(game["attackers"] == "axis" && game["defenders"] == "allies")
+		game["menu_team"] += "_flipped";
 	game["menu_class_allies"] = "class_marines";
 	game["menu_changeclass_allies"] = "changeclass_marines_mw";
 	game["menu_class_axis"] = "class_opfor";
@@ -37,8 +38,7 @@ init()
 	precacheMenu("quickpromod");
 	precacheMenu("quickpromodgfx");
 	precacheMenu("scoreboard");
-	precacheMenu("team_marinesopfor");
-	precacheMenu("team_marinesopfor_flipped");
+	precacheMenu(game["menu_team"]);
 	precacheMenu("class_marines");
 	precacheMenu("changeclass_marines_mw");
 	precacheMenu("class_opfor");
@@ -54,6 +54,8 @@ init()
 	precacheMenu("shoutcast_setup_binds");
 	precacheMenu("echo");
 	precacheMenu("demo");
+	precacheMenu("clientcheck");
+	precacheMenu("oob");
 
 	level thread onPlayerConnect();
 }
@@ -91,9 +93,6 @@ onMenuResponse()
 				if ( self.pers["team"] == "none" )
 					continue;
 
-				self closeMenu();
-				self closeInGameMenu();
-
 				if( menu == game["menu_changeclass"] && ( self.pers["team"] == "axis" || self.pers["team"] == "allies" ) )
 				{
 					if( isDefined(self.pers["class"]) )
@@ -103,6 +102,11 @@ onMenuResponse()
 					}
 
 					self openMenu( game["menu_changeclass_"+self.pers["team"]] );
+				}
+				else
+				{
+					self closeMenu();
+					self closeInGameMenu();
 				}
 				continue;
 
@@ -127,20 +131,13 @@ onMenuResponse()
 				continue;
 
 			case "changeclass_marines":
-				if ( self.pers["team"] != "allies" )
-					continue;
-
-				self closeMenu();
-				self closeInGameMenu();
-				self openMenu( game["menu_changeclass_allies"] );
-				continue;
 			case "changeclass_opfor":
-				if ( self.pers["team"] != "axis" )
-					continue;
-
-				self closeMenu();
-				self closeInGameMenu();
-				self openMenu( game["menu_changeclass_axis"] );
+				if ( self.pers["team"] == "axis" || self.pers["team"] == "allies" )
+				{
+					self closeMenu();
+					self closeInGameMenu();
+					self openMenu( game["menu_changeclass_"+self.pers["team"]] );
+				}
 				continue;
 		}
 
@@ -148,12 +145,9 @@ onMenuResponse()
 		{
 			case "echo":
 				k = strtok(response, "_");
-				buf = "";
-				for(i=0;i<k.size;i++)
-				{
-					buf += k[i];
-					if(i!=k.size-1) buf += " ";
-				}
+				buf = k[0];
+				for(i=1;i<k.size;i++)
+					buf += " "+k[i];
 				self iprintln(buf);
 				continue;
 			case "team_marinesopfor":
@@ -220,6 +214,15 @@ onMenuResponse()
 
 			case "quickpromodgfx":
 				maps\mp\gametypes\_quickmessages::quickpromodgfx( response );
+				continue;
+			case "clientcheck":
+				if ( response == "pwned" && isDefined( self ) && isDefined( self.clientcheck ) )
+				{
+					self.clientcheck = undefined;
+
+					kick(self getentitynumber());
+					iprintln(self.name+" ("+GetSubStr(self getGuid(),24)+") was kicked for cheating.");
+				}
 				continue;
 		}
 	}

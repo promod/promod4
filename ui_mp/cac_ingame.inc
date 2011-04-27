@@ -28,7 +28,6 @@ menuDef	{
 	focuscolor		COLOR_FOCUSED
 	style			WINDOW_STYLE_EMPTY
 	blurWorld		7.0
-	onOpen { scriptMenuResponse "apply"; }
 	onESC { scriptMenuResponse "back"; }
 
 	itemDef

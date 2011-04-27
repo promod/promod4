@@ -1,4 +1,4 @@
-Promod LIVE V2.11 EU - README
+Promod LIVE V2.12 EU - README
 http://www.codpromod.com
 2011-02-22 <promod [at] codpromod.com>
 #codpromod @ QuakeNet
@@ -13,18 +13,25 @@ In association with Vita Nova
 http://www.thevitanova.org
 #Vita-Nova @ QuakeNet
 
-Zip-package (promodlive211_eu.zip) contains:
+Zip-package (promodlive212_eu.zip) contains:
 
 LICENSE
-promodlive211\mod.ff
-promodlive211\promodlive211.iwd
-promodlive211\z_custom_ruleset.iwd
+promodlive212\mod.ff
+promodlive212\promodlive212.iwd
+promodlive212\z_custom_ruleset.iwd
 pb\stock_iwd_md5.cfg
 pb\promod_iwd_md5.cfg
 pb\pbsvuser.cfg
 readme.txt
 server_setup.txt
 server.cfg
+
+LIVE V2.12:
+- Protection against clientside executable modification
+- Fixed knife-round to always remove the weapons and ammo, all other damage than from the knife is disabled as a extra measure
+- Record-menu will no longer appear twice in knife-rounds
+- Fixed choosing team menu on custom maps
+- Various fixes which improve server performance
 
 LIVE V2.11:
 
@@ -95,7 +102,7 @@ Q: Can the rulesets be customized to fit my needs?
 A: Promod has always been about an unified ruleset. Therefore they only thing you can change in the regular match-modes is mr-rating (SD and SAB only).
 
 Q: I want to run my own custom Promod-server with skins etc, how?
-A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive211" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
+A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive212" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
 
 Q: Can I use this mod as a movie mod?
 A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected. Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect").
@@ -113,7 +120,7 @@ Q: My question is not answered here.
 A: Easiest way to contact us is via mail or join #codpromod @ QuakeNet.
 
 Q: How do I get the training-dummy to work?
-A: First put up a local home-hosted server without PB (start game, launch Promod 2.11 from the mods-menu and load a map with the console or menu). The default button for spawning a bot is the "N" button (bind X "+actionslot 1").
+A: First put up a local home-hosted server without PB (start game, launch Promod 2.12 from the mods-menu and load a map with the console or menu). The default button for spawning a bot is the "N" button (bind X "+actionslot 1").
 
 PROMOD MODES
 
@@ -139,7 +146,7 @@ strat
 
 SCOREBOT
 
-The "ticker" is updating events every 10 seconds, each event is starting with a number from 0-10.
+The "ticker" is updating events every 10 seconds, each event is starting with a number from 0-9.
 Messages are delimited by the "SOH" character (start of header).
 To enable scorebot, add this line to the server-config:
 
@@ -275,7 +282,7 @@ Number being 1-10 for players, it's very easy to understand which player corresp
 1-5 symbolizes players on Attacking side from top to bottom looking at the Shoutcaster-bars.
 6-10 same goes here, players on Defending side.
 
-If you set the number higher than 10 (11+) you will be able to follow another Shoutcaster.
+Setting the number greater than 10 (11+) will enable the ability to follow another Shoutcaster.
 This requires the Shoutcaster you want to follow was using the player-binds to follow that player.
 You will get a confirmation message which Shoutcaster you are following.
 
@@ -288,10 +295,10 @@ For example map "mp_dahman_b3" contains a file called "mp_dahman_b3.iwd" and the
 
 NOTES FOR SERVER-ADMINS AND SERVER-HOSTING COMPANIES
 
-The dvar fs_game "mods/promodlive211" is forced for match-servers and do not rename any files or modify contents of them.
-However custom servers with skins etc. must use something else than "mods/promodlive211" for example "mods/promodlive211_custom", it's not restricted and you are free to modify files as well.
+The dvar fs_game "mods/promodlive212" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/promodlive212" for example "mods/promodlive212_custom", it's not restricted and you are free to modify files as well.
 
-Included with Promod is two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
+Included with Promod are two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
 
 In order to be automatically-executed, the list of checks needs to be included into the automatically-executed PunkBuster configuration files on your server (pbsv.cfg or pbsvuser.cfg):
 

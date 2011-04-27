@@ -409,9 +409,6 @@ processLoadoutResponse( respString )
 		{
 			case "loadout_primary":
 			case "loadout_secondary":
-				if ( respString != "loadout_primary:m16" && respString != "loadout_primary:ak47" && respString != "loadout_primary:m4" && respString != "loadout_primary:g3" && respString != "loadout_primary:g36c" && respString != "loadout_primary:m14" && respString != "loadout_primary:mp44" && respString != "loadout_primary:mp5" && respString != "loadout_primary:uzi" && respString != "loadout_primary:ak74u" && respString != "loadout_primary:winchester1200" && respString != "loadout_primary:m1014" && respString != "loadout_primary:m40a3" && respString != "loadout_primary:remington700" && respString != "loadout_secondary:deserteaglegold" && respString != "loadout_secondary:deserteagle" && respString != "loadout_secondary:colt45" && respString != "loadout_secondary:usp" && respString != "loadout_secondary:beretta" )
-					return;
-
 				if ( getDvarInt( "weap_allow_" + subTokens[1] ) && self verifyWeaponChoice( subTokens[1], self.class ) )
 				{
 					self.pers[self.class][subTokens[0]] = subTokens[1];
@@ -433,35 +430,41 @@ processLoadoutResponse( respString )
 
 			case "loadout_primary_attachment":
 			case "loadout_secondary_attachment":
-				if( respString != "loadout_primary_attachment:assault:none" && respString != "loadout_primary_attachment:assault:silencer" && respString != "loadout_primary_attachment:specops:none" && respString != "loadout_primary_attachment:specops:silencer" && respString != "loadout_secondary_attachment:pistol:none" && respString != "loadout_secondary_attachment:pistol:silencer" )
-					return;
-
-				if ( subTokens[0] == "loadout_primary_attachment" && self.pers[self.class]["loadout_primary"] == "mp44" )
+				if ( ( subTokens[1] == "assault" || subTokens[1] == "specops" || subTokens[1] == "pistol" ) && ( subTokens[2] == "none" || subTokens[2] == "silencer" ) )
 				{
-					self.pers[self.class]["loadout_primary_attachment"] = "none";
-					self setClientDvar( "loadout_primary_attachment", "none" );
-				}
-				else if ( getDvarInt( "attach_allow_" + subTokens[1] + "_" + subTokens[2] ) )
-				{
-					self.pers[self.class][subTokens[0]] = subTokens[2];
-					self setClientDvar( subTokens[0], subTokens[2] );
+					if ( subTokens[0] == "loadout_primary_attachment" && self.pers[self.class]["loadout_primary"] == "mp44" )
+					{
+						self.pers[self.class]["loadout_primary_attachment"] = "none";
+						self setClientDvar( "loadout_primary_attachment", "none" );
+					}
+					else if ( getDvarInt( "attach_allow_" + subTokens[1] + "_" + subTokens[2] ) )
+					{
+						self.pers[self.class][subTokens[0]] = subTokens[2];
+						self setClientDvar( subTokens[0], subTokens[2] );
+					}
+					else
+						self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
+					break;
 				}
 				else
-					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
-				break;
+					return;
 
 			case "loadout_grenade":
-				if( respString != "loadout_grenade:flash_grenade" && respString != "loadout_grenade:smoke_grenade" )
-					return;
-
-				if ( getDvarInt( "weap_allow_" + subTokens[1] ) )
+				switch ( subTokens[1] )
 				{
-					self.pers[self.class][subTokens[0]] = subTokens[1];
-					self setClientDvar( subTokens[0], subTokens[1] );
+					case "flash_grenade":
+					case "smoke_grenade":
+						if ( getDvarInt( "weap_allow_" + subTokens[1] ) )
+						{
+							self.pers[self.class][subTokens[0]] = subTokens[1];
+							self setClientDvar( subTokens[0], subTokens[1] );
+						}
+						else
+							self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
+						break;
+					default:
+						return;
 				}
-				else
-					self setClientDvar( subTokens[0], self.pers[self.class][subTokens[0]] );
-				break;
 
 			case "loadout_camo":
 				switch ( subTokens[1] )
@@ -557,10 +560,10 @@ updateClassAvailability( teamName )
 
 menuAcceptClass( response )
 {
-	if ( ( isDefined( response) && response == "apply" && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "pub" ) || !isDefined(self.pers["class"]) )
+	if ( !isDefined( self.pers["class"] ) )
 		return;
 
-	if ( isDefined( response ) && response == "go" )
+	if ( !isDefined( response ) || response != "back" )
 		self maps\mp\gametypes\_globallogic::closeMenus();
 
 	if ( !isDefined( self.pers["team"] ) || ( self.pers["team"] != "allies" && self.pers["team"] != "axis" ) )
@@ -572,13 +575,11 @@ menuAcceptClass( response )
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
 		else
 		{
-			if ( !isDefined( response) || response != "apply" )
-				self iprintlnbold( game["strings"]["change_class"] );
-
+			self iprintlnbold( game["strings"]["change_class"] );
 			self setClientDvar( "loadout_curclass", self.pers["class"] );
 		}
 
-		if ( isDefined( response) && response == "go" )
+		if ( isDefined( response ) )
 			self thread maps\mp\gametypes\_class::preserveClass( self.pers["class"] );
 	}
 	else
