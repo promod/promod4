@@ -95,7 +95,7 @@ onPlayerSpawned()
 			self.hud_rankscroreupdate.x = 0;
 			self.hud_rankscroreupdate.y = -60;
 			self.hud_rankscroreupdate.font = "default";
-			self.hud_rankscroreupdate.fontscale = 2.0;
+			self.hud_rankscroreupdate.fontscale = 2;
 			self.hud_rankscroreupdate.archived = false;
 			self.hud_rankscroreupdate.color = (0.5,0.5,0.5);
 			self.hud_rankscroreupdate maps\mp\gametypes\_hud::fontPulseInit();

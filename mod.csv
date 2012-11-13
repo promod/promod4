@@ -8,13 +8,13 @@
 
 localize,cgame
 
+menufile,ui_mp/promod.txt
 menufile,ui_mp/scriptmenus/changeclass_marines_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_mw.menu
 menufile,ui_mp/scriptmenus/changeclass_opfor_mw.menu
 menufile,ui_mp/scriptmenus/class.menu
-menufile,ui_mp/scriptmenus/clientcheck.menu
-menufile,ui_mp/scriptmenus/echo.menu
 menufile,ui_mp/scriptmenus/demo.menu
+menufile,ui_mp/scriptmenus/echo.menu
 menufile,ui_mp/scriptmenus/quickpromod.menu
 menufile,ui_mp/scriptmenus/quickpromodgfx.menu
 menufile,ui_mp/scriptmenus/scoreboard.menu
@@ -24,8 +24,6 @@ menufile,ui_mp/scriptmenus/shoutcast_setup.menu
 menufile,ui_mp/scriptmenus/shoutcast_setup_binds.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor.menu
 menufile,ui_mp/scriptmenus/team_marinesopfor_flipped.menu
-menufile,ui_mp/scriptmenus/oob.menu
-menufile,ui_mp/promod.txt
 
 rawfile,maps/createfx/mp_backlot_fx.gsc
 rawfile,maps/createfx/mp_bloc_fx.gsc
@@ -100,6 +98,8 @@ rawfile,maps/mp/mp_shipment.gsc
 rawfile,maps/mp/mp_showdown.gsc
 rawfile,maps/mp/mp_strike.gsc
 rawfile,maps/mp/mp_vacant.gsc
+
+rawfile,mp/playeranim.script
 
 rawfile,promod/client.gsc
 rawfile,promod/comp.gsc

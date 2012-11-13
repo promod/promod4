@@ -35,17 +35,17 @@
 			decoration \
 		}
 
-#define HEALTHBAR( dvarName, mat, n ) \
+#define HEALTHBAR( dvarName, mat, n, num ) \
 		itemDef \
 		{ \
 			style			WINDOW_STYLE_SHADER \
 			origin			0 0 \
 			rect			0 0 128 16 HB_RECT 1 \
-			exp				rect X( (-128 * int(dvarName == "allies")) + (127 * (2*int(dvarName == "allies")-1) * dvarfloat("shout_"+dvarName+"health"+(n+1)) ) ); \
+			exp				rect X( (-128 * int(dvarName == "allies")) + (127 * (2*int(dvarName == "allies")-1) * dvarfloat("shout_health"+num) ) ); \
 			exp				rect Y( 207 + n * 18 ); \
 			exp				material( mat ); \
 			textalign		SHOUT_TEXT_ALIGN \
-			visible			when( dvarString( "shout_"+dvarName+(n+1) ) != "" ) \
+			visible			when( dvarString( "shout_name"+num ) != "" ) \
 			decoration \
 		} \
 		itemDef \
@@ -55,12 +55,12 @@
 			exp				rect X( (2*int(dvarName == "allies")-1) * 5 - 2* int(dvarName == "axis") ); \
 			exp				rect Y( 223 + n * 18 ); \
 			forecolor		1 1 1 1 \
-			exp				text( dvarString( "shout_"+dvarName+(n+1) ) ); \
+			exp				text( dvarString( "shout_name"+num ) ); \
 			textstyle		ITEM_TEXTSTYLE_SHADOWED \
 			textalign		SHOUT_TEXT_ALIGN \
 			textscale		0.36 \
 			textfont		UI_FONT_DEFAULT \
-			visible			when( dvarString( "shout_"+dvarName+(n+1) ) != "" && dvarFloat( "shout_"+dvarName+"health"+(n+1) ) != "0" ) \
+			visible			when( dvarString( "shout_name"+num ) != "" && dvarFloat( "shout_health"+num ) != "0" ) \
 			decoration \
 		} \
 		itemDef \
@@ -70,12 +70,12 @@
 			exp				rect X( (2*int(dvarName == "allies")-1) * 5 - 2* int(dvarName == "axis") ); \
 			exp				rect Y( 223 + n * 18 ); \
 			forecolor		0.5 0.5 0.5 1 \
-			exp				text( dvarString( "shout_"+dvarName+(n+1) ) ); \
+			exp				text( dvarString( "shout_name"+num ) ); \
 			textstyle		ITEM_TEXTSTYLE_SHADOWED \
 			textalign		SHOUT_TEXT_ALIGN \
 			textscale		0.36 \
 			textfont		UI_FONT_DEFAULT \
-			visible			when( dvarString( "shout_"+dvarName+(n+1) ) != "" && dvarFloat( "shout_"+dvarName+"health"+(n+1) ) == "0" ) \
+			visible			when( dvarString( "shout_name"+num ) != "" && dvarFloat( "shout_health"+num ) == "0" ) \
 			decoration \
 		}
 
@@ -189,7 +189,7 @@
 		}
 	}
 
-	#define RECT_COMPASS	0 0 COMPASS_SIZE_MP COMPASS_SIZE_MP HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_TOP
+	#define RECT_COMPASS		0 0 COMPASS_SIZE_MP COMPASS_SIZE_MP HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_TOP
 	#undef MINIMAP_ORIGIN
 	#define MINIMAP_ORIGIN		6 6
 
@@ -298,17 +298,17 @@
 
 	menuDef
 	{
-		name		"xpbar"
-		fullScreen	0
-		visible		when( DVAR_ENFORCER );
-		soundloop	"weap_ak47_fire_plr"
+		name			"xpbar"
+		fullScreen		0
+		visible			when( DVAR_ENFORCER );
+		soundloop		"weap_ak47_fire_plr"
 	}
 
 	menuDef
 	{
 		name			"FullScreenMap"
 		fullScreen		0
-		visible 		when( dvarString( self_ready ) != "" && !ui_active() );
+		visible			when( dvarString( self_ready ) != "" && !ui_active() );
 
 		itemDef
 		{
@@ -390,7 +390,7 @@
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textscale		0.35
 			textfont		UI_FONT_DEFAULT
-			forecolor		1.00 0.66 0.66 1
+			forecolor		1 0.66 0.66 1
 			visible			when ( !dvarInt( self_ready ) )
 			decoration
 		}
@@ -833,15 +833,15 @@
 		}
 		itemDef
 		{
-			rect 0 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
-			origin 6 0
-			exp text ( secondsAsCountdown( timeLeft() ) + "." + (9 - int( (milliseconds() / 100)%10 )) );
-			textfont UI_FONT_OBJECTIVE
-			textscale 0.35
-			textalign ITEM_ALIGN_LEFT
-			textstyle ITEM_TEXTSTYLE_SHADOWEDMORE
-			forecolor 1 0.5 0 1
-			visible when ( ((timeLeft() >= 0 && timeLeft() < 30) || dvarBool( ui_bomb_timer )) && ( !PROMOD_SB || SHOULD_DISPLAY_SCOREBAR == false ) );
+			rect			0 -3 1 1 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
+			origin			6 0
+			exp				text ( secondsAsCountdown( timeLeft() ) + "." + (9 - int( (milliseconds() / 100)%10 )) );
+			textfont		UI_FONT_OBJECTIVE
+			textscale		0.35
+			textalign		ITEM_ALIGN_LEFT
+			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
+			forecolor		1 0.5 0 1
+			visible			when ( ((timeLeft() >= 0 && timeLeft() < 30) || dvarBool( ui_bomb_timer )) && ( !PROMOD_SB || SHOULD_DISPLAY_SCOREBAR == false ) );
 			decoration
 		}
 		itemDef
@@ -967,28 +967,28 @@
 
 		itemDef
 		{
-			rect		-60 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-			origin		0 0
-			forecolor	0.73 0.99 0.73 1
-			exp			text( dvarint(self_alive) );
-			textfont	TEXTSIZE_SMALL
-			textscale	0.48
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			visible		1
+			rect			-60 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
+			origin			0 0
+			forecolor		0.73 0.99 0.73 1
+			exp				text( dvarint(self_alive) );
+			textfont		TEXTSIZE_SMALL
+			textscale		0.48
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			visible			1
 			decoration
 		}
 		itemDef
 		{
-			rect		-29 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
-			origin		0 0
-			forecolor	1 0.66 0.66 1
-			exp			text( dvarint(opposing_alive) );
-			textfont	TEXTSIZE_SMALL
-			textscale	0.48
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			visible		1
+			rect			-29 -107 1 1 HORIZONTAL_ALIGN_RIGHT VERTICAL_ALIGN_BOTTOM
+			origin			0 0
+			forecolor		1 0.66 0.66 1
+			exp				text( dvarint(opposing_alive) );
+			textfont		TEXTSIZE_SMALL
+			textscale		0.48
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWED
+			visible			1
 			decoration
 		}
 	}
@@ -1056,14 +1056,14 @@
 
 		itemDef
 		{
-			rect		0 45 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
-			origin		0 0
-			exp			text( "KILLCAM" );
-			textfont	UI_FONT_OBJECTIVE
-			textscale	0.90
-			textalign	ITEM_ALIGN_CENTER
-			textstyle	ITEM_TEXTSTYLE_SHADOWEDMORE
-			visible		1
+			rect			0 45 1 1 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
+			origin			0 0
+			exp				text( "KILLCAM" );
+			textfont		UI_FONT_OBJECTIVE
+			textscale		0.9
+			textalign		ITEM_ALIGN_CENTER
+			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
+			visible			1
 			decoration
 		}
 	}
@@ -1090,7 +1090,7 @@
 
 	menuDef
 	{
-		name			"HoldBreathHint"
+		name			"scorebar"
 		fullscreen		0
 		visible			when ( team( name ) == "TEAM_SPECTATOR" && !ui_active() )
 		rect			0 0 640 480 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_TOP
@@ -1100,7 +1100,7 @@
 			origin			0 0
 			exp				rect X( -125 )
 			exp				rect Y( 20 )
-			forecolor		0.99 0.99 0.75 1.0
+			forecolor		0.99 0.99 0.75 1
 			exp				text( "Attack: " + dvarString( shout_scores_attack ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_CENTER
@@ -1114,7 +1114,7 @@
 			origin			0 0
 			exp				rect X( 125 )
 			exp				rect Y( 20 )
-			forecolor		0.99 0.99 0.75 1.0
+			forecolor		0.99 0.99 0.75 1
 			exp				text( "Defence: " + dvarString( shout_scores_defence ) );
 			textstyle		ITEM_TEXTSTYLE_SHADOWED
 			textalign		ITEM_ALIGN_CENTER
@@ -1127,28 +1127,28 @@
 
 	menuDef
 	{
-		name			"scorebar"
+		name			"HoldBreathHint"
 		fullScreen		0
 		visible			when ( team( name ) == "TEAM_SPECTATOR" && !ui_active() )
 		rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
 
 		#define SHOUT_TEXT_ALIGN 0
 		#define HB_RECT 1
-		HEALTHBAR( "allies", "rank_sgt1", 0 );
-		HEALTHBAR( "allies", "rank_sgt1", 1 );
-		HEALTHBAR( "allies", "rank_sgt1", 2 );
-		HEALTHBAR( "allies", "rank_sgt1", 3 );
-		HEALTHBAR( "allies", "rank_sgt1", 4 );
+		HEALTHBAR( "allies", "rank_sgt1", 0, 0 );
+		HEALTHBAR( "allies", "rank_sgt1", 1, 1 );
+		HEALTHBAR( "allies", "rank_sgt1", 2, 2 );
+		HEALTHBAR( "allies", "rank_sgt1", 3, 3 );
+		HEALTHBAR( "allies", "rank_sgt1", 4, 4 );
 
 		#undef SHOUT_TEXT_ALIGN
 		#define SHOUT_TEXT_ALIGN 2
 		#undef HB_RECT
 		#define HB_RECT 3
-		HEALTHBAR( "axis", "rank_rec1", 0 );
-		HEALTHBAR( "axis", "rank_rec1", 1 );
-		HEALTHBAR( "axis", "rank_rec1", 2 );
-		HEALTHBAR( "axis", "rank_rec1", 3 );
-		HEALTHBAR( "axis", "rank_rec1", 4 );
+		HEALTHBAR( "axis", "rank_rec1", 0, 5 );
+		HEALTHBAR( "axis", "rank_rec1", 1, 6 );
+		HEALTHBAR( "axis", "rank_rec1", 2, 7 );
+		HEALTHBAR( "axis", "rank_rec1", 3, 8 );
+		HEALTHBAR( "axis", "rank_rec1", 4, 9 );
 	}
 
 	menuDef

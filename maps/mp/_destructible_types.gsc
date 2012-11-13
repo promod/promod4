@@ -97,16 +97,16 @@ vehicle_80s_sedan1( color )
 				destructible_explode( 4000, 5000, 375, 20, 300 );
 			destructible_state( undefined, "vehicle_80s_sedan1_" + color + "_destroyed", undefined, 32, "no_melee" );
 
-		destructible_part( "tag_hood", "vehicle_80s_sedan1_" + color + "_hood", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_hood", "vehicle_80s_sedan1_" + color + "_hood", undefined, undefined, undefined, undefined, 1 );
 
-		destructible_part( "tag_trunk", "vehicle_80s_sedan1_" + color + "_trunk", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_trunk", "vehicle_80s_sedan1_" + color + "_trunk", undefined, undefined, undefined, undefined, 1 );
 		destructible_part( "tag_wheel_front_right", "vehicle_80s_sedan1_" + color + "_wheel_LF", undefined, undefined, undefined, "no_melee", undefined, 0.7 );
 		destructible_part( "tag_wheel_back_right", "vehicle_80s_sedan1_" + color + "_wheel_LF", undefined, undefined, undefined, "no_melee", undefined, 0.7 );
 
-		destructible_part( "tag_door_left_front", "vehicle_80s_sedan1_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_left_back", "vehicle_80s_sedan1_" + color + "_door_LB", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_front", "vehicle_80s_sedan1_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_back", "vehicle_80s_sedan1_" + color + "_door_RB", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_door_left_front", "vehicle_80s_sedan1_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_left_back", "vehicle_80s_sedan1_" + color + "_door_LB", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_front", "vehicle_80s_sedan1_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_back", "vehicle_80s_sedan1_" + color + "_door_RB", undefined, undefined, undefined, undefined, 1 );
 
 		tag = "tag_glass_front";
 		destructible_part( tag, "vehicle_80s_sedan1_glass_F", 0 );
@@ -168,8 +168,8 @@ vehicle_80s_sedan1( color )
 			destructible_sound( "veh_glass_break_small" );
 			destructible_state( tag+"_d", "vehicle_80s_sedan1_" + color + "_light_RB_dam" );
 
-		destructible_part( "tag_bumper_front", "vehicle_80s_sedan1_" + color + "_bumper_F", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_bumper_back", "vehicle_80s_sedan1_" + color + "_bumper_B", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_bumper_front", "vehicle_80s_sedan1_" + color + "_bumper_F", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_bumper_back", "vehicle_80s_sedan1_" + color + "_bumper_B", undefined, undefined, undefined, undefined, 1 );
 }
 vehicle_80s_wagon1( color )
 {
@@ -190,12 +190,12 @@ vehicle_80s_wagon1( color )
 				destructible_explode( 4000, 5000, 250, 20, 300 );
 			destructible_state( undefined, "vehicle_80s_wagon1_" + color + "_destroyed", undefined, 32, "no_melee" );
 
-		destructible_part( "tag_hood", "vehicle_80s_wagon1_" + color + "_hood", 800, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_hood", "vehicle_80s_wagon1_" + color + "_hood", 800, undefined, undefined, undefined, 1 );
 
-		destructible_part( "tag_door_left_front", "vehicle_80s_wagon1_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_left_back", "vehicle_80s_wagon1_" + color + "_door_LB", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_front", "vehicle_80s_wagon1_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_back", "vehicle_80s_wagon1_" + color + "_door_RB", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_door_left_front", "vehicle_80s_wagon1_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_left_back", "vehicle_80s_wagon1_" + color + "_door_LB", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_front", "vehicle_80s_wagon1_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_back", "vehicle_80s_wagon1_" + color + "_door_RB", undefined, undefined, undefined, undefined, 1 );
 
 		tag = "tag_glass_front";
 		destructible_part( tag, "vehicle_80s_wagon1_glass_F", 0 );
@@ -269,8 +269,8 @@ vehicle_80s_wagon1( color )
 			destructible_sound( "veh_glass_break_small" );
 			destructible_state( tag+"_d", "vehicle_80s_wagon1_" + color + "_light_RB_dam" );
 
-		destructible_part( "tag_bumper_front", "vehicle_80s_wagon1_" + color + "_bumper_F", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_bumper_back", "vehicle_80s_wagon1_" + color + "_bumper_B", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_bumper_front", "vehicle_80s_wagon1_" + color + "_bumper_F", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_bumper_back", "vehicle_80s_wagon1_" + color + "_bumper_B", undefined, undefined, undefined, undefined, 1 );
 }
 
 vehicle_80s_hatch1( color )
@@ -292,10 +292,10 @@ vehicle_80s_hatch1( color )
 				destructible_explode( 4000, 5000, 250, 20, 300 );
 			destructible_state( undefined, "vehicle_80s_hatch1_" + color + "_destroyed", undefined, 32, "no_melee" );
 
-		destructible_part( "tag_hood", "vehicle_80s_hatch1_" + color + "_hood", 800, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_hood", "vehicle_80s_hatch1_" + color + "_hood", 800, undefined, undefined, undefined, 1 );
 
-		destructible_part( "tag_door_left_front", "vehicle_80s_hatch1_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_front", "vehicle_80s_hatch1_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_door_left_front", "vehicle_80s_hatch1_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_front", "vehicle_80s_hatch1_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1 );
 
 		tag = "tag_glass_front";
 		destructible_part( tag, "vehicle_80s_hatch1_glass_F", 0 );
@@ -378,10 +378,10 @@ vehicle_small_wagon( color )
 			destructible_state( undefined, "vehicle_small_wagon_" + color + "_destroyed", undefined, 32, "no_melee" );
 
 		tag = "tag_hood";
-		destructible_part( tag, "vehicle_small_wagon_" + color + "_hood", 800, undefined, undefined, undefined, 1.0 );
+		destructible_part( tag, "vehicle_small_wagon_" + color + "_hood", 800, undefined, undefined, undefined, 1 );
 
-		destructible_part( "tag_door_left_front", "vehicle_small_wagon_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_front", "vehicle_small_wagon_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_door_left_front", "vehicle_small_wagon_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_front", "vehicle_small_wagon_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1 );
 
 		tag = "tag_glass_front";
 		destructible_part( tag, "vehicle_small_wagon_glass_F", 0 );
@@ -463,10 +463,10 @@ vehicle_small_hatch( color )
 				destructible_explode( 4000, 5000, 250, 20, 300 );
 			destructible_state( undefined, "vehicle_small_hatch_" + color + "_destroyed", undefined, 32, "no_melee" );
 
-		destructible_part( "tag_hood", "vehicle_small_hatch_" + color + "_hood", 800, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_hood", "vehicle_small_hatch_" + color + "_hood", 800, undefined, undefined, undefined, 1 );
 
-		destructible_part( "tag_door_left_front", "vehicle_small_hatch_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1.0 );
-		destructible_part( "tag_door_right_front", "vehicle_small_hatch_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1.0 );
+		destructible_part( "tag_door_left_front", "vehicle_small_hatch_" + color + "_door_LF", undefined, undefined, undefined, undefined, 1 );
+		destructible_part( "tag_door_right_front", "vehicle_small_hatch_" + color + "_door_RF", undefined, undefined, undefined, undefined, 1 );
 
 		tag = "tag_glass_front";
 		destructible_part( tag, "vehicle_small_hatch_glass_F", 0 );

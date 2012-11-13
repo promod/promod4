@@ -1,6 +1,6 @@
-Promod LIVE V2.12 EU - README
+Promod LIVE V2.13 EU - README
 http://www.codpromod.com
-2011-02-22 <promod [at] codpromod.com>
+2011-11-13 <promod [at] codpromod.com>
 #codpromod @ QuakeNet
 
 Developers: Trivve & Ingram
@@ -9,16 +9,12 @@ Manager: abhi
 Sponsored by FragNet
 http://www.fragnet.net
 
-In association with Vita Nova
-http://www.thevitanova.org
-#Vita-Nova @ QuakeNet
-
-Zip-package (promodlive212_eu.zip) contains:
+Zip-package (promodlive213_eu.zip) contains:
 
 LICENSE
-promodlive212\mod.ff
-promodlive212\promodlive212.iwd
-promodlive212\z_custom_ruleset.iwd
+promodlive213\mod.ff
+promodlive213\promodlive213.iwd
+promodlive213\z_custom_ruleset.iwd
 pb\stock_iwd_md5.cfg
 pb\promod_iwd_md5.cfg
 pb\pbsvuser.cfg
@@ -26,9 +22,27 @@ readme.txt
 server_setup.txt
 server.cfg
 
+LIVE V2.13:
+
+- Implemented MOTD (message of the day), can be set via dvar "scr_motd"
+- Various fixes and improvements to the shoutcaster UI
+- Fixed problems with loading preserved classes
+- Invalid gametypes on custom maps will no longer cause server to crash
+- Added possibility to set scores with promod_mode (more info in promod modes section)
+- Removed flinching animation when player get shoot
+- Removed ability to shoot during strat time
+- Improved custom maps compability
+- Player is immune to flashbangs in ready up and start mode flying
+- Main menu changes (not much)
+- Serverside performance improvements
+- Knife round fixes, weapon abuse eliminated
+- Fixed ready-up messages
+- Other various UI tweaks and improvements
+
 LIVE V2.12:
+
 - Protection against clientside executable modification
-- Fixed knife-round to always remove the weapons and ammo, all other damage than from the knife is disabled as a extra measure
+- Fixed knife-round to always remove the weapons and ammo, all other damage than from the knife is disabled as an extra measure
 - Record-menu will no longer appear twice in knife-rounds
 - Fixed choosing team menu on custom maps
 - Various fixes which improve server performance
@@ -98,11 +112,8 @@ FAQ
 Q: What about the hardcore, and support for all gametypes, how do I use them?
 A: For a complete list of "promod_modes", see below.
 
-Q: Can the rulesets be customized to fit my needs?
-A: Promod has always been about an unified ruleset. Therefore they only thing you can change in the regular match-modes is mr-rating (SD and SAB only).
-
 Q: I want to run my own custom Promod-server with skins etc, how?
-A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive212" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
+A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive213" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
 
 Q: Can I use this mod as a movie mod?
 A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected. Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect").
@@ -120,29 +131,30 @@ Q: My question is not answered here.
 A: Easiest way to contact us is via mail or join #codpromod @ QuakeNet.
 
 Q: How do I get the training-dummy to work?
-A: First put up a local home-hosted server without PB (start game, launch Promod 2.12 from the mods-menu and load a map with the console or menu). The default button for spawning a bot is the "N" button (bind X "+actionslot 1").
+A: First put up a local home-hosted server without PB (set sv_punkbuster to "0" in your config, start game, launch Promod from the mods-menu and load a map with the console or menu). The default button for spawning a bot is the "N" button (bind X "+actionslot 1").
 
 PROMOD MODES
 
 The promod_mode dvar follows a specific syntax. However the game accepts the bits between underscores ( _ ) in any order.
 
-match: standard match mode, conflicts with knockout mode. Round limit = mr#*2
-knockout: knockout match mode, conflicts with standard match mode. Score limit = mr#+1
+match: standard match mode, may not be used with knockout mode. Round limit = mr#*2
+knockout: knockout match mode, may not be used with standard match mode. Score limit = mr#+1
 mr#: maxrounds - see above for use. Default is 10. Works only in Search & Destroy and Sabotage.
-lan: lan mode - g_antilag 0, PunkBuster messages turned off. Conflicts with pb mode.
+lan: lan mode - g_antilag 0, PunkBuster messages turned off, may not be used with pb mode.
 hc: hardcore mode (disables some HUD elements and reduces health level to 30).
 knife: knife round - adds a knife round and an extra ready-up mode to Search & Destroy matches.
 1v1/2v2: used for 1v1 and 2v2 matches, disables Demolitions and Sniper classes.
-pb: disables PunkBuster warnings for online modes. Conflicts with lan mode.
+pb: disables PunkBuster warnings for online modes, may not be used with lan mode.
+#:#: will set match score in S&D using A:D format - useful in case of a restart, may not be used with knife mode.
 
 For example "promod_mode match_mr10_knife_pb" will enable knife round and disable PunkBuster warnings in standard maxrounds 10 mode.
 
-There are also some other modes:
+There are also some other modes, these can not be combined with the tags above.
 
-comp_public
-comp_public_hc
-custom_public
-strat
+comp_public - the default mode for competitive public
+comp_public_hc - competitive public in hardcore mode
+custom_public - custom public mode reading settings from z_custom_ruleset.iwd
+strat - strategy mode for practicing
 
 SCOREBOT
 
@@ -210,7 +222,7 @@ __promod_version
 FORCED COMMANDS
 
 All these dvars are forced by Promod (automatically), make sure they stay untouched/within range to avoid being punished!
-Note that these does not apply to Shoutcasters.
+Note that these does not apply in Shoutcaster mode.
 
 dynent_active 0
 rate 25000
@@ -240,7 +252,7 @@ compassfriendlywidth EQUAL TO compassfriendlyheight
 DEMO VIEWING
 
 There are some special dvars made to control hud-elements for demo/movie purposes.
-They will only work in maps loaded with cheats. Don't forget the "set" prefix to add new dvars in the console.
+They will only work in maps loaded with cheats (devmap). Don't forget the "set" prefix to add new dvars in the console.
 
 These include:
 
@@ -260,8 +272,8 @@ openscriptmenu quickpromod assault
 openscriptmenu quickpromod specops
 openscriptmenu quickpromod demolitions
 openscriptmenu quickpromod sniper
-openscriptmenu quickpromod silencer //toggles silencer on/off on the primary weapon
-openscriptmenu quickpromod grenade //toggles between flash/smoke-grenade
+openscriptmenu quickpromod silencer
+openscriptmenu quickpromod grenade
 
 SHOUTCASTER BINDS
 
@@ -280,11 +292,7 @@ openscriptmenu shoutcast_setup sniper
 
 Number being 1-10 for players, it's very easy to understand which player corresponds the correct number.
 1-5 symbolizes players on Attacking side from top to bottom looking at the Shoutcaster-bars.
-6-10 same goes here, players on Defending side.
-
-Setting the number greater than 10 (11+) will enable the ability to follow another Shoutcaster.
-This requires the Shoutcaster you want to follow was using the player-binds to follow that player.
-You will get a confirmation message which Shoutcaster you are following.
+6-10 being on the Defending side.
 
 Setting a class (lowercase) instead of a number will cycle through players using that class.
 
@@ -295,8 +303,8 @@ For example map "mp_dahman_b3" contains a file called "mp_dahman_b3.iwd" and the
 
 NOTES FOR SERVER-ADMINS AND SERVER-HOSTING COMPANIES
 
-The dvar fs_game "mods/promodlive212" is forced for match-servers and do not rename any files or modify contents of them.
-However custom servers with skins etc. must use something else than "mods/promodlive212" for example "mods/promodlive212_custom", it's not restricted and you are free to modify files as well.
+The dvar fs_game "mods/promodlive213" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/promodlive213" for example "mods/promodlive213_custom", it's not restricted and you are free to modify files as well.
 
 Included with Promod are two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
 

@@ -249,7 +249,7 @@ updateCarryObjectOrigin()
 {
 	level endon ( "game_ended" );
 
-	objPingDelay = 5.0;
+	objPingDelay = 5;
 	for(;;)
 	{
 		if ( isDefined( self.carrier ) )
@@ -263,7 +263,7 @@ updateCarryObjectOrigin()
 				if ( self.objPoints["allies"].isShown )
 				{
 					self.objPoints["allies"].alpha = self.objPoints["allies"].baseAlpha;
-					self.objPoints["allies"] fadeOverTime( objPingDelay + 1.0 );
+					self.objPoints["allies"] fadeOverTime( objPingDelay + 1 );
 					self.objPoints["allies"].alpha = 0;
 				}
 				objective_position( self.objIDAllies, self.curOrigin );
@@ -273,7 +273,7 @@ updateCarryObjectOrigin()
 				if ( self.objPoints["axis"].isShown )
 				{
 					self.objPoints["axis"].alpha = self.objPoints["axis"].baseAlpha;
-					self.objPoints["axis"] fadeOverTime( objPingDelay + 1.0 );
+					self.objPoints["axis"] fadeOverTime( objPingDelay + 1 );
 					self.objPoints["axis"].alpha = 0;
 				}
 				objective_position( self.objIDAxis, self.curOrigin );
@@ -284,7 +284,7 @@ updateCarryObjectOrigin()
 				if ( self.objPoints["allies"].isShown )
 				{
 					self.objPoints["allies"].alpha = self.objPoints["allies"].baseAlpha;
-					self.objPoints["allies"] fadeOverTime( objPingDelay + 1.0 );
+					self.objPoints["allies"] fadeOverTime( objPingDelay + 1 );
 					self.objPoints["allies"].alpha = 0;
 				}
 				objective_position( self.objIDAllies, self.curOrigin );
@@ -294,7 +294,7 @@ updateCarryObjectOrigin()
 				if ( self.objPoints["axis"].isShown )
 				{
 					self.objPoints["axis"].alpha = self.objPoints["axis"].baseAlpha;
-					self.objPoints["axis"] fadeOverTime( objPingDelay + 1.0 );
+					self.objPoints["axis"] fadeOverTime( objPingDelay + 1 );
 					self.objPoints["axis"].alpha = 0;
 				}
 				objective_position( self.objIDAxis, self.curOrigin );
@@ -378,7 +378,7 @@ setDropped()
 		tempAngle = randomfloat( 360 );
 
 		dropOrigin = trace;
-		if ( angleTrace["fraction"] < 1 && distance( angleTrace["position"], trace ) < 10.0 )
+		if ( angleTrace["fraction"] < 1 && distance( angleTrace["position"], trace ) < 10 )
 		{
 			forward = (cos( tempAngle ), sin( tempAngle ), 0);
 			forward = vectornormalize( forward - vector_scale( angleTrace["normal"], vectordot( forward, angleTrace["normal"] ) ) );
@@ -1416,7 +1416,7 @@ _enableWeapon()
 
 	self allowsprint(true);
 	self allowjump(true);
-	self setMoveSpeedScale( 1.0 - 0.05 * int( isDefined( self.pers["class"] ) && self.pers["class"] == "assault" ) );
+	self setMoveSpeedScale( 1.0 - 0.05 * int( isDefined( self.curClass ) && self.curClass == "assault" ) );
 }
 
 getEnemyTeam( team )

@@ -299,7 +299,7 @@ sabotage()
 		level.sabBomb.onDrop = ::onDrop;
 		level.sabBomb.objPoints["allies"].archived = true;
 		level.sabBomb.objPoints["axis"].archived = true;
-		level.sabBomb.autoResetTime = 60.0;
+		level.sabBomb.autoResetTime = 60;
 	}
 	else
 	{
@@ -364,7 +364,7 @@ onPickup( player )
 {
 	level notify ( "bomb_picked_up" );
 
-	self.autoResetTime = 60.0;
+	self.autoResetTime = 60;
 
 	level.useStartSpawns = false;
 
@@ -416,15 +416,13 @@ onDrop( player )
 
 		playSoundOnPlayers( game["bomb_dropped_sound"], self maps\mp\gametypes\_gameobjects::getOwnerTeam() );
 
-		thread abandonmentThink( 0.0 );
+		thread abandonmentThink();
 	}
 }
 
-abandonmentThink( delay )
+abandonmentThink()
 {
 	level endon ( "bomb_picked_up" );
-
-	wait delay;
 
 	if ( isDefined( self.carrier ) )
 		return;

@@ -19,22 +19,22 @@ setPlayerModels()
 	game["axis_model"] = [];
 
 	alliesCharSet = tableLookup( "mp/mapsTable.csv", 0, getDvar( "mapname" ), 1 );
-	if ( !isDefined( alliesCharSet ) || alliesCharSet == "" )
+	if ( isDefined( alliesCharSet ) && alliesCharSet != "" )
+		game["allies_soldiertype"] = alliesCharSet;
+	else if ( !isDefined( game["allies_soldiertype"] ) || !isDefined( game["allies"] ) )
 	{
 		game["allies_soldiertype"] = "desert";
 		game["allies"] = "marines";
 	}
-	else
-		game["allies_soldiertype"] = alliesCharSet;
 
 	axisCharSet = tableLookup( "mp/mapsTable.csv", 0, getDvar( "mapname" ), 2 );
-	if ( !isDefined( axisCharSet ) || axisCharSet == "" )
+	if ( isDefined( axisCharSet ) && axisCharSet != "" )
+		game["axis_soldiertype"] = axisCharSet;
+	else if ( !isDefined( game["axis_soldiertype"] ) || !isDefined( game["axis"] ) )
 	{
 		game["axis_soldiertype"] = "desert";
 		game["axis"] = "arab";
 	}
-	else
-		game["axis_soldiertype"] = axisCharSet;
 
 	if ( game["allies_soldiertype"] == "desert" )
 	{

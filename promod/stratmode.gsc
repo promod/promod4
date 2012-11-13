@@ -51,67 +51,82 @@ bots()
 
 	self thread spawnthing();
 	lastWeapon = undefined;
+
 	for(;;)
 	{
-		self waittill( "weapon_change" );
-		if(self getCurrentWeapon() == "radar_mp")
-		{
-			if((!isDefined(self.inAction) || !self.inAction) && self isOnGround())
-			{
-				origin = self getOrigin();
-				angles = self getPlayerAngles();
-				self.inAction = true;
+		if ( self getCurrentWeapon() != "radar_mp" )
+			lastWeapon = self getCurrentWeapon();
 
-				if(isDefined(self.bot))
+		if ( self getCurrentWeapon() == "radar_mp" && ( ( !isDefined(self.inAction) || !self.inAction) && self isOnGround() ) )
+		{
+			self SwitchToWeapon( lastWeapon );
+
+			origin = self getOrigin();
+			angles = self getPlayerAngles();
+			self.inAction = true;
+
+			if(isDefined(self.bot))
+			{
+				wait 0.55;
+
+				if ( distanceSquared( self.origin, origin ) < 4096 )
 				{
-					self iprintln("You have 3 seconds to move");
-					wait 3;
-					self.bot setOrigin( origin );
-					self.bot SetPlayerAngles( angles );
+					self iprintln("Move away to spawn dummy!");
+
+					while ( distanceSquared( self.origin, origin ) < 4096 )
+						wait 0.05;
+				}
+
+				self.bot setOrigin( origin );
+				self.bot SetPlayerAngles( angles );
+			}
+			else
+			{
+				newBot = addTestClient();
+
+				wait 0.05;
+
+				if(isdefined(newBot))
+				{
+					wait 0.5;
+
+					if ( distanceSquared( self.origin, origin ) < 4096 )
+					{
+						self iprintln("Move away to spawn dummy!");
+
+						while ( distanceSquared( self.origin, origin ) < 4096 )
+							wait 0.05;
+					}
+
+					newBot.pers["isBot"] = true;
+					self.bot = newBot;
+					while( !isDefined( newBot.pers ) || !isDefined( newBot.pers["team"] ) )
+						wait 0.05;
+					newBot notify( "menuresponse", game["menu_team"], self.pers["team"] );
+					while(newBot.pers["team"] != "axis" && newBot.pers["team"] != "allies")
+						wait 0.05;
+					newBot notify( "menuresponse", game["menu_changeclass_" + newBot.pers["team"] ], "assault" );
+					while(!isDefined(newBot.pers["class"]))
+						wait 0.05;
+					newBot notify( "menuresponse", game["menu_changeclass"], "go" );
+					while(!isAlive(newBot))
+						wait 0.05;
+
+					newBot SetMoveSpeedScale( 0 );
+					newBot freezeControls( true );
+					newBot setOrigin( origin );
+					newBot SetPlayerAngles( angles );
+					newBot.maxhealth = 999999999;
+					newBot.health = newBot.maxhealth;
+					self.hint6 setText( "Move: Press ^3[{+actionslot 1}]" );
 				}
 				else
-				{
-					newBot = addTestClient();
-
-					wait 0.05;
-
-					if(isdefined(newBot))
-					{
-						self iprintln("You have 3 seconds to move");
-						wait 2.75;
-
-						newBot.pers["isBot"] = true;
-						self.bot = newBot;
-						while( !isDefined( newBot.pers ) || !isDefined( newBot.pers["team"] ) )
-							wait 0.05;
-						newBot notify( "menuresponse", game["menu_team"], self.pers["team"] );
-						while(newBot.pers["team"] != "axis" && newBot.pers["team"] != "allies")
-							wait 0.05;
-						newBot notify( "menuresponse", game["menu_changeclass_" + newBot.pers["team"] ], "assault" );
-						while(!isDefined(newBot.pers["class"]))
-							wait 0.05;
-						newBot notify( "menuresponse", game["menu_changeclass"] );
-						while(!isAlive(newBot))
-							wait 0.05;
-
-						newBot SetMoveSpeedScale( 0 );
-						newBot freezeControls( true );
-						newBot setOrigin( origin );
-						newBot SetPlayerAngles( angles );
-						newBot.maxhealth = 999999999;
-						newBot.health = newBot.maxhealth;
-						self.hint6 setText( "Move: Press ^3[{+actionslot 1}]" );
-					}
-					else
-						self iprintln("Couldn't add bot");
-				}
-				self.inAction = false;
+					self iprintln("Couldn't add bot, server full?");
 			}
-
-			if(isDefined(lastWeapon))
-				self SwitchToWeapon(lastWeapon);
+			self.inAction = false;
 		}
-		lastWeapon = self getCurrentWeapon();
+
+		wait 0.05;
 	}
 }
 

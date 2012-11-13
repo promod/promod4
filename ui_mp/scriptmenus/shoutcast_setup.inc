@@ -11,8 +11,6 @@
 #define BACK_OPEN;
 #include "ui_mp/navcontrols.inc"
 
-#define STATUS( classname ) dvarString( ( "shout_alliesclass1" ) == classname || dvarString( "shout_alliesclass2" ) == classname || dvarString( "shout_alliesclass3" ) == classname || dvarString( "shout_alliesclass4" ) == classname || dvarString( "shout_alliesclass5" ) == classname || dvarString( "shout_axisclass1" ) == classname || dvarString( "shout_axisclass2" ) == classname || dvarString( "shout_axisclass3" ) == classname || dvarString( "shout_axisclass4" ) == classname || dvarString( "shout_axisclass5" ) == classname )
-
 CHOICE_MENU_TITLE( "Shoutcast Setup" )
 
 #undef CHOICE_X_START

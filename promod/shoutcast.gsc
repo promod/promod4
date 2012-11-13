@@ -8,101 +8,140 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-main()
+addPlayer()
 {
-	self endon ( "disconnect" );
-	self endon ( "killspec" );
-	self endon ( "spawned_player" );
-
-	for(;;)
+	if(isDefined(self.pers["class"]) && !isDefined(self.pers["shoutnum"]) && (self.pers["team"] == "allies" || self.pers["team"] == "axis"))
 	{
-		self waittill( "updateshoutcast" );
-
-		if(self.pers["team"] != "allies" && self.pers["team"] != "axis")
-			break;
-
-		for( i = 0; i < level.players.size; i++ )
-			if( level.players[i].pers["team"] == "spectator" )
-				level.players[i] setClientDvars( "shout_"+ self.pers["team"] + self.shoutNumber, self.name, "shout_"+ self.pers["team"] + "health" + self.shoutNumber, self.health / self.maxhealth );
+		offset = int(self.pers["team"] == "axis")*5;
+		for(i=0;i<5;i++)
+			if(!isDefined(level.shoutbars[i+offset]))
+			{
+				self.pers["shoutnum"] = i+offset;
+				level.shoutbars[self.pers["shoutnum"]] = self;
+				self updatePlayer();
+				break;
+			}
 	}
 }
 
-resetShoutcast()
+removePlayer()
 {
-	for ( i = 1; i < 6; i++ )
+	if(isDefined(self.pers["shoutnum"]))
 	{
-		self setClientDvars("shout_allies" + i, "",
-							"shout_alliesclass" + i, "",
-							"shout_allieshealth" + i, "",
-							"shout_axis" + i, "",
-							"shout_axisclass" + i, "",
-							"shout_axishealth" + i, "",
-							"shout_spec" + i, "");
-	}
+		level.shoutbars[self.pers["shoutnum"]] = undefined;
+		self.pers["shoutnum"] = undefined;
 
-	assignShoutID();
-	setShoutClass();
+		// Find replacements for current slots.
+		for(i=0;i<level.players.size;i++)
+			level.players[i] addPlayer();
+
+		// pad others to the top
+		for(i=0;i<5;i++)
+			if(!isDefined(level.shoutbars[i]))
+				for(j=i+1;j<5;j++)
+					if(isDefined(level.shoutbars[j]))
+					{
+						level.shoutbars[i] = level.shoutbars[j];
+						level.shoutbars[i].pers["shoutnum"] = i;
+						level.shoutbars[j] = undefined;
+						break;
+					}
+
+		for(i=5;i<10;i++)
+			if(!isDefined(level.shoutbars[i]))
+				for(j=i+1;j<10;j++)
+					if(isDefined(level.shoutbars[j]))
+					{
+						level.shoutbars[i] = level.shoutbars[j];
+						level.shoutbars[i].pers["shoutnum"] = i;
+						level.shoutbars[j] = undefined;
+						break;
+					}
+
+		loadAll();
+	}
 }
 
-assignShoutID()
+updatePlayer()
 {
-	axisNum = 0;
-	alliesNum = 0;
+	for(i=0;i<level.players.size;i++)
+		if(level.players[i].pers["team"] == "spectator" && isDefined(self.pers["shoutnum"]))
+			level.players[i] setClientDvars("shout_name"+self.pers["shoutnum"], self.name,
+											"shout_health"+self.pers["shoutnum"], self.health/100);
+}
 
-	players = getentarray("player", "classname");
-	for( i = 0; i < players.size; i++ )
+loadAll()
+{
+	for(i=0;i<level.players.size;i++)
+		if(level.players[i].pers["team"] == "spectator")
+			level.players[i] loadOne();
+}
+
+loadOne()
+{
+	for(j=0;j<10;j++)
+		if(isDefined(level.shoutbars[j]))
+			self setClientDvars("shout_name"+j, level.shoutbars[j].name,
+								"shout_health"+j, level.shoutbars[j].health/100);
+		else
+			self setClientDvars("shout_name"+j, "",
+								"shout_health"+j, "");
+}
+
+followBar(n)
+{
+	if(isDefined(n) && isDefined(level.shoutbars[n]))
 	{
-		if( isDefined( players[i] ) && isDefined( players[i].pers["class"] ) && isDefined( players[i].pers["team"] ) && ( players[i].pers["team"] == "allies" || players[i].pers["team"] == "axis" ) )
+		num = level.shoutbars[n] getEntityNumber();
+
+		if ( num != -1 )
 		{
-			if( players[i].pers["team"] == "axis" )
-			{
-				axisNum++;
-				players[i].shoutNumber = axisNum;
-			}
-			else if( players[i].pers["team"] == "allies" )
-			{
-				alliesNum++;
-				players[i].shoutNumber = alliesNum;
-			}
-
+			self.spectatorclient = num;
+			self.spectatorlast = num;
+			self.freelook = false;
 			wait 0.05;
-
-			players[i] notify( "updateshoutcast" );
-		}
-	}
-
-	waittillframeend;
-
-	num = 0;
-	players = getentarray("player", "classname");
-	for ( i = 0; i < players.size; i++ )
-	{
-		if( players[i].pers["team"] == "spectator" )
-		{
-			num++;
-			players[i].specNumber = num;
-			players[i].shoutNumber = undefined;
-
-			for ( j = 0; j < players.size; j++ )
-				if( players[j].pers["team"] == "spectator" )
-					players[j] setClientDvar( "shout_spec" + num, players[i].name );
+			self.spectatorclient = -1;
 		}
 	}
 }
 
-setShoutClass()
+followClass(class)
 {
-	wait 0.2;
-
-	players = getentarray("player", "classname");
-	for( i = 0; i < players.size; i++ )
+	if(class == "assault" || class == "specops" || class == "demolitions" || class == "sniper")
 	{
-		if ( isDefined( players[i].shoutNumber ) && isDefined( players[i].curClass ) )
+		if(!isDefined(self.specpos) || self.specpos > level.players.size)
+			self.specpos = 0;
+
+		if(!isDefined(self.followclass))
+			self.followclass = [];
+
+		if(self.followclass.size > 0)
 		{
-			players = getentarray("player", "classname");
-			for( j = 0; j < players.size; j++ )
-				if( players[j].pers["team"] == "spectator" )
-					players[j] setClientDvar( "shout_"+ players[i].pers["team"] + "class" + players[i].shoutNumber, maps\mp\gametypes\_quickmessages::chooseClassName( players[i].curClass ) );
+			temp = [];
+			for(i=0;i<self.followclass.size;i++)
+				if(isDefined(self.followclass[i]) && isDefined(self.followclass[i].curClass) && self.followclass[i].curClass == class)
+					temp[temp.size] = self.followclass[i];
+			self.followclass = temp;
+		}
+
+		if(self.followclass.size == 0)
+			for(i=0;i<level.players.size;i++)
+				if(isDefined(level.players[i].curClass) && level.players[i].curClass == class)
+					self.followclass[self.followclass.size] = level.players[i];
+
+		if(self.followclass.size > 0)
+		{
+			num = self.followclass[self.followclass.size-1] getEntityNumber();
+			self.followclass[self.followclass.size-1] = undefined;
+
+			if ( num != -1 )
+			{
+				self.spectatorclient = num;
+				self.spectatorlast = num;
+				self.freelook = false;
+				wait 0.05;
+				self.spectatorclient = -1;
+			}
 		}
 	}
 }

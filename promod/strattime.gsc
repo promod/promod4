@@ -47,15 +47,19 @@ main()
 					player setOffhandSecondaryClass("smoke");
 					player giveWeapon( "smoke_grenade_mp" );
 				}
+
+				player maps\mp\gametypes\_class::sidearmWeapon();
+				player maps\mp\gametypes\_class::primaryWeapon();
 			}
+			else
+				player thread maps\mp\gametypes\_globallogic::removeWeapons();
 
 			player allowsprint(true);
-			player setMoveSpeedScale( 1.0 - 0.05 * int( player.pers["class"] == "assault" ) );
+			player setMoveSpeedScale( 1.0 - 0.05 * int( isDefined( player.curClass ) && player.curClass == "assault" ) * int( isDefined( game["PROMOD_KNIFEROUND"] ) && !game["PROMOD_KNIFEROUND"] || !isDefined( game["PROMOD_KNIFEROUND"] ) ) );
 			player allowjump(true);
 		}
 	}
 
-	setDvar( "player_sustainAmmo", 0 );
 	UpdateClientNames();
 
 	if ( game["promod_timeout_called"] )
@@ -71,8 +75,6 @@ stratTime()
 
 	level.strat_over = false;
 	strat_time_left = game["PROMOD_STRATTIME"] + level.prematchPeriod * int( getDvarInt( "promod_allow_strattime" ) && isDefined( game["CUSTOM_MODE"] ) && game["CUSTOM_MODE"] && level.gametype == "sd" );
-
-	setDvar( "player_sustainAmmo", 1 );
 
 	while ( !level.strat_over )
 	{

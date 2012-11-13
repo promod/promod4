@@ -56,7 +56,14 @@ addSpawnPoints( team, spawnPointName )
 
 	if ( !level.teamSpawnPoints[team].size )
 	{
-		maps\mp\gametypes\_callbacksetup::AbortLevel();
+		if ( isDefined( level.restarting ) )
+		{
+			setdvar("g_gametype", "dm");
+			setDvar( "o_gametype", "dm" );
+		}
+		else
+			maps\mp\gametypes\_callbacksetup::AbortLevel();
+
 		wait 1;
 		return;
 	}
@@ -92,7 +99,14 @@ placeSpawnPoints( spawnPointName )
 
 	if ( !spawnPoints.size )
 	{
-		maps\mp\gametypes\_callbacksetup::AbortLevel();
+		if ( isDefined( level.restarting ) )
+		{
+			setdvar("g_gametype", "dm");
+			setDvar( "o_gametype", "dm" );
+		}
+		else
+			maps\mp\gametypes\_callbacksetup::AbortLevel();
+
 		wait 1;
 		return;
 	}

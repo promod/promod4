@@ -50,6 +50,45 @@ giveLoadout( team, class )
 
 	self setClass( class );
 
+	sidearmWeapon();
+	primaryWeapon();
+
+	if ( getDvarInt( "weap_allow_frag_grenade" ) && ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) ) )
+	{
+		if ( level.hardcoreMode )
+		{
+			self giveWeapon( "frag_grenade_short_mp" );
+			self setWeaponAmmoClip( "frag_grenade_short_mp", 1 );
+			self switchToOffhand( "frag_grenade_short_mp" );
+		}
+		else
+		{
+			self giveWeapon( "frag_grenade_mp" );
+			self setWeaponAmmoClip( "frag_grenade_mp", 1 );
+			self switchToOffhand( "frag_grenade_mp" );
+		}
+	}
+
+	if ( self.pers[class]["loadout_grenade"] != "none" && ( getDvarInt( "weap_allow_flash_grenade" ) || getDvarInt( "weap_allow_smoke_grenade" ) ) )
+	{
+		if ( self.pers[class]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
+			self setOffhandSecondaryClass("flash");
+		else if ( self.pers[class]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
+			self setOffhandSecondaryClass("smoke");
+
+		if ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) )
+		{
+			self giveWeapon( self.pers[class]["loadout_grenade"] + "_mp" );
+			self setWeaponAmmoClip( self.pers[class]["loadout_grenade"] + "_mp", 1 );
+		}
+	}
+
+	self setMoveSpeedScale( ( 1.0 - 0.05 * int( class == "assault" ) ) * !int( isDefined( level.strat_over ) && !level.strat_over ) );
+}
+
+sidearmWeapon()
+{
+	class = self.pers["class"];
 	sidearmWeapon = self.pers[class]["loadout_secondary"];
 
 	if ( sidearmWeapon != "none" && sidearmWeapon != "deserteaglegold" && sidearmWeapon != "deserteagle" && sidearmWeapon != "colt45" && sidearmWeapon != "usp" && sidearmWeapon != "beretta" )
@@ -65,10 +104,17 @@ giveLoadout( team, class )
 			sidearmWeapon = sidearmWeapon + "_mp";
 		}
 
-		self giveWeapon( sidearmWeapon );
-		self giveMaxAmmo( sidearmWeapon );
+		if ( isDefined( level.strat_over ) && level.strat_over && ( !isDefined( game["PROMOD_KNIFEROUND"] ) || !game["PROMOD_KNIFEROUND"] ) || !isDefined( level.strat_over ) )
+		{
+			self giveWeapon( sidearmWeapon );
+			self giveMaxAmmo( sidearmWeapon );
+		}
 	}
+}
 
+primaryWeapon()
+{
+	class = self.pers["class"];
 	primaryWeapon = self.pers[class]["loadout_primary"];
 
 	if ( primaryWeapon != "none" && primaryWeapon != "m16" && primaryWeapon != "ak47" && primaryWeapon != "m4" && primaryWeapon != "g3" && primaryWeapon != "g36c" && primaryWeapon != "m14" && primaryWeapon != "mp44" && primaryWeapon != "mp5" && primaryWeapon != "uzi" && primaryWeapon != "ak74u" && primaryWeapon != "winchester1200" && primaryWeapon != "m1014" && primaryWeapon != "m40a3" && primaryWeapon != "remington700" )
@@ -107,42 +153,14 @@ giveLoadout( team, class )
 		}
 
 		self maps\mp\gametypes\_teams::playerModelForWeapon( self.pers[class]["loadout_primary"] );
-		self giveWeapon( primaryWeapon, self.pers[class]["camo_num"] );
-		self setSpawnWeapon( primaryWeapon );
-		self giveMaxAmmo( primaryWeapon );
-	}
 
-	if ( getDvarInt( "weap_allow_frag_grenade" ) && ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) ) )
-	{
-		if ( level.hardcoreMode )
+		if ( isDefined( level.strat_over ) && level.strat_over && ( !isDefined( game["PROMOD_KNIFEROUND"] ) || !game["PROMOD_KNIFEROUND"] ) || !isDefined( level.strat_over ) )
 		{
-			self giveWeapon( "frag_grenade_short_mp" );
-			self setWeaponAmmoClip( "frag_grenade_short_mp", 1 );
-			self switchToOffhand( "frag_grenade_short_mp" );
-		}
-		else
-		{
-			self giveWeapon( "frag_grenade_mp" );
-			self setWeaponAmmoClip( "frag_grenade_mp", 1 );
-			self switchToOffhand( "frag_grenade_mp" );
+			self giveWeapon( primaryWeapon, self.pers[class]["camo_num"] );
+			self setSpawnWeapon( primaryWeapon );
+			self giveMaxAmmo( primaryWeapon );
 		}
 	}
-
-	if ( self.pers[class]["loadout_grenade"] != "none" && ( getDvarInt( "weap_allow_flash_grenade" ) || getDvarInt( "weap_allow_smoke_grenade" ) ) )
-	{
-		if ( self.pers[class]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
-			self setOffhandSecondaryClass("flash");
-		else if ( self.pers[class]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
-			self setOffhandSecondaryClass("smoke");
-
-		if ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) )
-		{
-			self giveWeapon( self.pers[class]["loadout_grenade"] + "_mp" );
-			self setWeaponAmmoClip( self.pers[class]["loadout_grenade"] + "_mp", 1 );
-		}
-	}
-
-	self setMoveSpeedScale( ( 1.0 - 0.05 * int( class == "assault" ) ) * !int( isDefined( level.strat_over ) && !level.strat_over ) );
 }
 
 preserveClass( class )
@@ -228,8 +246,6 @@ setClass( newClass )
 {
 	self setClientDvar( "loadout_curclass", newClass );
 	self.curClass = newClass;
-
-	thread promod\shoutcast::setShoutClass();
 }
 
 cac_modified_damage( victim, attacker, damage, meansofdeath )

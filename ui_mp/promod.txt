@@ -9,7 +9,6 @@
 */
 
 {
-	loadMenu { "ui_mp/auto_update.menu" }
 	loadMenu { "ui_mp/connect.menu" }
 	loadMenu { "ui_mp/controls_multi.menu" }
 	loadMenu { "ui_mp/hud.menu" }

@@ -51,6 +51,9 @@ monitorFlash()
 		if ( !isalive( self ) )
 			continue;
 
+		if ( ( isDefined( level.rdyup ) && level.rdyup && ( !isDefined( self.ruptally ) || self.ruptally < 0 ) ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying )
+			continue;
+
 		hurtattacker = false;
 		hurtvictim = true;
 

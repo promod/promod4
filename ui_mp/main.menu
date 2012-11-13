@@ -11,21 +11,26 @@
 #include "ui/menudef.h"
 
 #define CHOICE_X_START			0
-#define CHOICE_Y_START			192
+#define CHOICE_Y_START			168
 
 #define CHOICE_GROUP			"main"
-#define CHOICE_SEP_1			1
-#define CHOICE_SEP_2			3
-#define CHOICE_SEP_3			7
+#define CHOICE_SEP_1			2
+#define CHOICE_SEP_2			4
+#define CHOICE_SEP_3			8
 
 #define STYLE_PC	1
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 
 {
+	menuDef
+	{
+		name			"cdkey_menu"
+	}
+
 	assetGlobalDef
 	{
-		fadeClamp		1.0
+		fadeClamp		1
 		fadeCycle		1
 		fadeAmount		0.1
 	}
@@ -90,18 +95,164 @@
 			decoration
 		}
 
-		CHOICE_BUTTON_VIS( 1, "About Promod", open auconfirm;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 1, "@MENU_AUTO_UPDATE", open auconfirm;, when( dvarbool( cl_updateAvailable ) && !localvarBool( ui_hideBack ) ) )
+
+		itemDef
+		{
+			group			grpControlbutton
+			rect			220 173 212 95
+			style			WINDOW_STYLE_FILLED
+			border			1
+			bordercolor		0.5 0.5 0.5 0.5
+			forecolor		1 1 1 1
+			backcolor		0 0 0 0.85
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"Call of Duty 4 Promod"
+			style			0
+			textscale		0.3
+			textstyle		3
+			rect			325 191 110 20
+			textalign		ITEM_ALIGN_CENTER
+			textalignx		-55
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"www.codpromod.com"
+			style			0
+			textscale		0.2
+			textstyle		3
+			rect			325 199 110 20
+			textalign		ITEM_ALIGN_CENTER
+			textalignx		-55
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"Current Promod Version: LIVE V2.13 EU"
+			style			0
+			textscale		0.25
+			textstyle		3
+			rect			239 216 95 20
+			textalign		ITEM_ALIGN_LEFT
+			textalignx		0
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"Developers: Trivve and Ingram"
+			style			0
+			textscale		0.25
+			textstyle		3
+			rect			239 227 95 20
+			textalign		ITEM_ALIGN_LEFT
+			textalignx		0
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"Manager: abhi"
+			style			0
+			textscale		0.25
+			textstyle		3
+			rect			239 236 95 20
+			textalign		ITEM_ALIGN_LEFT
+			textalignx		0
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"Former developers: raf1, MavLP, bulletworm"
+			style			0
+			textscale		0.25
+			textstyle		3
+			rect			239 246 95 20
+			textalign		ITEM_ALIGN_LEFT
+			textalignx		0
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+		itemDef
+		{
+			text			"Also thanks to everyone else involved in Promod!"
+			style			0
+			textscale		0.25
+			textstyle		3
+			rect			325 264 110 20
+			textalign		ITEM_ALIGN_CENTER
+			textalignx		-55
+			textaligny		0
+			textfont		UI_FONT_NORMAL
+			forecolor		1 1 1 1
+			visible			when( localvarBool( ui_about ) );
+			decoration
+		}
+
+		CHOICE_BUTTON_BG( 2, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_HIGHLIGHT( 2, 2 )
+		itemDef
+		{
+			type			ITEM_TYPE_BUTTON
+			rect			CHOICE_RECT( 2 )
+			exp				text( "About Promod" );
+			textfont		CHOICE_TEXTFONT
+			textscale		CHOICE_TEXTSIZE
+			textstyle		CHOICE_TEXTSTYLE
+			textAlign		CHOICE_TEXTALIGN
+			textAlignX		CHOICE_TEXT_OFFSET_X
+			forecolor		CHOICE_TEXTCOLOR
+			visible			when( !localvarBool( ui_hideBack ) )
+			onFocus
+			{
+				play CHOICE_FOCUS_SOUND;
+				setLocalVarInt ui_highlight 2;
+				setLocalVarString ui_choicegroup CHOICE_GROUP;
+				setLocalvarBool ui_about 1;
+			}
+			leaveFocus
+			{
+				setLocalVarInt ui_highlight 0;
+				setLocalvarBool ui_about 0;
+			}
+		}
 		CHOICE_SEPARATOR_VIS( CHOICE_SEP_1, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 2, "@MENU_JOIN_GAME", open pc_join_unranked;, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 3, "@MENU_START_NEW_SERVER", close self; open createserver;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 3, "@MENU_JOIN_GAME", open pc_join_unranked;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 4, "@MENU_START_NEW_SERVER", close self; open createserver;, when( !localvarBool( ui_hideBack ) ) )
 		CHOICE_SEPARATOR_VIS( CHOICE_SEP_2, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 4, "@MENU_SELECT_PROFILE", setdvar ui_playerProfileAlreadyChosen 0; open player_profile;, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 5, "@MENU_CONTROLS", open main_controls;, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 6, "@MENU_OPTIONS", open main_options;, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 7, "@MENU_MODS", close self; open mods_menu;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 5, "@MENU_SELECT_PROFILE", setdvar ui_playerProfileAlreadyChosen 0; open player_profile;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 6, "@MENU_CONTROLS", open main_controls;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 7, "@MENU_OPTIONS", open main_options;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 8, "@MENU_MODS", close self; open mods_menu;, when( !localvarBool( ui_hideBack ) ) )
 		CHOICE_SEPARATOR_VIS( CHOICE_SEP_3, when( !localvarBool( ui_hideBack ) ) )
-		CHOICE_BUTTON_VIS( 8, "@MENU_QUIT", uiScript quit;, when( !localvarBool( ui_hideBack ) ) )
+		CHOICE_BUTTON_VIS( 9, "@MENU_QUIT", open quit_popmenu, when( !localvarBool( ui_hideBack ) ) )
 	}
-	#include "ui_mp/popupstyle.inc"
+
 	#include "ui/choices_setup_popmenu.menu"
 }

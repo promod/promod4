@@ -66,7 +66,7 @@ oil_spill_think()
 	for(;;)
 	{
 		self waittill("damage", other, damage, direction_vec, P, type );
-		if(type == "MOD_MELEE" || type == "MOD_IMPACT" || isDefined( level.strat_over ) && !level.strat_over)
+		if(type == "MOD_MELEE" || type == "MOD_IMPACT")
 			continue;
 
 		self.damageOwner = other;
@@ -110,7 +110,7 @@ oil_spill_burn_after()
 	for(;;)
 	{
 		self.barrel waittill("damage", amount ,attacker, direction_vec, P, type);
-		if(type == "MOD_MELEE" || type == "MOD_IMPACT" || isDefined( level.strat_over ) && !level.strat_over)
+		if(type == "MOD_MELEE" || type == "MOD_IMPACT")
 			continue;
 		break;
 	}
@@ -224,7 +224,7 @@ explodable_barrel_think()
 	for(;;)
 	{
 		self waittill("damage", amount ,attacker, direction_vec, P, type);
-		if(type == "MOD_MELEE" || type == "MOD_IMPACT" || isDefined( level.strat_over ) && !level.strat_over)
+		if(type == "MOD_MELEE" || type == "MOD_IMPACT")
 			continue;
 
 		self.damagetype = type;

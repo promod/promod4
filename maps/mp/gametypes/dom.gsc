@@ -204,7 +204,13 @@ domFlags()
 
 	if ( (primaryFlags.size + secondaryFlags.size) < 2 )
 	{
-		maps\mp\gametypes\_callbacksetup::AbortLevel();
+		if ( isDefined( level.restarting ) )
+		{
+			setdvar("g_gametype", "dm");
+			setDvar( "o_gametype", "dm" );
+		}
+		else
+			maps\mp\gametypes\_callbacksetup::AbortLevel();
 		return;
 	}
 
@@ -231,7 +237,7 @@ domFlags()
 
 		domFlag = maps\mp\gametypes\_gameobjects::createUseObject( "neutral", trigger, visuals, (0,0,100) );
 		domFlag maps\mp\gametypes\_gameobjects::allowUse( "enemy" );
-		domFlag maps\mp\gametypes\_gameobjects::setUseTime( 10.0 );
+		domFlag maps\mp\gametypes\_gameobjects::setUseTime( 10 );
 		domFlag maps\mp\gametypes\_gameobjects::setUseText( &"MP_CAPTURING_FLAG" );
 		label = domFlag maps\mp\gametypes\_gameobjects::getLabel();
 		domFlag.label = label;

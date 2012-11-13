@@ -27,7 +27,7 @@ menuDef	{
 	rect			0 0 640 480
 	focuscolor		COLOR_FOCUSED
 	style			WINDOW_STYLE_EMPTY
-	blurWorld		7.0
+	blurWorld		7
 	onESC { scriptMenuResponse "back"; }
 
 	itemDef

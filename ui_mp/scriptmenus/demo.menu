@@ -61,7 +61,7 @@
 			textscale		TEXTSIZE_SMALL
 			forecolor		.9 .9 .9 1
 			style			WINDOW_STYLE_FILLED
-			backcolor	 	0 0 0 .3
+			backcolor		0 0 0 .3
 			visible			1
 			accept			{ exec "stoprecord"; exec "vstr ui_demo"; close self }
 		}

@@ -26,11 +26,11 @@ main()
 	game["axis_demolitions_count"] = 0;
 	game["axis_sniper_count"] = 0;
 
-	game["promod_timeout_called"] = 0;
+	game["promod_timeout_called"] = false;
 	game["promod_in_timeout"] = 0;
 	game["allies_timeout_called"] = 0;
 	game["axis_timeout_called"] = 0;
 
 	game["promod_first_readyup_done"] = 0;
-	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.12 EU";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.13 EU";
 }

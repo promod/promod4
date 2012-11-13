@@ -34,15 +34,11 @@
 		rect			0 0 640 480
 		focuscolor		COLOR_FOCUSED
 		style			WINDOW_STYLE_EMPTY
-		blurWorld		7.0
+		blurWorld		7
 		legacySplitScreenScale
 		onOpen
 		{
-			focusFirst;
-		}
-		onEsc
-		{
-			close self;
+			setLocalVarInt ui_highlight "";
 		}
 
 		itemDef
@@ -72,7 +68,56 @@
 
 		CHOICE_MENU_TITLE( "@MPUI_CHOOSE_TEAM" )
 
-		#define BACK_OPEN;
+		itemDef
+		{
+			style			WINDOW_STYLE_FILLED
+			rect			48 72 285 117
+			backcolor		0 0 0 .5
+			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
+			decoration
+		}
+		itemDef
+		{
+			rect			50 92 270 117
+			type			ITEM_TYPE_BUTTON
+			textfont		UI_FONT_DEFAULT
+			dvar			"ui_motd"
+			textalign		ITEM_ALIGN_LEFT
+			textscale		TEXTSIZE_SMALL
+			forecolor		1 1 1 1
+			backcolor		0 0 0 0
+			textalignx		5
+			textaligny		0
+			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
+			decoration
+			autowrapped
+		}
+		itemDef
+		{
+			type			ITEM_TYPE_TEXT
+			visible			1
+			rect			55 72 0 0
+			forecolor		1 0.8 0.4 1
+			text			"Message of the Day"
+			textfont		UI_FONT_DEFAULT
+			textscale		TEXTSIZE_DEFAULT
+			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
+			decoration
+		}
+		itemDef
+		{
+
+			style			WINDOW_STYLE_SHADER
+			rect			48 72 283 115
+			background		"white"
+			forecolor		.5 .5 .5 0.15
+			border			1
+			bordersize		1
+			bordercolor		0.5 0.5 0.5 0.7
+			visible			when( team( name ) == "TEAM_FREE" && dvarString("ui_motd") != "" )
+			decoration
+		}
+
 		#include "ui_mp/navcontrols.inc";
 		#include "ui_mp/tactical_map.inc";
 
@@ -82,13 +127,13 @@
 		#undef	CHOICE_HORIZONTAL_ALIGN
 		#define CHOICE_HORIZONTAL_ALIGN HORIZONTAL_ALIGN_CENTER
 
-		CHOICE_BUTTON_VIS( 1, "1. Attack", play "mouse_click"; scriptMenuResponse "axis";, when( team( name ) == "TEAM_ALLIES" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
+		CHOICE_BUTTON_VIS( 1, "1. Attack", scriptMenuResponse "axis";, when( team( name ) == "TEAM_ALLIES" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
 		CHOICE_DBUTTON_VIS( 1, "1. Attack", when( team( name ) == "TEAM_AXIS" ) )
 
-		CHOICE_BUTTON_VIS( 2, "2. Defence", play "mouse_click"; scriptMenuResponse "allies";, when( team( name ) == "TEAM_AXIS" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
+		CHOICE_BUTTON_VIS( 2, "2. Defence", scriptMenuResponse "allies";, when( team( name ) == "TEAM_AXIS" || team(name) == "TEAM_FREE" || team(name) == "TEAM_SPECTATOR" ) )
 		CHOICE_DBUTTON_VIS( 2, "2. Defence", when( team( name ) == "TEAM_ALLIES" ) )
 
-		CHOICE_BUTTON( 3, "3. Auto-Assign", play "mouse_click"; scriptMenuResponse "autoassign"; )
+		CHOICE_BUTTON( 3, "3. Auto-Assign", scriptMenuResponse "autoassign"; )
 
 		CHOICE_SEPARATOR( CHOICE_SEP_1 )
 

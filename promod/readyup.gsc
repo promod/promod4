@@ -14,24 +14,31 @@ main()
 {
 	if ( isDefined( level.scorebot ) && level.scorebot )
 	{
-		if ( !game["promod_first_readyup_done"] && !game["promod_timeout_called"] )
-			sb_text = "1st_half_ready_up";
-		else if ( game["promod_first_readyup_done"] && !game["promod_timeout_called"] )
-			sb_text = "2nd_half_ready_up";
-		else
-			sb_text = "timeout_ready_up";
 
-		game["promod_scorebot_ticker_buffer"] += "" + sb_text;
+		if( game["promod_in_timeout"] )
+			sb_text = "timeout";
+		else
+		{
+			if( game["promod_first_readyup_done"] )
+				sb_text = "2nd_half";
+			else
+				sb_text = "1st_half";
+		}
+
+		game["promod_scorebot_ticker_buffer"] += "" + sb_text+"_ready_up";
 	}
 
 	level.timeLimitOverride = true;
 	level.rdyup = true;
+	level.rup_txt_fx = true;
 
 	setDvar( "g_deadChat", 1 );
 	setClientNameMode( "auto_change" );
 	setGameEndTime( 0 );
 
-	thread periodAnnounce();
+	if ( game["promod_first_readyup_done"] )
+		thread periodAnnounce();
+
 	level.ready_up_over = false;
 	previous_not_ready_count = 0;
 
@@ -40,14 +47,14 @@ main()
 
 	while ( !level.ready_up_over )
 	{
-		wait 0.05;
-
 		all_players_ready = true;
 		level.not_ready_count = 0;
 
 		if ( level.players.size < 1 )
 		{
 			all_players_ready = false;
+
+			wait 0.2;
 			continue;
 		}
 
@@ -113,6 +120,8 @@ main()
 
 		if ( all_players_ready )
 			level.ready_up_over = true;
+
+		wait 0.05;
 	}
 
 	level notify("kill_ru_period");
@@ -248,7 +257,7 @@ selfLoop()
 
 	while ( !level.ready_up_over )
 	{
-		while ( !isDefined( self.pers["team"] == "none" ) || self.pers["team"] == "none" )
+		while ( !isDefined( self.pers["team"] ) || self.pers["team"] == "none" )
 			wait 0.05;
 
 		wait 0.05;
@@ -270,35 +279,32 @@ clientHUD()
 
 	text = "";
 	if ( !game["promod_first_readyup_done"] )
-		text = "Pre-Match Ready-Up Period";
-	else if ( game["promod_timeout_called"] )
-		text = "Timeout Ready-Up Period";
+		text = "Pre-Match";
+	else if ( game["promod_in_timeout"] )
+		text = "Timeout";
 	else
-		text = "Half-Time Ready-Up Period";
+		text = "Half-Time";
 
 	self.periodtext = createFontString( "objective", 1.6 );
 	self.periodtext setPoint( "CENTER", "CENTER", 0, -75 );
 	self.periodtext.sort = 1001;
-	self.periodtext setText( text );
+	self.periodtext setText( text + " Ready-Up Period" );
 	self.periodtext.foreground = false;
 	self.periodtext.hidewheninmenu = true;
 
 	if ( game["promod_first_readyup_done"] )
 	{
 		self.halftimetext = createFontString( "objective", 1.5 );
-		self.halftimetext setPoint( "CENTER", "CENTER", 0, -60 );
+		self.halftimetext.alpha = 0;
+		self.halftimetext setPoint( "CENTER", "CENTER", 0, 200 );
 		self.halftimetext.sort = 1001;
 
-		if ( game["promod_timeout_called"] )
-		{
-			if ( isDefined( game["LAN_MODE"] ) && game["LAN_MODE"] )
-				self.halftimetext setText( "Timeout Elapsed" );
-			else
-				self.halftimetext setText( "Timeout Remaining" );
-		}
+		if ( game["promod_in_timeout"] && (!isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"]) )
+			text = "Remaining";
 		else
-			self.halftimetext setText( "Half-Time Elapsed" );
+			text = "Elapsed";
 
+		self.halftimetext setText( "Time " + text );
 		self.halftimetext.foreground = false;
 		self.halftimetext.hidewheninmenu = true;
 	}
@@ -328,13 +334,11 @@ onSpawn()
 
 periodAnnounce()
 {
-	if ( !game["promod_first_readyup_done"] )
-		return;
-
 	level.halftimetimer = createServerTimer( "objective", 1.4 );
+	level.halftimetimer.alpha = 0;
 	level.halftimetimer setPoint( "CENTER", "CENTER", 0, 215 );
 
-	if ( !game["promod_timeout_called"] || game["promod_timeout_called"] && isDefined( game["LAN_MODE"] ) && game["LAN_MODE"] )
+	if ( !game["promod_in_timeout"] || isDefined( game["LAN_MODE"] ) && game["LAN_MODE"] )
 		level.halftimetimer setTimerUp( 0 );
 	else
 		level.halftimetimer setTimer( 300 );
@@ -354,14 +358,22 @@ moveOver()
 	level endon("kill_ru_period");
 	self endon("disconnect");
 
-	wait 3;
-
-	self.periodtext MoveOverTime( 2.5 );
-	self.periodtext setPoint( "CENTER", "CENTER", 0, 185 );
-
-	if ( isDefined( self.halftimetext ) )
+	if( level.rup_txt_fx )
 	{
-		self.halftimetext MoveOverTime( 2.5 );
-		self.halftimetext setPoint( "CENTER", "CENTER", 0, 200 );
+		wait 3;
+		self.periodtext MoveOverTime( 2.5 );
 	}
+
+	self.periodtext setPoint( "CENTER", "CENTER", 0, 185 + int( !isDefined( self.halftimetext ) ) * 25 );
+
+	if( level.rup_txt_fx )
+	{
+		wait 2.6;
+		if( isDefined( level.halftimetimer ) )
+			level.halftimetimer.alpha = 1;
+		level.rup_txt_fx = false;
+	}
+
+	if( isDefined( self.halftimetext ) )
+		self.halftimetext.alpha = 1;
 }

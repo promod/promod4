@@ -42,6 +42,7 @@ validMode( mode )
 	switches["hc_done"] = false;
 	switches["knife_done"] = false;
 	switches["mr_done"] = false;
+	switches["scores_done"] = false;
 
 	for(i=0;i<keys.size;i++)
 	{
@@ -63,6 +64,7 @@ validMode( mode )
 				switches["lan_pb"] = true;
 				break;
 			case "knife":
+				if(switches["scores_done"]) return false;
 			case "hc":
 				if(switches[keys[i]+"_done"]) return false;
 				switches[keys[i]+"_done"] = true;
@@ -70,6 +72,8 @@ validMode( mode )
 			default:
 				if(keys[i] != "mr" && isSubStr(keys[i],"mr") && "mr"+int(strtok(keys[i], "mr")[0]) == keys[i] && int(strtok(keys[i], "mr")[0]) > 0 && !switches["mr_done"])
 					switches["mr_done"] = true;
+				else if ( ( isSubStr( keys[i], ":" ) ) && strtok( keys[i], ":" ).size == 2 && int(strtok( keys[i], ":" )[0]) >= 0 && int(strtok( keys[i], ":" )[1]) >= 0 && !switches["scores_done"] && !switches["knife_done"] )
+					switches["scores_done"] = true;
 				else
 					return false;
 				break;
@@ -140,6 +144,8 @@ setMode( mode )
 	game["PROMOD_MATCH_MODE"] = "";
 	game["PROMOD_PB_OFF"] = 0;
 	game["PROMOD_KNIFEROUND"] = 0;
+	game["SCORES_ATTACK"] = 0;
+	game["SCORES_DEFENCE"] = 0;
 
 	if ( mode == "comp_public" )
 	{
@@ -206,7 +212,12 @@ setMode( mode )
 					break;
 				default:
 					if ( isSubStr( exploded[i], "mr" ) )
-						mr_rating = strtok(exploded[i], "mr")[0];
+						mr_rating = int(strtok(exploded[i], "mr")[0]);
+					else if ( isSubStr( exploded[i], ":" ) )
+					{
+						game["SCORES_ATTACK"] = int(strtok( exploded[i], ":" )[0]);
+						game["SCORES_DEFENCE"] = int(strtok( exploded[i], ":" )[1]);
+					}
 					break;
 			}
 		}
@@ -214,6 +225,9 @@ setMode( mode )
 
 	if ( game["PROMOD_MATCH_MODE"] == "match" )
 		promod\comp::main();
+
+	if ( knockout_mode && !mr_rating )
+		mr_rating = 10;
 
 	if ( limited_mode )
 	{
@@ -246,18 +260,31 @@ setMode( mode )
 		setDvar( "scr_hardcore", 1 );
 	}
 
-	if ( int( mr_rating ) > 0 && ( level.gametype == "sd" || level.gametype == "sab" ) )
+	maxscore = 0;
+	if ( mr_rating > 0 && ( level.gametype == "sd" || level.gametype == "sab" ) )
 	{
-		game["PROMOD_MODE_HUD"] += " " + "^3MR" + int( mr_rating );
+		maxscore = mr_rating * ( 2 - 1 * knockout_mode ) + ( - 1 * !knockout_mode );
 
-		setDvar( "scr_" + level.gametype + "_roundswitch", int( mr_rating ) );
-		setDvar( "scr_" + level.gametype + "_roundlimit", int( mr_rating ) * 2 );
+		game["PROMOD_MODE_HUD"] += " " + "^3MR" + mr_rating;
+
+		setDvar( "scr_" + level.gametype + "_roundswitch", mr_rating );
+		setDvar( "scr_" + level.gametype + "_roundlimit", mr_rating * 2 );
 
 		if ( knockout_mode && level.gametype == "sd" )
-			setDvar( "scr_sd_scorelimit", int( mr_rating ) + 1 );
+			setDvar( "scr_sd_scorelimit", mr_rating + 1 );
 	}
 	else if ( game["PROMOD_MATCH_MODE"] == "match" )
+	{
 		game["PROMOD_MODE_HUD"] += " ^3Standard";
+		mr_rating = 10;
+		maxscore = mr_rating * ( 2 - 1 * knockout_mode ) + ( - 1 * !knockout_mode );
+	}
+
+	if ( level.gametype != "sd" || !knockout_mode && game["SCORES_ATTACK"] + game["SCORES_DEFENCE"] > maxscore || knockout_mode && ( ( game["SCORES_ATTACK"] > maxscore || game["SCORES_DEFENCE"] > maxscore ) || ( game["SCORES_ATTACK"] + game["SCORES_DEFENCE"] >= int( mr_rating ) * 2 ) ) )
+	{
+		game["SCORES_ATTACK"] = 0;
+		game["SCORES_DEFENCE"] = 0;
+	}
 
 	if( game["PROMOD_PB_OFF"] && getDvarInt( "sv_cheats" ) && !getDvarInt( "sv_punkbuster" ) )
 		game["PROMOD_MODE_HUD"] += " ^1PB: OFF & CHEATS";

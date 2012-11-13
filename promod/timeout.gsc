@@ -21,8 +21,6 @@ main()
 	level.timeout_over = false;
 	level.timeout_time_left = 300;
 
-	game["promod_timeout_called"] = false;
-
 	thread timeoutLoop();
 }
 
@@ -60,6 +58,8 @@ timeoutLoop()
 		{
 			level.timeout_over = true;
 			level.ready_up_over = 1;
+
+			game["promod_timeout_called"] = false;
 		}
 	}
 }
@@ -124,7 +124,7 @@ timeoutCall()
 	iprintln("^3Timeout called by " + self.name);
 
 	if ( !isDefined( level.strat_over ) || level.strat_over )
-		self iprintln("^3Call timeout again to cancel timeout");
+		self iprintln("^3Call timeout again to cancel");
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 	{

@@ -54,8 +54,6 @@ init()
 	precacheMenu("shoutcast_setup_binds");
 	precacheMenu("echo");
 	precacheMenu("demo");
-	precacheMenu("clientcheck");
-	precacheMenu("oob");
 
 	level thread onPlayerConnect();
 }
@@ -195,10 +193,31 @@ onMenuResponse()
 			case "shoutcast_setup":
 				if ( self.pers["team"] == "spectator" )
 				{
-					if ( int( response ) > 10 )
-						self thread maps\mp\gametypes\_quickmessages::setFollowSpec( ( int( response ) - 10 ) );
-					else
-						self thread maps\mp\gametypes\_quickmessages::setFollow( response );
+					if( response == "assault" || response == "specops" || response == "demolitions" || response == "sniper" )
+						self promod\shoutcast::followClass(response);
+					else if (response == "getdetails")
+					{
+						self promod\shoutcast::loadOne();
+						classes = [];
+						classes["assault"] = 0;
+						classes["specops"] = 0;
+						classes["demolitions"] = 0;
+						classes["sniper"] = 0;
+
+						for(i=0;i<level.players.size;i++)
+						{
+							if(isDefined(level.players[i].curClass))
+								classes[level.players[i].curClass]++;
+							if(isDefined(level.players[i].pers["shoutnum"]) && isDefined(level.players[i].curClass))
+								self setclientdvar("shout_class"+level.players[i].pers["shoutnum"], maps\mp\gametypes\_quickmessages::chooseClassName(level.players[i].curClass));
+						}
+						self setClientDvars("shout_class_assault", classes["assault"],
+											"shout_class_specops", classes["specops"],
+											"shout_class_demolitions", classes["demolitions"],
+											"shout_class_sniper", classes["sniper"]);
+					}
+					else if ( int( response ) < 11 && int( response ) > 0 )
+						self promod\shoutcast::followBar(int(response)-1);
 				}
 				continue;
 
@@ -214,15 +233,6 @@ onMenuResponse()
 
 			case "quickpromodgfx":
 				maps\mp\gametypes\_quickmessages::quickpromodgfx( response );
-				continue;
-			case "clientcheck":
-				if ( response == "pwned" && isDefined( self ) && isDefined( self.clientcheck ) )
-				{
-					self.clientcheck = undefined;
-
-					kick(self getentitynumber());
-					iprintln(self.name+" ("+GetSubStr(self getGuid(),24)+") was kicked for cheating.");
-				}
 				continue;
 		}
 	}

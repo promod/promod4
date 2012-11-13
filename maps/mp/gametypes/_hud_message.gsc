@@ -143,9 +143,9 @@ showNotifyMessage( notifyData )
 	if ( isDefined( notifyData.duration ) )
 		duration = notifyData.duration;
 	else if ( level.gameEnded )
-		duration = 2.0;
+		duration = 2;
 	else
-		duration = 4.0;
+		duration = 4;
 
 	self thread resetOnCancel();
 
@@ -213,7 +213,7 @@ showNotifyMessage( notifyData )
 		self.notifyIcon setParent( anchorElem );
 		self.notifyIcon setShader( notifyData.iconName, 60, 60 );
 		self.notifyIcon.alpha = 0;
-		self.notifyIcon fadeOverTime( 1.0 );
+		self.notifyIcon fadeOverTime( 1 );
 		self.notifyIcon.alpha = 1;
 
 		waitRequireVisibility( duration );
@@ -343,8 +343,8 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 
 	self endon ( "reset_outcome" );
 
-	titleSize = 3.0;
-	textSize = 2.0;
+	titleSize = 3;
+	textSize = 2;
 	iconSize = 70;
 	spacing = 30;
 	font = "objective";
@@ -357,7 +357,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 	outcomeTitle.hideWhenInMenu = false;
 	outcomeTitle.archived = false;
 
-	outcomeText = createFontString( font, 2.0 );
+	outcomeText = createFontString( font, 2 );
 	outcomeText setParent( outcomeTitle );
 	outcomeText setPoint( "TOP", "BOTTOM", 0, 0 );
 	outcomeText.glowAlpha = 1;
@@ -475,7 +475,7 @@ teamOutcomeNotify( winner, isRound, endReasonText, delay )
 	matchBonus = undefined;
 	if ( isDefined( self.matchBonus ) )
 	{
-		matchBonus = createFontString( font, 2.0 );
+		matchBonus = createFontString( font, 2 );
 		matchBonus setParent( outcomeText );
 		matchBonus setPoint( "TOP", "BOTTOM", 0, iconSize + (spacing * 3) + leftScore.height );
 		matchBonus.glowAlpha = 1;
@@ -501,8 +501,8 @@ outcomeNotify( winner, endReasonText, delay )
 
 	self endon ( "reset_outcome" );
 
-	titleSize = 3.0;
-	winnerSize = 2.0;
+	titleSize = 3;
+	winnerSize = 2;
 	otherSize = 1.5;
 	iconSize = 30;
 	spacing = 20;
@@ -539,7 +539,7 @@ outcomeNotify( winner, endReasonText, delay )
 	outcomeTitle.archived = false;
 	outcomeTitle setPulseFX( 100, duration, 1000 );
 
-	outcomeText = createFontString( font, 2.0 );
+	outcomeText = createFontString( font, 2 );
 	outcomeText setParent( outcomeTitle );
 	outcomeText setPoint( "TOP", "BOTTOM", 0, 0 );
 	outcomeText.glowAlpha = 1;
@@ -591,7 +591,7 @@ outcomeNotify( winner, endReasonText, delay )
 		thirdTitle setPulseFX( 100, duration, 1000 );
 	}
 
-	matchBonus = createFontString( font, 2.0 );
+	matchBonus = createFontString( font, 2 );
 	matchBonus setParent( thirdTitle );
 	matchBonus setPoint( "TOP", "BOTTOM", 0, spacing );
 	matchBonus.glowAlpha = 1;

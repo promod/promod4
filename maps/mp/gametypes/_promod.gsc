@@ -12,10 +12,10 @@ init()
 {
 	level.serverDvars = [];
 
-	setServerDvarDefault( "class_assault_limit", 64, 0, 64 );
-	setServerDvarDefault( "class_specops_limit", 2, 0, 64 );
-	setServerDvarDefault( "class_demolitions_limit", 1, 0, 64 );
-	setServerDvarDefault( "class_sniper_limit", 1, 0, 64 );
+	setDvarDefault( "class_assault_limit", 64, 0, 64 );
+	setDvarDefault( "class_specops_limit", 2, 0, 64 );
+	setDvarDefault( "class_demolitions_limit", 1, 0, 64 );
+	setDvarDefault( "class_sniper_limit", 1, 0, 64 );
 
 	setDvarDefault( "class_assault_allowdrop", 1, 0, 1 );
 	setDvarDefault( "class_specops_allowdrop", 1, 0, 1 );
@@ -107,15 +107,22 @@ onPlayerConnect()
 	for(;;)
 	{
 		level waittill( "connecting", player );
-		player thread initClassLoadouts();
 		player thread updateServerDvars();
 	}
 }
 
 setClassChoice( classType )
 {
+	if( classType != "assault" && classType != "specops" && classType != "demolitions" && classType != "sniper" )
+		return;
+
+	idef = !isDefined(self.pers["class"]);
+
 	self.pers["class"] = classType;
 	self.class = classType;
+
+	if(idef)
+		self promod\shoutcast::addPlayer();
 
 	self setClientDvar( "loadout_class", classType );
 
@@ -199,10 +206,6 @@ setServerDvarDefault( dvarName, setVal, minVal, maxVal )
 
 initClassLoadouts()
 {
-	self endon ("disconnect");
-
-	wait 0.05;
-
 	self initLoadoutForClass( "assault" );
 	self initLoadoutForClass( "specops" );
 	self initLoadoutForClass( "demolitions" );
@@ -571,7 +574,7 @@ menuAcceptClass( response )
 
 	if ( self.sessionstate == "playing" )
 	{
-		if ( level.inGracePeriod && isDefined( self.hasDoneCombat ) && !self.hasDoneCombat && isDefined( game["PROMOD_KNIFEROUND"] ) && !game["PROMOD_KNIFEROUND"] || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
+		if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
 		else
 		{

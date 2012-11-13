@@ -134,7 +134,13 @@ onStartGameType()
 	level.spawn_all = getentarray( "mp_tdm_spawn", "classname" );
 	if ( !level.spawn_all.size )
 	{
-		maps\mp\gametypes\_callbacksetup::AbortLevel();
+		if ( isDefined( level.restarting ) )
+		{
+			setdvar("g_gametype", "dm");
+			setDvar( "o_gametype", "dm" );
+		}
+		else
+			maps\mp\gametypes\_callbacksetup::AbortLevel();
 		return;
 	}
 

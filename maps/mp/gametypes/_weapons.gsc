@@ -69,6 +69,7 @@ onPlayerSpawned()
 		self waittill("spawned_player");
 
 		self.hasDoneCombat = false;
+		self thread watchWeaponUsage();
 		self thread watchGrenadeUsage();
 	}
 }
@@ -135,6 +136,20 @@ deletePickupAfterAWhile()
 		return;
 
 	self delete();
+}
+
+watchWeaponUsage()
+{
+	self endon( "death" );
+	self endon( "disconnect" );
+	level endon ( "game_ended" );
+	level endon ( "grace_period_ending" );
+
+	for ( ;; )
+	{
+		self waittill ( "begin_firing" );
+		self.hasDoneCombat = true;
+	}
 }
 
 watchGrenadeUsage()
