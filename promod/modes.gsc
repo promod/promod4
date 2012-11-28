@@ -27,6 +27,9 @@ validMode( mode )
 		case "comp_public":
 		case "comp_public_hc":
 		case "custom_public":
+		case "comp_public_lan":
+		case "comp_public_hc_lan":
+		case "custom_public_lan":
 		case "strat":
 		case "match":
 		case "knockout":
@@ -115,7 +118,7 @@ monitorMode()
 			else
 			{
 				if ( isDefined( mode ) && mode != "" )
-					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax:\nmatch|knockout_lan|pb_hc_knife_1v1|2v2_mr#,\nNormal Modes: comp_public, comp_public_hc, custom_public, strat" );
+					iPrintLN( "Error Changing To Mode: ^1" + mode + "\nSyntax: match|knockout_lan|pb_hc_knife_1v1|2v2_mr#_#:#,\nNormal Modes: comp_public(_lan), comp_public_hc(_lan), custom_public(_lan), strat" );
 
 				setDvar( "promod_mode", o_mode );
 			}
@@ -169,6 +172,32 @@ setMode( mode )
 		game["PROMOD_MATCH_MODE"] = "pub";
 		game["PROMOD_MODE_HUD"] = "^4Custom ^3Public";
 		game["PROMOD_KNIFEROUND"] = getDvarInt("promod_kniferound");
+	}
+	else if ( mode == "comp_public_lan" )
+	{
+		promod\comp::main();
+		game["PROMOD_MATCH_MODE"] = "pub";
+		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public";
+		game["LAN_MODE"] = 1;
+		pub();
+	}
+	else if ( mode == "comp_public_hc_lan" )
+	{
+		promod\comp::main();
+		game["PROMOD_MATCH_MODE"] = "pub";
+		game["HARDCORE_MODE"] = 1;
+		game["PROMOD_MODE_HUD"] = "^4Competitive ^3Public ^6HC";
+		game["LAN_MODE"] = 1;
+		pub();
+	}
+	else if ( mode == "custom_public_lan" )
+	{
+		promod_ruleset\custom_public::main();
+		game["CUSTOM_MODE"] = 1;
+		game["PROMOD_MATCH_MODE"] = "pub";
+		game["PROMOD_MODE_HUD"] = "^4Custom ^3Public";
+		game["PROMOD_KNIFEROUND"] = getDvarInt("promod_kniferound");
+		game["LAN_MODE"] = 1;
 	}
 	else if ( mode == "strat" )
 	{

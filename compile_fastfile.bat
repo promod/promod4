@@ -25,7 +25,7 @@ copy mod.csv ..\..\zone_source /Y
 cd ..\..\bin
 linker_pc.exe -language english -compress -cleanup mod -verbose
 
-cd ..\mods\promodlive213
+cd ..\mods\promodlive214
 copy ..\..\zone\english\mod.ff
 
 pause

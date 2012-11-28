@@ -1,6 +1,6 @@
-Promod LIVE V2.13 EU - README
+Promod LIVE V2.14 EU - README
 http://www.codpromod.com
-2011-11-13 <promod [at] codpromod.com>
+2011-11-28 <promod [at] codpromod.com>
 #codpromod @ QuakeNet
 
 Developers: Trivve & Ingram
@@ -9,18 +9,24 @@ Manager: abhi
 Sponsored by FragNet
 http://www.fragnet.net
 
-Zip-package (promodlive213_eu.zip) contains:
+Zip-package (promodlive214_eu.zip) contains:
 
 LICENSE
-promodlive213\mod.ff
-promodlive213\promodlive213.iwd
-promodlive213\z_custom_ruleset.iwd
+promodlive214\mod.ff
+promodlive214\promodlive214.iwd
+promodlive214\z_custom_ruleset.iwd
 pb\stock_iwd_md5.cfg
 pb\promod_iwd_md5.cfg
 pb\pbsvuser.cfg
 readme.txt
 server_setup.txt
 server.cfg
+
+LIVE V2.14:
+- Fixed boosting with modified g_knockback value
+- Game will message all players if any serverside DVars are being modified
+- Added comp_public_lan, comp_public_hc_lan and custom_public_lan modes
+- Fixed an issue with scorebot messages being generated incorrectly
 
 LIVE V2.13:
 
@@ -29,7 +35,7 @@ LIVE V2.13:
 - Fixed problems with loading preserved classes
 - Invalid gametypes on custom maps will no longer cause server to crash
 - Added possibility to set scores with promod_mode (more info in promod modes section)
-- Removed flinching animation when player get shoot
+- Removed flinching animation when player get shot
 - Removed ability to shoot during strat time
 - Improved custom maps compability
 - Player is immune to flashbangs in ready up and start mode flying
@@ -113,7 +119,7 @@ Q: What about the hardcore, and support for all gametypes, how do I use them?
 A: For a complete list of "promod_modes", see below.
 
 Q: I want to run my own custom Promod-server with skins etc, how?
-A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive213" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
+A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive214" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
 
 Q: Can I use this mod as a movie mod?
 A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected. Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect").
@@ -152,8 +158,11 @@ For example "promod_mode match_mr10_knife_pb" will enable knife round and disabl
 There are also some other modes, these can not be combined with the tags above.
 
 comp_public - the default mode for competitive public
+comp_public_lan - same as above, but for LAN servers
 comp_public_hc - competitive public in hardcore mode
+comp_public_hc_lan - same as above, but for LAN servers
 custom_public - custom public mode reading settings from z_custom_ruleset.iwd
+custom_public_lan - same as above, but for LAN servers
 strat - strategy mode for practicing
 
 SCOREBOT
@@ -303,8 +312,8 @@ For example map "mp_dahman_b3" contains a file called "mp_dahman_b3.iwd" and the
 
 NOTES FOR SERVER-ADMINS AND SERVER-HOSTING COMPANIES
 
-The dvar fs_game "mods/promodlive213" is forced for match-servers and do not rename any files or modify contents of them.
-However custom servers with skins etc. must use something else than "mods/promodlive213" for example "mods/promodlive213_custom", it's not restricted and you are free to modify files as well.
+The dvar fs_game "mods/promodlive214" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/promodlive214" for example "mods/promodlive214_custom", it's not restricted and you are free to modify files as well.
 
 Included with Promod are two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
 

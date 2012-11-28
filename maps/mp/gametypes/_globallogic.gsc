@@ -3034,7 +3034,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	self.iDFlags = iDFlags;
 	self.iDFlagsTime = getTime();
 
-	if ( isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] )
+	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] )
 		return;
 
 	prof_begin( "Callback_PlayerDamage flags/tweaks" );
