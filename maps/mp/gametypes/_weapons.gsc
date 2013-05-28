@@ -71,6 +71,122 @@ onPlayerSpawned()
 		self.hasDoneCombat = false;
 		self thread watchWeaponUsage();
 		self thread watchGrenadeUsage();
+		self thread watchGrenadeAmmo();
+
+		if(!isDefined(self.pers["shots"]))
+			self.pers["shots"] = 0;
+		self thread shotCounter();
+	}
+}
+
+watchGrenadeAmmo()
+{
+	self endon("death");
+	self endon("disconnect");
+	self endon("game_ended");
+
+	prim = true;
+	sec = true;
+
+	while(prim || sec)
+	{
+		self waittill("grenade_fire");
+
+		if((isDefined( game["promod_do_readyup"] ) && game["promod_do_readyup"]) || (isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat") || getDvarInt("sv_cheats"))
+			break;
+
+		wait 0.25; // 5 frames, ought to be enough
+
+		pg = "";
+		if(self hasWeapon("frag_grenade_mp"))
+			pg = "frag_grenade_mp";
+		else if(self hasWeapon("frag_grenade_short_mp"))
+			pg = "frag_grenade_short_mp";
+		else
+			prim = false;
+
+		sg = "";
+		if(self hasWeapon("flash_grenade_mp"))
+			sg = "flash_grenade_mp";
+		else if(self hasWeapon("smoke_grenade_mp"))
+			sg = "smoke_grenade_mp";
+		else
+			sec = false;
+
+		if(prim && pg != "" && self GetAmmoCount(pg) < 1)
+		{
+			self TakeWeapon(pg);
+			prim = false;
+		}
+
+		if(sec && sg != "" && self GetAmmoCount(sg) < 1)
+		{
+			self TakeWeapon(sg);
+			sec = false;
+		}
+	}
+}
+
+shotCounter()
+{
+	self endon( "death" );
+	self endon( "disconnect" );
+	level endon ( "game_ended" );
+
+	for(;;)
+	{
+		self waittill("weapon_fired");
+		if(!isDefined( level.rdyup ) || !level.rdyup)
+			self.pers["shots"]++;
+	}
+}
+
+printStats()
+{
+	if(isDefined(game["PROMOD_MATCH_MODE"]) && game["PROMOD_MATCH_MODE"] == "match" && isDefined(self.hasDoneCombat) && self.hasDoneCombat && isDefined(level.gameEnded) && !level.gameEnded && (!isDefined( game["promod_do_readyup"] ) || !game["promod_do_readyup"]))
+	{
+		self iprintln("Can't display stats. Wait for the round to end.");
+	}
+	else
+	{
+		if ( !isDefined( self.pers["damage_done"] ) )
+			self.pers["damage_done"] = 0;
+
+		if ( !isDefined( self.pers["damage_taken"] ) )
+			self.pers["damage_taken"] = 0;
+
+		if ( !isDefined( self.pers["friendly_damage_done"] ) )
+			self.pers["friendly_damage_done"] = 0;
+
+		if ( !isDefined( self.pers["friendly_damage_taken"] ) )
+			self.pers["friendly_damage_taken"] = 0;
+
+		if ( !isDefined( self.pers["shots"] ) )
+			self.pers["shots"] = 0;
+
+		if ( !isDefined( self.pers["hits"] ) )
+			self.pers["hits"] = 0;
+
+		// Log, print, reset
+		if(self.pers["damage_done"] > 0 || self.pers["damage_taken"] > 0 || self.pers["friendly_damage_done"] > 0 || self.pers["friendly_damage_taken"] > 0 || self.pers["shots"] > 0 || self.pers["hits"] > 0)
+			logPrint("P_A;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.name + ";" + self.pers["shots"] + ";" + self.pers["hits"] + ";" + self.pers["damage_done"] + ";" + self.pers["damage_taken"] + ";" + self.pers["friendly_damage_done"] + ";" + self.pers["friendly_damage_taken"] + "\n");
+
+		self iprintln("^3" + self.name);
+		self iprintln("Damage Done: ^2" + self.pers["damage_done"] + "^7 Damage Taken: ^1" + self.pers["damage_taken"]);
+		if( level.teamBased )
+			self iprintln("Friendly Damage Done: ^2" + self.pers["friendly_damage_done"] + "^7 Friendly Damage Taken: ^1" + self.pers["friendly_damage_taken"]);
+		acc = 0;
+		if(self.pers["shots"] > 0) // avoid division by 0
+			acc = int(self.pers["hits"]/self.pers["shots"]*10000)/100;
+		self iprintln("Shots Fired: ^2" + self.pers["shots"] + "^7 Shots Hit: ^2" + self.pers["hits"] + "^7 Accuracy: ^1" + acc + " pct");
+
+		// Reset the stats afterwards
+		self.pers["damage_done"] = 0;
+		self.pers["damage_taken"] = 0;
+		self.pers["friendly_damage_done"] = 0;
+		self.pers["friendly_damage_taken"] = 0;
+		self.pers["shots"] = 0;
+		self.pers["hits"] = 0;
 	}
 }
 
@@ -143,13 +259,9 @@ watchWeaponUsage()
 	self endon( "death" );
 	self endon( "disconnect" );
 	level endon ( "game_ended" );
-	level endon ( "grace_period_ending" );
 
-	for ( ;; )
-	{
-		self waittill ( "begin_firing" );
-		self.hasDoneCombat = true;
-	}
+	self waittill ( "begin_firing" );
+	self.hasDoneCombat = true;
 }
 
 watchGrenadeUsage()

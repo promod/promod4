@@ -76,9 +76,9 @@ errorMessage()
 		if ( (antilag && dedicated == "dedicated LAN server") || (!antilag && dedicated == "dedicated internet server" && !game["PROMOD_PB_OFF"]))
 			iprintlnbold("^1Server Violation^7: Modified Connection");
 
-		if( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || toLower( getDvar( "fs_game" ) ) == "mods/promodlive214" )
+		if( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "match" || toLower( getDvar( "fs_game" ) ) == "mods/promodlive215" )
 		{
-			if( toLower(getDvar("fs_game")) != "mods/promodlive214" )
+			if( toLower(getDvar("fs_game")) != "mods/promodlive215" )
 				iprintlnbold("^1Server Violation^7: Invalid fs_game value");
 
 			iwdnames = strToK( getDvar( "sv_iwdnames" ), " " );
@@ -109,7 +109,7 @@ errorMessage()
 							iprintlnbold("^1Server Violation^7: Modified Custom IWD File While In Match Mode");
 						break;
 
-					case "promodlive214":
+					case "promodlive215":
 						if( iwdsums[i] != "1491770436" )
 							iprintlnbold("^1Server Violation^7: Modified Promod IWD Detected");
 						iwd_loaded = true;

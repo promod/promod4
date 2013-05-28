@@ -1042,6 +1042,8 @@ endGame( winner, endReasonText )
 								"ui_hud_hardcore", 1,
 								"cg_drawSpectatorMessages", 0,
 								"g_compassShowEnemies", 0 );
+
+		player maps\mp\gametypes\_weapons::printStats();
 	}
 
 	roundEndWait( level.postRoundTime );
@@ -2996,6 +2998,7 @@ Callback_PlayerDisconnect()
 		self removeDisconnectedPlayerFromPlacement();
 
 	self promod\shoutcast::removePlayer();
+	self maps\mp\gametypes\_weapons::printStats();
 
 	if ( isDefined( self.pers["team"] ) && ( self.pers["team"] == "allies" || self.pers["team"] == "axis" ) )
 		thread maps\mp\gametypes\_promod::updateClassAvailability( self.pers["team"] );
@@ -3030,24 +3033,18 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( !isDefined( level.rdyup ) )
 		level.rdyup = false;
 
-	iDamage = maps\mp\gametypes\_class::cac_modified_damage( self, eAttacker, iDamage, sMeansOfDeath );
+	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] || isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && sMeansOfDeath != "MOD_MELEE" && sMeansOfDeath != "MOD_FALLING" && !level.rdyup )
+		return;
+
+	if( isDefined(eAttacker) && isPlayer(eAttacker) && isPlayer(self) && eAttacker.sessionstate == "playing" && isDefined(iDamage) && isDefined( sMeansOfDeath ) && sMeansOfDeath != "" && (sMeansOfDeath == "MOD_RIFLE_BULLET" || sMeansOfDeath == "MOD_PISTOL_BULLET"))
+		iDamage = int(iDamage*1.4);
+
 	self.iDFlags = iDFlags;
 	self.iDFlagsTime = getTime();
 
-	if ( getDvarInt("g_knockback") != 1000 || isDefined( game["state"] ) && game["state"] == "postgame" || self.sessionteam == "spectator" || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying || isDefined( level.bombDefused ) && level.bombDefused || isDefined( level.bombExploded ) && level.bombExploded && self.pers["team"] == game["attackers"] )
-		return;
-
-	prof_begin( "Callback_PlayerDamage flags/tweaks" );
-
 	if ( level.rdyup && isDefined( eAttacker ) && isPlayer( eAttacker ) && eAttacker != self )
 	{
-		if ( !isDefined( eAttacker.ruptally ) )
-		{
-			eAttacker.ruptally = 0;
-			eAttacker setclientdvar("self_kills", 0);
-		}
-
-		if ( eAttacker.ruptally < 0 )
+		if ( !isDefined( eAttacker.ruptally ) || eAttacker.ruptally < 0 )
 		{
 			eAttacker.ruptally = 0;
 			eAttacker setclientdvar("self_kills", 0);
@@ -3060,15 +3057,12 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 			return;
 	}
 
-	if ( isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] && sMeansOfDeath != "MOD_MELEE" && sMeansOfDeath != "MOD_FALLING" && !level.rdyup )
-		return;
-
+	// bit arrays are interesting, huh?
 	if( !isDefined( vDir ) )
 		iDFlags |= level.iDFLAGS_NO_KNOCKBACK;
 
-	friendly = false;
-
-	if ( (level.teamBased && (self.health == self.maxhealth)) || !isDefined( self.attackers ) )
+	// Not sure exactly what happens here, but ok...
+	if ( level.teamBased && self.health == self.maxhealth || !isDefined( self.attackers ) )
 	{
 		self.attackers = [];
 		self.attackerData = [];
@@ -3085,54 +3079,48 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 			sWeapon = "destructible_car";
 	}
 
-	prof_end( "Callback_PlayerDamage flags/tweaks" );
+	friendly = false;
 
+	// if level.iDFLAGS_NO_PROTECTION element in iDflags is not 0, this will happen. NO_PROTECTION == 0 could be god-mode
 	if( !(iDFlags & level.iDFLAGS_NO_PROTECTION) )
 	{
-		if ( (isSubStr( sMeansOfDeath, "MOD_GRENADE" ) || isSubStr( sMeansOfDeath, "MOD_EXPLOSIVE" ) || isSubStr( sMeansOfDeath, "MOD_PROJECTILE" )) && isDefined( eInflictor ) && game["PROMOD_MATCH_MODE"] != "match" && eInflictor.classname == "grenade" && ( ( self.lastSpawnTime + 3500) > getTime() && distance( eInflictor.origin, self.lastSpawnPoint.origin ) < 250 || !isDefined ( eAttacker.pers["class"] ) ) )
-		{
-			prof_end( "Callback_PlayerDamage player" );
+		if ( (isSubStr( sMeansOfDeath, "MOD_GRENADE" ) || isSubStr( sMeansOfDeath, "MOD_EXPLOSIVE" ) || isSubStr( sMeansOfDeath, "MOD_PROJECTILE" )) && isDefined( eInflictor ) && game["PROMOD_MATCH_MODE"] != "match" && eInflictor.classname == "grenade" && ( (self.lastSpawnTime + 3500) > getTime() && distance( eInflictor.origin, self.lastSpawnPoint.origin ) < 250 || !isDefined ( eAttacker.pers["class"] ) ) )
 			return;
-		}
 
-		if ( level.teamBased && isPlayer( eAttacker ) && (self != eAttacker) && (self.pers["team"] == eAttacker.pers["team"]) )
+		if ( level.teamBased && isPlayer( eAttacker ) && self != eAttacker && self.pers["team"] == eAttacker.pers["team"] )
 		{
-			prof_begin( "Callback_PlayerDamage player" );
 			if ( !level.friendlyfire )
 				return;
-			else if ( level.friendlyfire == 1 )
+			if ( level.friendlyfire == 1 || (level.friendlyfire == 2 || level.friendlyfire == 3) && isAlive( eAttacker ) )
 			{
-				if ( iDamage < 1 )
-					iDamage = 1;
-
-				self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
-			}
-			else if ( level.friendlyfire == 2 && isAlive( eAttacker ) )
-			{
-				iDamage = int(iDamage * 0.5);
-
-				if(iDamage < 1)
-					iDamage = 1;
-
-				eAttacker finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
-			}
-			else if ( level.friendlyfire == 3 && isAlive( eAttacker ) )
-			{
-				iDamage = int(iDamage * 0.5);
+				if( (level.friendlyfire & 2) > 0 ) // 2 or 3
+					iDamage = int(iDamage * 0.5);
 
 				if ( iDamage < 1 )
 					iDamage = 1;
 
-				self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
-				eAttacker finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
-			}
+				if( (level.friendlyfire & 1) > 0 ) // 1 or 3
+				{
+					if(!level.rdyup)
+					{
+						if(!isDefined(self.pers["friendly_damage_taken"]))
+							self.pers["friendly_damage_taken"] = 0;
+						if(!isDefined(eAttacker.pers["friendly_damage_done"]))
+							eAttacker.pers["friendly_damage_done"] = 0;
 
+						self.pers["friendly_damage_taken"] += min(iDamage, self.health);
+						eAttacker.pers["friendly_damage_done"] += min(iDamage, self.health);
+					}
+
+					self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
+				}
+				if( (level.friendlyfire & 2) > 0 ) // 2 or 3
+					eAttacker finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
+			}
 			friendly = true;
 		}
 		else
 		{
-			prof_begin( "Callback_PlayerDamage world" );
-
 			if(iDamage < 1)
 				iDamage = 1;
 
@@ -3147,9 +3135,23 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 					self.attackerData[eAttacker.clientid] = true;
 			}
 
-			self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
+			if( !level.rdyup && isDefined(eAttacker) && isPlayer(eAttacker) && eAttacker != self )
+			{
+				if(!isDefined(self.pers["hits"]))
+					self.pers["hits"] = 0;
 
-			prof_end( "Callback_PlayerDamage world" );
+				eAttacker.pers["hits"]++;
+
+				if(!isDefined(self.pers["damage_taken"]))
+					self.pers["damage_taken"] = 0;
+				if(!isDefined(eAttacker.pers["damage_done"]))
+					eAttacker.pers["damage_done"] = 0;
+
+				self.pers["damage_taken"] += min(iDamage, self.health);
+				eAttacker.pers["damage_done"] += min(iDamage, self.health);
+			}
+
+			self finishPlayerDamageWrapper(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
 		}
 
 		if ( isDefined(eAttacker) && eAttacker != self )
@@ -3157,12 +3159,8 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 			if ( sMeansOfDeath == "MOD_HEAD_SHOT" )
 				thread dinkNoise(eAttacker, self);
 
-			hasBodyArmor = false;
-
-			if ( iDamage > 0 && getDvarInt( "scr_enable_hiticon" ) == 1 )
-				eAttacker thread maps\mp\gametypes\_damagefeedback::updateDamageFeedback( hasBodyArmor );
-			else if ( iDamage > 0 && getDvarInt( "scr_enable_hiticon" ) == 2 && !(iDFlags & level.iDFLAGS_PENETRATION) )
-				eAttacker thread maps\mp\gametypes\_damagefeedback::updateDamageFeedback( hasBodyArmor );
+			if ( iDamage > 0 && ( getDvarInt( "scr_enable_hiticon" ) == 1 || getDvarInt( "scr_enable_hiticon" ) == 2 && !(iDFlags & level.iDFLAGS_PENETRATION) ) )
+				eAttacker thread maps\mp\gametypes\_damagefeedback::updateDamageFeedback( false );
 		}
 
 		self.hasDoneCombat = true;
@@ -3171,58 +3169,55 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	if ( isdefined( eAttacker ) && eAttacker != self && !friendly )
 		level.useStartSpawns = false;
 
-	prof_begin( "Callback_PlayerDamage log" );
-
-	damagestring = "";
-	metrestring = "";
-
-	if ( isDefined( sHitLoc ) && sHitLoc != "none")
+	if( level.rdyup || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" )
 	{
-		if( isSubStr( sHitLoc, "torso_upper" ) )
-			damagestring = "upper torso";
-		else if( isSubStr( sHitLoc, "torso_lower" ) )
-			damagestring = "lower torso";
-		else if( isSubStr( sHitLoc, "leg_upper" ) )
-			damagestring = "upper leg";
-		else if( isSubStr( sHitLoc, "leg_lower" ) )
-			damagestring = "lower leg";
-		else if( isSubStr( sHitLoc, "arm_upper" ) )
-			damagestring = "upper arm";
-		else if( isSubStr( sHitLoc, "arm_lower" ) )
-			damagestring = "lower arm";
-		else if( isSubStr( sHitLoc, "head" ) || isSubStr( sHitLoc, "helmet" ) )
-			damagestring = "head";
-		else if( isSubStr( sHitLoc, "neck" ) )
-			damagestring = "neck";
-		else if( isSubStr( sHitLoc, "foot" ) )
-			damagestring = "foot";
-		else if( isSubStr( sHitLoc, "hand" ) )
-			damagestring = "hand";
-
-		metrestring = distance(self.origin, eAttacker.origin) * 0.0254;
-	}
-
-	if ( isDefined( eAttacker ) && isPlayer( eAttacker ) )
-	{
-		if ( eAttacker != self && ( level.rdyup || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ) && isDefined( sHitLoc ) )
+		if ( isDefined( eAttacker ) && isPlayer( eAttacker ) && isDefined( sHitLoc ) )
 		{
-			if ( sHitLoc == "none" )
+			if ( eAttacker != self )
 			{
-				eAttacker iprintln("You inflicted " + "^2" + iDamage + "^7 damage to " + self.name);
-				self iprintln(eAttacker.name + " inflicted " + "^1" + iDamage + "^7 damage to you");
+				if ( sHitLoc == "none" )
+				{
+					eAttacker iprintln("You inflicted ^2" + iDamage + "^7 damage to " + self.name);
+					self iprintln(eAttacker.name + " inflicted ^1" + iDamage + "^7 damage to you");
+				}
+				else
+				{
+					damagestring = "";
+					if( isSubStr( sHitLoc, "torso_upper" ) )
+						damagestring = "upper torso";
+					else if( isSubStr( sHitLoc, "torso_lower" ) )
+						damagestring = "lower torso";
+					else if( isSubStr( sHitLoc, "leg_upper" ) )
+						damagestring = "upper leg";
+					else if( isSubStr( sHitLoc, "leg_lower" ) )
+						damagestring = "lower leg";
+					else if( isSubStr( sHitLoc, "arm_upper" ) )
+						damagestring = "upper arm";
+					else if( isSubStr( sHitLoc, "arm_lower" ) )
+						damagestring = "lower arm";
+					else if( isSubStr( sHitLoc, "head" ) || isSubStr( sHitLoc, "helmet" ) )
+						damagestring = "head";
+					else if( isSubStr( sHitLoc, "neck" ) )
+						damagestring = "neck";
+					else if( isSubStr( sHitLoc, "foot" ) )
+						damagestring = "foot";
+					else if( isSubStr( sHitLoc, "hand" ) )
+						damagestring = "hand";
+
+					metrestring = int(distance(self.origin, eAttacker.origin) * 2.54) / 100;
+
+					eAttacker iprintln("You inflicted ^2" + iDamage + "^7 damage at a distance of ^2" + metrestring + "^7 metres in the ^2" + damagestring + "^7 to " + self.name);
+					self iprintln(eAttacker.name + " inflicted ^1" + iDamage + "^7 damage at a distance of ^1" + metrestring + "^7 metres in the ^1" + damagestring + "^7 to you");
+				}
 			}
-			else
-			{
-				eAttacker iprintln("You inflicted " + "^2" + iDamage + "^7 damage at a distance of " + "^2" + metrestring + "^7 metres in the " + "^2" + damagestring + "^7 to " + self.name);
-				self iprintln(eAttacker.name + " inflicted " + "^1" + iDamage + "^7 damage at a distance of " + "^1" + metrestring + "^7 metres in the " + "^1" + damagestring + "^7 to you");
-			}
+			else if ( sHitLoc == "none" )
+				self iprintln("You inflicted ^1" + iDamage + "^7 damage to yourself");
 		}
-		else if ( eAttacker == self && ( level.rdyup || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" ) && isDefined( sHitLoc ) && sHitLoc == "none" )
+		else if ( sMeansOfDeath == "MOD_FALLING" )
 			self iprintln("You inflicted ^1" + iDamage + "^7 damage to yourself");
 	}
-	else if ( (level.rdyup || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat") && sMeansOfDeath == "MOD_FALLING" )
-		self iprintln("You inflicted ^1" + iDamage + "^7 damage to yourself");
 
+	// Logging into file
 	if( self.sessionstate != "dead" )
 	{
 		lpattackerteam = "";
@@ -3245,8 +3240,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 		logPrint("D;" + self getGuid() + ";" + self getEntityNumber() + ";" + self.pers["team"] + ";" + self.name + ";" + lpattackGuid + ";" + lpattacknum + ";" + lpattackerteam + ";" + lpattackname + ";" + sWeapon + ";" + iDamage + ";" + sMeansOfDeath + ";" + sHitLoc + "\n");
 	}
 
-	prof_end( "Callback_PlayerDamage log" );
-
+	// Shoutcaster healthbar update
 	self promod\shoutcast::updatePlayer();
 }
 

@@ -390,6 +390,8 @@ onUsePlantObject( player )
 
 		if ( isDefined( level.scorebot ) && level.scorebot )
 			game["promod_scorebot_ticker_buffer"] += "planted_by" + player.name;
+
+		logPrint("P_P;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 	}
 }
 
@@ -411,6 +413,8 @@ onUseDefuseObject( player )
 
 	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "defused_by" + player.name;
+
+	logPrint("P_D;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
 }
 
 onDrop( player )

@@ -247,27 +247,3 @@ setClass( newClass )
 	self setClientDvar( "loadout_curclass", newClass );
 	self.curClass = newClass;
 }
-
-cac_modified_damage( victim, attacker, damage, meansofdeath )
-{
-	if( !isdefined( victim) || !isdefined( attacker ) || !isplayer( attacker ) || !isplayer( victim ) )
-		return damage;
-	if( attacker.sessionstate != "playing" || !isdefined( damage ) || !isdefined( meansofdeath ) )
-		return damage;
-	if( meansofdeath == "" )
-		return damage;
-
-	final_damage = damage;
-
-	if( isPrimaryDamage( meansofdeath ) )
-			final_damage = damage*1.4;
-
-	return int( final_damage );
-}
-
-isPrimaryDamage( meansofdeath )
-{
-	if( meansofdeath == "MOD_RIFLE_BULLET" || meansofdeath == "MOD_PISTOL_BULLET" )
-		return true;
-	return false;
-}

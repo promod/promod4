@@ -123,6 +123,10 @@ quickpromod(response)
 			self iprintln("Record reminder has been "+a+"abled");
 			break;
 
+		case "5":
+			self maps\mp\gametypes\_weapons::printStats();
+			break;
+
 		case "silencer":
 			if ( self.pers["team"] != "axis" && self.pers["team"] != "allies" || !isDefined( self.pers["class"] ) || !getDvarInt( "attach_allow_" + self.pers["class"] + "_silencer" ) || self.pers[self.pers["class"]]["loadout_primary"] == "mp44" || self.pers["class"] == "sniper" || self.pers["class"] == "demolitions" )
 				return;

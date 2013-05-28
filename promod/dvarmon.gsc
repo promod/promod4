@@ -22,10 +22,8 @@ main()
 	for( d = 0; d < dvars.size; d++ )
 		current_values[d] = getDvar(dvars[d]);
 
-	for(;;)
-	{
+	for(;;wait 0.05)
 		for ( c = 0; c < dvars.size; c++ )
-		{
 			if ( getDvar(dvars[c]) != current_values[c] )
 			{
 				level.dvarmon[level.dvarmon.size] = "^1" + dvars[c] + " ^3" + current_values[c] + " ^1--> ^3" + getDvar(dvars[c]);
@@ -38,10 +36,6 @@ main()
 					thread maps\mp\gametypes\_promod::updateClassAvailability( "axis" );
 				}
 			}
-		}
-
-		wait 0.05;
-	}
 }
 
 dvarHistory()

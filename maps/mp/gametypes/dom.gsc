@@ -355,6 +355,8 @@ onUse( player )
 	if ( isDefined( level.scorebot ) && level.scorebot )
 		game["promod_scorebot_ticker_buffer"] += "captured" + self.label + "" + player.name;
 
+	logPrint("P_F;" + player getGuid() + ";" + player getEntityNumber() + ";" + player.name + "\n");
+
 	self maps\mp\gametypes\_gameobjects::setOwnerTeam( team );
 	self maps\mp\gametypes\_gameobjects::set2DIcon( "enemy", "compass_waypoint_capture" + label );
 	self maps\mp\gametypes\_gameobjects::set3DIcon( "enemy", "waypoint_capture" + label );
