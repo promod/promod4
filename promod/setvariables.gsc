@@ -32,5 +32,5 @@ main()
 	game["axis_timeout_called"] = 0;
 
 	game["promod_first_readyup_done"] = 0;
-	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.15 EU";
+	game["PROMOD_VERSION"] = "Promod ^1LIVE ^7V2.16 EU";
 }

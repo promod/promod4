@@ -3137,8 +3137,8 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 
 			if( !level.rdyup && isDefined(eAttacker) && isPlayer(eAttacker) && eAttacker != self )
 			{
-				if(!isDefined(self.pers["hits"]))
-					self.pers["hits"] = 0;
+				if(!isDefined(eAttacker.pers["hits"]))
+					eAttacker.pers["hits"] = 0;
 
 				eAttacker.pers["hits"]++;
 
