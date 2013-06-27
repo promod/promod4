@@ -36,8 +36,7 @@ main()
 	setClientNameMode( "auto_change" );
 	setGameEndTime( 0 );
 
-	if ( game["promod_first_readyup_done"] )
-		thread periodAnnounce();
+	thread periodAnnounce();
 
 	level.ready_up_over = false;
 	previous_not_ready_count = 0;
@@ -292,22 +291,20 @@ clientHUD()
 	self.periodtext.foreground = false;
 	self.periodtext.hidewheninmenu = true;
 
-	if ( game["promod_first_readyup_done"] )
-	{
-		self.halftimetext = createFontString( "objective", 1.5 );
-		self.halftimetext.alpha = 0;
-		self.halftimetext setPoint( "CENTER", "CENTER", 0, 200 );
-		self.halftimetext.sort = 1001;
+	self.halftimetext = createFontString( "objective", 1.5 );
+	self.halftimetext.alpha = 0;
+	self.halftimetext setPoint( "CENTER", "CENTER", 0, 200 );
+	self.halftimetext.sort = 1001;
 
-		if ( game["promod_in_timeout"] && (!isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"]) )
-			text = "Remaining";
-		else
-			text = "Elapsed";
+	self.halftimetext.foreground = false;
+	self.halftimetext.hidewheninmenu = true;
 
-		self.halftimetext setText( "Time " + text );
-		self.halftimetext.foreground = false;
-		self.halftimetext.hidewheninmenu = true;
-	}
+	if ( game["promod_first_readyup_done"] && game["promod_in_timeout"] && (!isDefined( game["LAN_MODE"] ) || !game["LAN_MODE"]) )
+		text = "Remaining";
+	else
+		text = "Elapsed";
+
+	self.halftimetext setText( "Time " + text );
 
 	self thread moveOver();
 
@@ -364,7 +361,7 @@ moveOver()
 		self.periodtext MoveOverTime( 2.5 );
 	}
 
-	self.periodtext setPoint( "CENTER", "CENTER", 0, 185 + int( !isDefined( self.halftimetext ) ) * 25 );
+	self.periodtext setPoint( "CENTER", "CENTER", 0, 185 );
 
 	if( level.rup_txt_fx )
 	{

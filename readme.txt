@@ -1,26 +1,33 @@
-Promod LIVE V2.16 EU - README
+Promod LIVE V2.17 EU - README
 http://www.codpromod.com
-2013-05-29 <promod [at] codpromod.com>
+2013-06-27 <promod [at] codpromod.com>
 #codpromod @ QuakeNet
 
 Developers: Trivve & Ingram
-Manager: abhi
 
 Sponsored by FragNet
 http://www.fragnet.net
 
-Zip-package (promodlive216_eu.zip) contains:
+Zip-package (promodlive217_eu.zip) contains:
 
 LICENSE
-promodlive216\mod.ff
-promodlive216\promodlive216.iwd
-promodlive216\z_custom_ruleset.iwd
+pml217\mod.ff
+pml217\pml217.iwd
+pml217\z_c_r.iwd
 pb\stock_iwd_md5.cfg
 pb\promod_iwd_md5.cfg
 pb\pbsvuser.cfg
 readme.txt
 server_setup.txt
 server.cfg
+
+LIVE V2.17:
+- Shortened file and folder names in order to fix (or avoid) "file sum/name mismatch" error. Please note that fs_game naming scheme is slighly different from now on.
+- Added timer to pre-match ready up period.
+
+Leagues should allow both 2.16 and 2.17 for now as they are nearly identical. Upgrade from 2.16 is not necessary in case the server owner does not experience any problems listed above. This release does not contain any other changes and is intended as a quick fix for server owners having trouble setting up servers under Windows.
+
+Public server owners should rename their z_custom_ruleset.iwd to the new shorter version of z_c_r.iwd, nothing inside is changed.
 
 LIVE V2.16:
 - Fixed a small bug that appeared during 2.15. We're sorry about that!
@@ -134,7 +141,7 @@ Q: What about the hardcore, and support for all gametypes, how do I use them?
 A: For a complete list of "promod_modes", see below.
 
 Q: I want to run my own custom Promod-server with skins etc, how?
-A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/promodlive216" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
+A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/pml217" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
 
 Q: Can I use this mod as a movie mod?
 A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected. Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect").
@@ -176,7 +183,7 @@ comp_public - the default mode for competitive public
 comp_public_lan - same as above, but for LAN servers
 comp_public_hc - competitive public in hardcore mode
 comp_public_hc_lan - same as above, but for LAN servers
-custom_public - custom public mode reading settings from z_custom_ruleset.iwd
+custom_public - custom public mode reading settings from z_c_r.iwd
 custom_public_lan - same as above, but for LAN servers
 strat - strategy mode for practicing
 
@@ -328,8 +335,8 @@ For example map "mp_dahman_b3" contains a file called "mp_dahman_b3.iwd" and the
 
 NOTES FOR SERVER-ADMINS AND SERVER-HOSTING COMPANIES
 
-The dvar fs_game "mods/promodlive216" is forced for match-servers and do not rename any files or modify contents of them.
-However custom servers with skins etc. must use something else than "mods/promodlive216" for example "mods/promodlive216_custom", it's not restricted and you are free to modify files as well.
+The dvar fs_game "mods/pml217" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/pml217" for example "mods/pml217_custom", it's not restricted and you are free to add additional iwd files or modify existing ones.
 
 Included with Promod are two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
 
@@ -344,5 +351,5 @@ We STRONGLY encourage use of these MD5-checks! (This goes for leagues as well!)
 
 Due to several game engine exploits, we recommend to specify the rcon-password in the command-line of your server. If this is not possible, rename the server-config to something other than server.cfg, which would make finding rcon password more difficult.
 
-On another note of security, the IWD-file "z_custom_ruleset.iwd" is now running integrity checks if server is running match-mode which means you have to decide whether the server should run "promod_mode custom_public" or not.
-If you later want to run match-modes you will have to use the original unmodified "z_custom_ruleset.iwd" supplied in this package. Sorry for any inconvenience caused.
+On another note of security, the IWD-file "z_c_r.iwd" is now running integrity checks if server is running match-mode which means you have to decide whether the server should run "promod_mode custom_public" or not.
+If you later want to run match-modes you will have to use the original unmodified "z_c_r.iwd" supplied in this package. Sorry for any inconvenience caused.

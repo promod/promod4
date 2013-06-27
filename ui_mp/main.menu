@@ -141,7 +141,7 @@
 		}
 		itemDef
 		{
-			text			"Current Promod Version: LIVE V2.16 EU"
+			text			"Current Promod Version: LIVE V2.17 EU"
 			style			0
 			textscale		0.25
 			textstyle		3
@@ -161,21 +161,6 @@
 			textscale		0.25
 			textstyle		3
 			rect			239 227 95 20
-			textalign		ITEM_ALIGN_LEFT
-			textalignx		0
-			textaligny		0
-			textfont		UI_FONT_NORMAL
-			forecolor		1 1 1 1
-			visible			when( localvarBool( ui_about ) );
-			decoration
-		}
-		itemDef
-		{
-			text			"Manager: abhi"
-			style			0
-			textscale		0.25
-			textstyle		3
-			rect			239 236 95 20
 			textalign		ITEM_ALIGN_LEFT
 			textalignx		0
 			textaligny		0
