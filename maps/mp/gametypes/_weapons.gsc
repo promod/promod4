@@ -144,9 +144,7 @@ shotCounter()
 printStats()
 {
 	if(isDefined(game["PROMOD_MATCH_MODE"]) && game["PROMOD_MATCH_MODE"] == "match" && isDefined(self.hasDoneCombat) && self.hasDoneCombat && isDefined(level.gameEnded) && !level.gameEnded && (!isDefined( game["promod_do_readyup"] ) || !game["promod_do_readyup"]))
-	{
 		self iprintln("Can't display stats. Wait for the round to end.");
-	}
 	else
 	{
 		if ( !isDefined( self.pers["damage_done"] ) )
@@ -197,32 +195,46 @@ dropWeaponForDeath( attacker )
 	if ( !isDefined( weapon ) || !self hasWeapon( weapon ) )
 		return;
 
-	if( isPrimaryWeapon( weapon ) )
+	switch ( weapon )
 	{
-		switch ( level.primary_weapon_array[weapon] )
-		{
-			case "weapon_assault":
-				if ( !getDvarInt( "class_assault_allowdrop" ) )
-					return;
-				break;
-			case "weapon_smg":
-				if ( !getDvarInt( "class_specops_allowdrop" ) )
-					return;
-				break;
-			case "weapon_sniper":
-				if ( !getDvarInt( "class_sniper_allowdrop" ) )
-					return;
-				break;
-			case "weapon_shotgun":
-				if ( !getDvarInt( "class_demolitions_allowdrop" ) )
-					return;
-				break;
-			default:
+		case "m16_mp":
+		case "m16_silencer_mp":
+		case "ak47_mp":
+		case "ak47_silencer_mp":
+		case "m4_mp":
+		case "m4_silencer_mp":
+		case "g3_mp":
+		case "g3_silencer_mp":
+		case "g36c_mp":
+		case "g36c_silencer_mp":
+		case "m14_mp":
+		case "m14_silencer_mp":
+		case "mp44_mp":
+			if ( !getDvarInt( "class_assault_allowdrop" ) )
 				return;
-		}
+			break;
+		case "mp5_mp":
+		case "mp5_silencer_mp":
+		case "uzi_mp":
+		case "uzi_silencer_mp":
+		case "ak74u_mp":
+		case "ak74u_silencer_mp":
+			if ( !getDvarInt( "class_specops_allowdrop" ) )
+				return;
+			break;
+		case "m40a3_mp":
+		case "remington700_mp":
+			if ( !getDvarInt( "class_sniper_allowdrop" ) )
+				return;
+			break;
+		case "winchester1200_mp":
+		case "m1014_mp":
+			if ( !getDvarInt( "class_demolitions_allowdrop" ) )
+				return;
+			break;
+		default:
+			return;
 	}
-	else if ( WeaponClass( weapon ) != "pistol" )
-		return false;
 
 	clipAmmo = self GetWeaponAmmoClip( weapon );
 
@@ -300,9 +312,4 @@ onWeaponDamage( eInflictor, sWeapon, meansOfDeath, damage )
 	self endon ( "disconnect" );
 
 	maps\mp\gametypes\_shellshock::shellshockOnDamage( meansOfDeath, damage );
-}
-
-isPrimaryWeapon( weaponname )
-{
-	return isdefined( level.primary_weapon_array[weaponname] );
 }

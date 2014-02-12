@@ -4,7 +4,7 @@
 
 This is a sample command-line for starting and using Promod LIVE V2 under Windows:
 
-<path to iw3mp.exe> +set dedicated 2 +set net_ip localhost +set net_port 28960 +set sv_punkbuster 1 +set fs_game mods/pml217 +exec server.cfg +set rcon_password password +map_rotate
+<path to iw3mp.exe> +set dedicated 2 +set net_ip localhost +set net_port 28960 +set sv_punkbuster 1 +set fs_game mods/pml218 +exec server.cfg +set rcon_password password +map_rotate
 
 dedicated [0-2] (listen, LAN, internet)
 net_ip [xxx.xxx.xxx.xxx]
@@ -13,8 +13,8 @@ net_port [1-65535] (standard is 28960)
 Make sure you put the server config (server.cfg) in the main-folder or specify correct path to it.
 Please note that we also define the rcon password to the server here to prevent someone from downloading your config from server and thus view ("hack") your rcon password.
 
-The dvar fs_game "mods/pml217" is forced for match-servers and do not rename any files or modify contents of them.
-However custom servers with skins etc. must use something else than "mods/pml217" for example "mods/pml217_custom", it's not restricted and you are free to add additional iwd files or modify existing ones.
+The dvar fs_game "mods/pml218" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/pml218" for example "mods/pml218_custom", it's not restricted and you are free to add additional iwd files or modify existing ones.
 
 Included with Promod is two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
 

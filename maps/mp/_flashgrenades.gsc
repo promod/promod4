@@ -48,10 +48,7 @@ monitorFlash()
 	{
 		self waittill( "flashbang", amount_distance, amount_angle, attacker );
 
-		if ( !isalive( self ) )
-			continue;
-
-		if ( ( isDefined( level.rdyup ) && level.rdyup && ( !isDefined( self.ruptally ) || self.ruptally < 0 ) ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying )
+		if ( !isalive( self ) || ( isDefined( level.rdyup ) && level.rdyup && ( !isDefined( self.ruptally ) || self.ruptally < 0 ) ) || isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && isDefined( self.flying ) && self.flying || isDefined( game["PROMOD_KNIFEROUND"] ) && game["PROMOD_KNIFEROUND"] )
 			continue;
 
 		hurtattacker = false;

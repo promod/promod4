@@ -19,13 +19,14 @@ xcopy shock ..\..\raw\shock\ /SY
 xcopy sound ..\..\raw\sound\ /SY
 xcopy soundaliases ..\..\raw\soundaliases\ /SY
 xcopy ui_mp ..\..\raw\ui_mp\ /SY
+xcopy xmodel ..\..\raw\xmodel\ /SY
 
 copy mod.csv ..\..\zone_source /Y
 
 cd ..\..\bin
 linker_pc.exe -language english -compress -cleanup mod -verbose
 
-cd ..\mods\pml217
+cd ..\mods\pml218
 copy ..\..\zone\english\mod.ff
 
 pause

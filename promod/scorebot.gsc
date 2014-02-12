@@ -49,7 +49,7 @@ actionTicker()
 	setDvar( "__promod_defence_score", game["promod_scorebot_defence_ticker_buffer"], true );
 	setDvar( "__promod_mode", toLower( getDvar( "promod_mode" ) ), true );
 	setDvar( "__promod_ticker", getDvar( "__promod_ticker" ), true );
-	setDvar( "__promod_version", "Promod LIVE V2.17 EU", true );
+	setDvar( "__promod_version", "Promod LIVE V2.18 EU", true );
 
 	for(;;)
 	{

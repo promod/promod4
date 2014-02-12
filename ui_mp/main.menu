@@ -141,7 +141,7 @@
 		}
 		itemDef
 		{
-			text			"Current Promod Version: LIVE V2.17 EU"
+			text			"Current Promod Version: LIVE V2.18 EU"
 			style			0
 			textscale		0.25
 			textstyle		3
@@ -156,7 +156,7 @@
 		}
 		itemDef
 		{
-			text			"Developers: Trivve and Ingram"
+			text			"Maintained by Ingram"
 			style			0
 			textscale		0.25
 			textstyle		3
@@ -171,11 +171,11 @@
 		}
 		itemDef
 		{
-			text			"Former developers: raf1, MavLP, bulletworm"
+			text			"Former developers: raf1, MavLP, bulletworm, Trivve"
 			style			0
 			textscale		0.25
 			textstyle		3
-			rect			239 246 95 20
+			rect			230 246 95 20
 			textalign		ITEM_ALIGN_LEFT
 			textalignx		0
 			textaligny		0

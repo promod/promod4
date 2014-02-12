@@ -8,78 +8,34 @@
   Terms of license can be found in LICENSE.md document bundled with the project.
 */
 
-init()
-{
-	level.primary_weapon_array = [];
-
-	weapon_class_register( "m16_mp", "weapon_assault" );
-	weapon_class_register( "m16_silencer_mp", "weapon_assault" );
-	weapon_class_register( "ak47_mp", "weapon_assault" );
-	weapon_class_register( "ak47_silencer_mp", "weapon_assault" );
-	weapon_class_register( "m4_mp", "weapon_assault" );
-	weapon_class_register( "m4_silencer_mp", "weapon_assault" );
-	weapon_class_register( "g3_mp", "weapon_assault" );
-	weapon_class_register( "g3_silencer_mp", "weapon_assault" );
-	weapon_class_register( "g36c_mp", "weapon_assault" );
-	weapon_class_register( "g36c_silencer_mp", "weapon_assault" );
-	weapon_class_register( "m14_mp", "weapon_assault" );
-	weapon_class_register( "m14_silencer_mp", "weapon_assault" );
-	weapon_class_register( "mp44_mp", "weapon_assault" );
-	weapon_class_register( "mp5_mp", "weapon_smg" );
-	weapon_class_register( "mp5_silencer_mp", "weapon_smg" );
-	weapon_class_register( "uzi_mp", "weapon_smg" );
-	weapon_class_register( "uzi_silencer_mp", "weapon_smg" );
-	weapon_class_register( "ak74u_mp", "weapon_smg" );
-	weapon_class_register( "ak74u_silencer_mp", "weapon_smg" );
-	weapon_class_register( "winchester1200_mp", "weapon_shotgun" );
-	weapon_class_register( "m1014_mp", "weapon_shotgun" );
-	weapon_class_register( "m40a3_mp", "weapon_sniper" );
-	weapon_class_register( "remington700_mp", "weapon_sniper" );
-
-	level thread onPlayerConnecting();
-}
-
-weapon_class_register( weapon, weapon_type )
-{
-	level.primary_weapon_array[weapon] = weapon_type;
-}
-
 giveLoadout( team, class )
 {
 	self takeAllWeapons();
 
-	self setClass( class );
+	self setClientDvar( "loadout_curclass", class );
+	self.curClass = class;
 
 	sidearmWeapon();
 	primaryWeapon();
 
-	if ( getDvarInt( "weap_allow_frag_grenade" ) && ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) ) )
+	if(getDvarInt("weap_allow_frag_grenade") && (!isDefined( level.strat_over ) || level.strat_over))
 	{
+		s = "";
 		if ( level.hardcoreMode )
-		{
-			self giveWeapon( "frag_grenade_short_mp" );
-			self setWeaponAmmoClip( "frag_grenade_short_mp", 1 );
-			self switchToOffhand( "frag_grenade_short_mp" );
-		}
-		else
-		{
-			self giveWeapon( "frag_grenade_mp" );
-			self setWeaponAmmoClip( "frag_grenade_mp", 1 );
-			self switchToOffhand( "frag_grenade_mp" );
-		}
+			s = "_short";
+		self giveWeapon( "frag_grenade"+s+"_mp" );
+		self setWeaponAmmoClip( "frag_grenade"+s+"_mp", 1 );
+		self switchToOffhand( "frag_grenade"+s+"_mp" );
 	}
 
-	if ( self.pers[class]["loadout_grenade"] != "none" && ( getDvarInt( "weap_allow_flash_grenade" ) || getDvarInt( "weap_allow_smoke_grenade" ) ) )
+	gren = self.pers[class]["loadout_grenade"];
+	if((gren == "flash_grenade" || gren == "smoke_grenade") && getDvarInt("weap_allow_"+gren))
 	{
-		if ( self.pers[class]["loadout_grenade"] == "flash_grenade" && getDvarInt("weap_allow_flash_grenade") )
-			self setOffhandSecondaryClass("flash");
-		else if ( self.pers[class]["loadout_grenade"] == "smoke_grenade" && getDvarInt("weap_allow_smoke_grenade") )
-			self setOffhandSecondaryClass("smoke");
-
-		if ( isDefined( level.strat_over ) && level.strat_over || !isDefined( level.strat_over ) )
+		self setOffhandSecondaryClass(GetSubStr(gren, 0, 5));
+		if(!isDefined(level.strat_over) || level.strat_over)
 		{
-			self giveWeapon( self.pers[class]["loadout_grenade"] + "_mp" );
-			self setWeaponAmmoClip( self.pers[class]["loadout_grenade"] + "_mp", 1 );
+			self giveWeapon(gren+"_mp");
+			self setWeaponAmmoClip(gren+"_mp", 1);
 		}
 	}
 
@@ -96,13 +52,13 @@ sidearmWeapon()
 
 	if ( sideArmWeapon != "none" )
 	{
+		s = "";
 		if ( self.pers[class]["loadout_secondary_attachment"] == "silencer" )
-			sidearmWeapon = sidearmWeapon + "_silencer_mp";
+			s = "_silencer";
 		else
-		{
 			self.pers[class]["loadout_secondary_attachment"] = "none";
-			sidearmWeapon = sidearmWeapon + "_mp";
-		}
+
+		sidearmWeapon += s+"_mp";
 
 		if ( isDefined( level.strat_over ) && level.strat_over && ( !isDefined( game["PROMOD_KNIFEROUND"] ) || !game["PROMOD_KNIFEROUND"] ) || !isDefined( level.strat_over ) )
 		{
@@ -117,46 +73,61 @@ primaryWeapon()
 	class = self.pers["class"];
 	primaryWeapon = self.pers[class]["loadout_primary"];
 
-	if ( primaryWeapon != "none" && primaryWeapon != "m16" && primaryWeapon != "ak47" && primaryWeapon != "m4" && primaryWeapon != "g3" && primaryWeapon != "g36c" && primaryWeapon != "m14" && primaryWeapon != "mp44" && primaryWeapon != "mp5" && primaryWeapon != "uzi" && primaryWeapon != "ak74u" && primaryWeapon != "winchester1200" && primaryWeapon != "m1014" && primaryWeapon != "m40a3" && primaryWeapon != "remington700" )
-		primaryWeapon = getDvar( "class_" + class + "_primary" );
-
-	if ( !isDefined( self.pers[class]["loadout_camo"] ) )
-		self.pers[class]["camo_num"] = 0;
-	else if ( self.pers[class]["loadout_camo"] == "camo_brockhaurd" )
-		self.pers[class]["camo_num"] = 1;
-	else if ( self.pers[class]["loadout_camo"] == "camo_bushdweller" )
-		self.pers[class]["camo_num"] = 2;
-	else if ( self.pers[class]["loadout_camo"] == "camo_blackwhitemarpat" )
-		self.pers[class]["camo_num"] = 3;
-	else if ( self.pers[class]["loadout_camo"] == "camo_tigerred" )
-		self.pers[class]["camo_num"] = 4;
-	else if ( self.pers[class]["loadout_camo"] == "camo_stagger" )
-		self.pers[class]["camo_num"] = 5;
-	else if ( self.pers[class]["loadout_camo"] == "camo_gold" && ( primaryWeapon == "ak47" || primaryWeapon == "uzi" || primaryWeapon == "m1014" ) )
-		self.pers[class]["camo_num"] = 6;
-	else if ( self.pers[class]["loadout_camo"] == "camo_none" )
-		self.pers[class]["camo_num"] = 0;
-	else
+	switch(primaryWeapon)
 	{
-		self.pers[class]["loadout_camo"] = "camo_none";
-		self.pers[class]["camo_num"] = 0;
+		case "none":
+		case "m16":
+		case "ak47":
+		case "m4":
+		case "g3":
+		case "g36c":
+		case "m14":
+		case "mp44":
+		case "mp5":
+		case "uzi":
+		case "ak74u":
+		case "winchester1200":
+		case "m1014":
+		case "m40a3":
+		case "remington700":
+			break;
+		default:
+			primaryWeapon = getDvar("class_"+class+"_primary");
 	}
 
-	if ( primaryWeapon != "none" )
+	camos = strtok("camo_brockhaurd|camo_bushdweller|camo_blackwhitemarpat|camo_tigerred|camo_stagger", "|");
+	camonum = 0;
+
+	if(isDefined(self.pers[class]["loadout_camo"]))
 	{
-		if ( self.pers[class]["loadout_primary_attachment"] == "silencer" )
-			primaryWeapon = primaryWeapon + "_silencer_mp";
+		for(i=0;i<camos.size;i++)
+			if(self.pers[class]["loadout_camo"] == camos[i])
+			{
+				camonum = i+1;
+				break;
+			}
+
+		if(self.pers[class]["loadout_camo"] == "camo_gold" && (primaryWeapon == "ak47" || primaryWeapon == "uzi" || primaryWeapon == "m1014"))
+			camonum = 6;
+	}
+	else
+		self.pers[class]["loadout_camo"] = "camo_none";
+
+	if(primaryWeapon != "none")
+	{
+		s = "";
+		if(self.pers[class]["loadout_primary_attachment"] == "silencer")
+			s = "_silencer";
 		else
-		{
 			self.pers[class]["loadout_primary_attachment"] = "none";
-			primaryWeapon = primaryWeapon + "_mp";
-		}
+
+		primaryWeapon += s+"_mp";
 
 		self maps\mp\gametypes\_teams::playerModelForWeapon( self.pers[class]["loadout_primary"] );
 
 		if ( isDefined( level.strat_over ) && level.strat_over && ( !isDefined( game["PROMOD_KNIFEROUND"] ) || !game["PROMOD_KNIFEROUND"] ) || !isDefined( level.strat_over ) )
 		{
-			self giveWeapon( primaryWeapon, self.pers[class]["camo_num"] );
+			self giveWeapon( primaryWeapon, camonum );
 			self setSpawnWeapon( primaryWeapon );
 			self giveMaxAmmo( primaryWeapon );
 		}
@@ -227,23 +198,4 @@ preserveClass( class )
 set_config( dataName, value )
 {
 	self setStat( int( tableLookup( "promod/customStatsTable.csv", 1, dataName, 0 ) ), value );
-}
-
-onPlayerConnecting()
-{
-	for(;;)
-	{
-		level waittill( "connecting", player );
-
-		if ( !isDefined( player.pers["class"] ) )
-			player.pers["class"] = undefined;
-
-		player.class = player.pers["class"];
-	}
-}
-
-setClass( newClass )
-{
-	self setClientDvar( "loadout_curclass", newClass );
-	self.curClass = newClass;
 }

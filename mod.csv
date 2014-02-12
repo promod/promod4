@@ -120,3 +120,5 @@ rawfile,shock/damage_mp.shock
 sound,promod,,all_mp
 
 stringtable,promod/customStatsTable.csv
+
+xmodel,com_floodlight_on

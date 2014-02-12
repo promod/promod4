@@ -616,8 +616,8 @@ updateServerDvars()
 
 get_config( dataName )
 {
-	self.dataValue = self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, dataName, 0 ) ) );
-	self.dataString = tablelookup( "promod/customStatsTable.csv", 0, self.dataValue, 1 );
+	dataValue = self getStat( int( tableLookup( "promod/customStatsTable.csv", 1, dataName, 0 ) ) );
+	dataString = tablelookup( "promod/customStatsTable.csv", 0, dataValue, 1 );
 
-	return self.dataString;
+	return dataString;
 }

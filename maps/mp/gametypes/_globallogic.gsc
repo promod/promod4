@@ -2679,7 +2679,6 @@ Callback_StartGameType()
 	level.useStartSpawns = true;
 
 	thread maps\mp\gametypes\_promod::init();
-	thread maps\mp\gametypes\_class::init();
 	thread maps\mp\gametypes\_rank::init();
 	thread maps\mp\gametypes\_menus::init();
 	thread maps\mp\gametypes\_hud::init();
@@ -3131,7 +3130,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 					self.attackers[ self.attackers.size ] = eAttacker;
 					self.attackerData[eAttacker.clientid] = false;
 				}
-				if ( maps\mp\gametypes\_weapons::isPrimaryWeapon( sWeapon ) )
+				if ( WeaponInventoryType( sWeapon ) == "primary" )
 					self.attackerData[eAttacker.clientid] = true;
 			}
 
