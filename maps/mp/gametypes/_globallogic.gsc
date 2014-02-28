@@ -3130,7 +3130,7 @@ Callback_PlayerDamage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 					self.attackers[ self.attackers.size ] = eAttacker;
 					self.attackerData[eAttacker.clientid] = false;
 				}
-				if ( WeaponInventoryType( sWeapon ) == "primary" )
+				if ( isDefined(sWeapon) && isSubStr("m1014_mp winchester1200_mp mp5_mp uzi_mp ak74u_mp ak47_mp m14_mp mp44_mp g3_mp g36c_mp m16_mp m4_mp m40a3_mp remington700_mp", sWeapon) )
 					self.attackerData[eAttacker.clientid] = true;
 			}
 

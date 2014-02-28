@@ -48,7 +48,6 @@ rawfile,maps/createfx/mp_strike_fx.gsc
 rawfile,maps/createfx/mp_vacant_fx.gsc
 
 rawfile,maps/mp/_destructible.gsc
-rawfile,maps/mp/_destructible_types.gsc
 rawfile,maps/mp/_explosive_barrels.gsc
 rawfile,maps/mp/_flashgrenades.gsc
 rawfile,maps/mp/_load.gsc
@@ -120,5 +119,6 @@ rawfile,shock/damage_mp.shock
 sound,promod,,all_mp
 
 stringtable,promod/customStatsTable.csv
+stringtable,promod/destructible.csv
 
 xmodel,com_floodlight_on

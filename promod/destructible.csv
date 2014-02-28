@@ -1,0 +1,31 @@
+# Copyright (c) 2009-2017 Andreas Göransson <andreas.goransson@gmail.com>
+# Copyright (c) 2009-2017 Indrek Ardel <indrek@ardel.eu>
+#
+# This file is part of Call of Duty 4 Promod.
+#
+# Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
+# Terms of license can be found in LICENSE.md document bundled with the project.
+
+0,white_smoke,smoke/car_damage_whitesmoke
+1,black_smoke,smoke/car_damage_blacksmoke
+2,black_smoke_fire,smoke/car_damage_blacksmoke_fire
+3,small_vehicle_explosion,explosions/small_vehicle_explosion
+4,car_glass_large,props/car_glass_large
+5,car_glass_medium,props/car_glass_med
+6,light_front,props/car_glass_headlight
+7,light_back,props/car_glass_brakelight
+
+8,tag_glass_left_front
+9,tag_glass_right_front
+10,tag_glass_left_back
+11,tag_glass_right_back
+12,tag_glass_front
+13,tag_glass_back
+14,tag_glass_left_back2
+15,tag_glass_right_back2
+16,tag_light_left_front
+17,tag_light_right_front
+18,tag_light_left_back
+19,tag_light_right_back
+20,tag_mirror_right
+21,tag_mirror_left
