@@ -65,6 +65,7 @@ dmg()
 				{
 					numparts = getnumparts(mdl);
 					closest = undefined;
+					distance = distance(point, self.origin);
 					for(i=0;i<numparts;i++)
 					{
 						part = getpartname(mdl, i);
@@ -74,14 +75,21 @@ dmg()
 
 						if(!isdefined(closest) || dist < closest)
 							closest = dist;
+
+						if((isSubStr(part, "tag_hood") || isSubStr(part, "tag_trunk") || isSubStr(part, "tag_door_") || isSubStr(part, "tag_bumper_")) && dist < distance)
+							distance = dist;
 					}
 					if(!isdefined(closest))
-						closest = distance(point, self.origin);
+						closest = distance;
 
-					damage = 11 * damage - 5.6 * distance(point, self.origin) + 4 * closest;
+					damage = int(11 * damage - 5.6 * distance + 4 * closest);
 				}
-				self.damageOwner = attacker;
-				self.damageTaken += int(damage);
+
+				if(damage > 0)
+				{
+					self.damageOwner = attacker;
+					self.damageTaken += damage;
+				}
 			}
 		}
 
@@ -184,7 +192,7 @@ explosion()
 
 	self playsound("car_explode");
 	playfxontag(level.destructible_effects["small_vehicle_explosion"], self, "tag_death_fx");
-	origin = self gettagorigin("tag_death_fx")+(0, 0, 80);
+	origin = self.origin+(0, 0, 80);
 	rng = 250;
 	if(getsubstr(self.destructible_type, 0, 19) == "vehicle_80s_sedan1_")
 		rng = 375;

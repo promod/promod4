@@ -1,6 +1,6 @@
-Promod LIVE V2.19 EU - README
+Promod LIVE V2.20 EU - README
 http://www.codpromod.com
-2014-02-28 <promod [at] codpromod.com>
+2014-05-13 <promod [at] codpromod.com>
 #codpromod @ QuakeNet
 
 Maintained by Ingram
@@ -8,18 +8,21 @@ Maintained by Ingram
 Sponsored by FragNet
 http://www.fragnet.net
 
-Zip-package (promodlive219_eu.zip) contains:
+Zip-package (promodlive220_eu.zip) contains:
 
 LICENSE
-pml219\mod.ff
-pml219\pml219.iwd
-pml219\z_c_r.iwd
+pml220\mod.ff
+pml220\pml220.iwd
+pml220\z_c_r.iwd
 pb\stock_iwd_md5.cfg
 pb\promod_iwd_md5.cfg
 pb\pbsvuser.cfg
 readme.txt
 server_setup.txt
 server.cfg
+
+LIVE V2.20:
+- Fixed issues with vehicle damage source being different compared to previous releases
 
 LIVE V2.19:
 - Fixed a server crash related to damage inflicted via exploding barrels
@@ -149,7 +152,7 @@ Q: What about the hardcore, and support for all gametypes, how do I use them?
 A: For a complete list of "promod_modes", see below.
 
 Q: I want to run my own custom Promod-server with skins etc, how?
-A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/pml219" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
+A: In order to run your own custom Promod-server you'll need to change the fs_game to anything besides "mods/pml220" as well as not using match-modes. You will now be able to modify the Promod IWDs and add additional iwd-files.
 
 Q: Can I use this mod as a movie mod?
 A: Yes, you can! Commands (which are important for movie-making) are only forced on the clients once connected. Demos needs to be loaded using devmap before starting a demo ("devmap mp_crash;disconnect").
@@ -343,8 +346,8 @@ For example map "mp_dahman_b3" contains a file called "mp_dahman_b3.iwd" and the
 
 NOTES FOR SERVER-ADMINS AND SERVER-HOSTING COMPANIES
 
-The dvar fs_game "mods/pml219" is forced for match-servers and do not rename any files or modify contents of them.
-However custom servers with skins etc. must use something else than "mods/pml219" for example "mods/pml219_custom", it's not restricted and you are free to add additional iwd files or modify existing ones.
+The dvar fs_game "mods/pml220" is forced for match-servers and do not rename any files or modify contents of them.
+However custom servers with skins etc. must use something else than "mods/pml220" for example "mods/pml220_custom", it's not restricted and you are free to add additional iwd files or modify existing ones.
 
 Included with Promod are two PunkBuster MD5 configs, "stock_iwd_md5.cfg" and "promod_iwd_md5.cfg" which you can put in the pb-folder on your server, it contains checksums for the stock IWD-files as well as Promod-IWD for use with PunkBuster MD5 facility to prevent custom skins and other forms of cheating and abusing and can be loaded in-game by typing "\rcon pb_sv_load stock_iwd_md5.cfg" and "\rcon pb_sv_load promod_iwd_md5.cfg".
 
