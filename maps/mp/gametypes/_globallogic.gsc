@@ -398,7 +398,16 @@ spawnPlayer()
 		self thread removeWeapons();
 	else
 		self maps\mp\gametypes\_class::giveLoadout( self.team, self.class );
-
+	
+	if( GetDvar("scr_sd_tiebreaker") == "1" )
+	{
+		if(isDefined(game["knife_end"]) && game["knife_end"] == 2 )
+		{
+			self thread removeWeapons();
+			self thread maps\mp\gametypes\_hud_message::oldNotifyMessage( "TIE BREAKER - KNIFE ROUND", undefined, undefined, (1,1,1) , undefined, 4 );
+		}
+	}
+	
 	if ( level.inPrematchPeriod && game["promod_do_readyup"] )
 		self freezeControls( true );
 	else if ( level.inPrematchPeriod )
@@ -1038,11 +1047,19 @@ endGame( winner, endReasonText )
 		else
 			player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
 
-		player setClientDvars(
-								"ui_hud_hardcore", 1,
-								"cg_drawSpectatorMessages", 0,
-								"g_compassShowEnemies", 0 );
-
+		if( GetDvar("scr_sd_tiebreaker") == "1" )
+		{
+			if(game["knife_end"]==1 && winner == "tie")
+			{
+				game["knife_end"]=2;
+				game["state"]="playing";
+				wait 3;
+				map_restart(true);
+				return;
+			}
+		}
+		
+		player setClientDvars("ui_hud_hardcore", 1,"cg_drawSpectatorMessages", 0,"g_compassShowEnemies", 0 );
 		player maps\mp\gametypes\_weapons::printStats();
 	}
 
@@ -2526,6 +2543,8 @@ Callback_StartGameType()
 		if ( !isDefined( game["state"] ) )
 			game["state"] = "playing";
 
+		game["knife_end"]=1;
+		
 		precacheStatusIcon("hud_status_dead");
 		precacheStatusIcon("hud_status_connecting");
 		precacheStatusIcon("compassping_friendlyfiring_mp");
