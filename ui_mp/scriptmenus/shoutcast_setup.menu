@@ -10,106 +10,106 @@
 
 #include "ui/menudef.h"
 
-#define CHOICE_X_START			0
-#define CHOICE_Y_START			31
+#define CHOICE_X_START          0
+#define CHOICE_Y_START          31
 
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 
 {
-	menuDef
-	{
-		name			"shoutcast_setup"
-		rect			0 0 640 480
-		focuscolor		COLOR_FOCUSED
-		style			WINDOW_STYLE_EMPTY
-		onOpen
-		{
-			setLocalVarInt ui_highlight "";
-			scriptMenuResponse "getdetails";
-		}
-		onEsc
-		{
-			close self;
-		}
+    menuDef
+    {
+        name            "shoutcast_setup"
+        rect            0 0 640 480
+        focuscolor      COLOR_FOCUSED
+        style           WINDOW_STYLE_EMPTY
+        onOpen
+        {
+            setLocalVarInt ui_highlight "";
+            scriptMenuResponse "getdetails";
+        }
+        onEsc
+        {
+            close self;
+        }
 
-		itemDef
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
-			backcolor		0 0 0 0.75
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
-			background		"gradient_top"
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
-			background		"gradient_bottom"
-			visible			1
-			decoration
-		}
+        itemDef
+        {
+            style           WINDOW_STYLE_FILLED
+            rect            0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
+            backcolor       0 0 0 0.75
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            style           WINDOW_STYLE_SHADER
+            rect            0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+            background      "gradient_top"
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            style           WINDOW_STYLE_SHADER
+            rect            0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+            background      "gradient_bottom"
+            visible         1
+            decoration
+        }
 
-		#include "ui_mp/scriptmenus/shoutcast_setup.inc"
+        #include "ui_mp/scriptmenus/shoutcast_setup.inc"
 
-		CHOICE_SECTION_TITLE( 1, dvarString("shout_attack_name") )
+        CHOICE_SECTION_TITLE( 1, dvarString("shout_attack_name") )
 
-		CHOICE_BUTTON_VIS( 2, "1. " + dvarString("shout_name0") + " (" + dvarString("shout_class0") + ")", scriptMenuResponse "1", when( dvarString("shout_name0") != "" && dvarString("shout_health0") != "0" ) )
-		CHOICE_BUTTON_VIS( 3, "2. " + dvarString("shout_name1") + " (" + dvarString("shout_class1") + ")", scriptMenuResponse "2", when( dvarString("shout_name1") != "" && dvarString("shout_health1") != "0" ) )
-		CHOICE_BUTTON_VIS( 4, "3. " + dvarString("shout_name2") + " (" + dvarString("shout_class2") + ")", scriptMenuResponse "3", when( dvarString("shout_name2") != "" && dvarString("shout_health2") != "0" ) )
-		CHOICE_BUTTON_VIS( 5, "4. " + dvarString("shout_name3") + " (" + dvarString("shout_class3") + ")", scriptMenuResponse "4", when( dvarString("shout_name3") != "" && dvarString("shout_health3") != "0" ) )
-		CHOICE_BUTTON_VIS( 6, "5. " + dvarString("shout_name4") + " (" + dvarString("shout_class4") + ")", scriptMenuResponse "5", when( dvarString("shout_name4") != "" && dvarString("shout_health4") != "0" ) )
+        CHOICE_BUTTON_VIS( 2, "1. " + dvarString("shout_name0") + " (" + dvarString("shout_class0") + ")", scriptMenuResponse "1", when( dvarString("shout_name0") != "" && dvarString("shout_health0") != "0" ) )
+        CHOICE_BUTTON_VIS( 3, "2. " + dvarString("shout_name1") + " (" + dvarString("shout_class1") + ")", scriptMenuResponse "2", when( dvarString("shout_name1") != "" && dvarString("shout_health1") != "0" ) )
+        CHOICE_BUTTON_VIS( 4, "3. " + dvarString("shout_name2") + " (" + dvarString("shout_class2") + ")", scriptMenuResponse "3", when( dvarString("shout_name2") != "" && dvarString("shout_health2") != "0" ) )
+        CHOICE_BUTTON_VIS( 5, "4. " + dvarString("shout_name3") + " (" + dvarString("shout_class3") + ")", scriptMenuResponse "4", when( dvarString("shout_name3") != "" && dvarString("shout_health3") != "0" ) )
+        CHOICE_BUTTON_VIS( 6, "5. " + dvarString("shout_name4") + " (" + dvarString("shout_class4") + ")", scriptMenuResponse "5", when( dvarString("shout_name4") != "" && dvarString("shout_health4") != "0" ) )
 
-		CHOICE_DBUTTON_VIS( 2, "1. " + dvarString("shout_name0") + " (" + dvarString("shout_class0") + ")", when( dvarString("shout_name0") != "" && dvarString("shout_health0") == "0" ) )
-		CHOICE_DBUTTON_VIS( 3, "2. " + dvarString("shout_name1") + " (" + dvarString("shout_class1") + ")", when( dvarString("shout_name1") != "" && dvarString("shout_health1") == "0" ) )
-		CHOICE_DBUTTON_VIS( 4, "3. " + dvarString("shout_name2") + " (" + dvarString("shout_class2") + ")", when( dvarString("shout_name2") != "" && dvarString("shout_health2") == "0" ) )
-		CHOICE_DBUTTON_VIS( 5, "4. " + dvarString("shout_name3") + " (" + dvarString("shout_class3") + ")", when( dvarString("shout_name3") != "" && dvarString("shout_health3") == "0" ) )
-		CHOICE_DBUTTON_VIS( 6, "5. " + dvarString("shout_name4") + " (" + dvarString("shout_class4") + ")", when( dvarString("shout_name4") != "" && dvarString("shout_health4") == "0" ) )
+        CHOICE_DBUTTON_VIS( 2, "1. " + dvarString("shout_name0") + " (" + dvarString("shout_class0") + ")", when( dvarString("shout_name0") != "" && dvarString("shout_health0") == "0" ) )
+        CHOICE_DBUTTON_VIS( 3, "2. " + dvarString("shout_name1") + " (" + dvarString("shout_class1") + ")", when( dvarString("shout_name1") != "" && dvarString("shout_health1") == "0" ) )
+        CHOICE_DBUTTON_VIS( 4, "3. " + dvarString("shout_name2") + " (" + dvarString("shout_class2") + ")", when( dvarString("shout_name2") != "" && dvarString("shout_health2") == "0" ) )
+        CHOICE_DBUTTON_VIS( 5, "4. " + dvarString("shout_name3") + " (" + dvarString("shout_class3") + ")", when( dvarString("shout_name3") != "" && dvarString("shout_health3") == "0" ) )
+        CHOICE_DBUTTON_VIS( 6, "5. " + dvarString("shout_name4") + " (" + dvarString("shout_class4") + ")", when( dvarString("shout_name4") != "" && dvarString("shout_health4") == "0" ) )
 
-		CHOICE_DBUTTON_VIS( 2, "1. No Player", when( dvarString("shout_name0") == "" ) )
-		CHOICE_DBUTTON_VIS( 3, "2. No Player", when( dvarString("shout_name1") == "" ) )
-		CHOICE_DBUTTON_VIS( 4, "3. No Player", when( dvarString("shout_name2") == "" ) )
-		CHOICE_DBUTTON_VIS( 5, "4. No Player", when( dvarString("shout_name3") == "" ) )
-		CHOICE_DBUTTON_VIS( 6, "5. No Player", when( dvarString("shout_name4") == "" ) )
+        CHOICE_DBUTTON_VIS( 2, "1. No Player", when( dvarString("shout_name0") == "" ) )
+        CHOICE_DBUTTON_VIS( 3, "2. No Player", when( dvarString("shout_name1") == "" ) )
+        CHOICE_DBUTTON_VIS( 4, "3. No Player", when( dvarString("shout_name2") == "" ) )
+        CHOICE_DBUTTON_VIS( 5, "4. No Player", when( dvarString("shout_name3") == "" ) )
+        CHOICE_DBUTTON_VIS( 6, "5. No Player", when( dvarString("shout_name4") == "" ) )
 
-		CHOICE_SECTION_TITLE( 7, dvarString("shout_defence_name") )
+        CHOICE_SECTION_TITLE( 7, dvarString("shout_defence_name") )
 
-		CHOICE_BUTTON_VIS( 8, "6. " + dvarString("shout_name5") + " (" + dvarString("shout_class5") + ")", scriptMenuResponse "6", when( dvarString("shout_name5") != "" && dvarString("shout_health5") != "0" ) )
-		CHOICE_BUTTON_VIS( 9, "7. " + dvarString("shout_name6") + " (" + dvarString("shout_class6") + ")", scriptMenuResponse "7", when( dvarString("shout_name6") != "" && dvarString("shout_health6") != "0" ) )
-		CHOICE_BUTTON_VIS( 10, "8. " + dvarString("shout_name7") + " (" + dvarString("shout_class7") + ")", scriptMenuResponse "8", when( dvarString("shout_name7") != "" && dvarString("shout_health7") != "0" ) )
-		CHOICE_BUTTON_VIS( 11, "9. " + dvarString("shout_name8") + " (" + dvarString("shout_class8") + ")", scriptMenuResponse "9", when( dvarString("shout_name8") != "" && dvarString("shout_health8") != "0" ) )
-		CHOICE_BUTTON_VIS( 12, "0. " + dvarString("shout_name9") + " (" + dvarString("shout_class9") + ")", scriptMenuResponse "10", when( dvarString("shout_name9") != "" && dvarString("shout_health9") != "0" ) )
+        CHOICE_BUTTON_VIS( 8, "6. " + dvarString("shout_name5") + " (" + dvarString("shout_class5") + ")", scriptMenuResponse "6", when( dvarString("shout_name5") != "" && dvarString("shout_health5") != "0" ) )
+        CHOICE_BUTTON_VIS( 9, "7. " + dvarString("shout_name6") + " (" + dvarString("shout_class6") + ")", scriptMenuResponse "7", when( dvarString("shout_name6") != "" && dvarString("shout_health6") != "0" ) )
+        CHOICE_BUTTON_VIS( 10, "8. " + dvarString("shout_name7") + " (" + dvarString("shout_class7") + ")", scriptMenuResponse "8", when( dvarString("shout_name7") != "" && dvarString("shout_health7") != "0" ) )
+        CHOICE_BUTTON_VIS( 11, "9. " + dvarString("shout_name8") + " (" + dvarString("shout_class8") + ")", scriptMenuResponse "9", when( dvarString("shout_name8") != "" && dvarString("shout_health8") != "0" ) )
+        CHOICE_BUTTON_VIS( 12, "0. " + dvarString("shout_name9") + " (" + dvarString("shout_class9") + ")", scriptMenuResponse "10", when( dvarString("shout_name9") != "" && dvarString("shout_health9") != "0" ) )
 
-		CHOICE_DBUTTON_VIS( 8, "6. " + dvarString("shout_name5") + " (" + dvarString("shout_class5") + ")", when( dvarString("shout_name5") != "" && dvarString("shout_health5") == "0" ) )
-		CHOICE_DBUTTON_VIS( 9, "7. " + dvarString("shout_name6") + " (" + dvarString("shout_class6") + ")", when( dvarString("shout_name6") != "" && dvarString("shout_health6") == "0" ) )
-		CHOICE_DBUTTON_VIS( 10, "8. " + dvarString("shout_name7") + " (" + dvarString("shout_class7") + ")", when( dvarString("shout_name7") != "" && dvarString("shout_health7") == "0" ) )
-		CHOICE_DBUTTON_VIS( 11, "9. " + dvarString("shout_name8") + " (" + dvarString("shout_class8") + ")", when( dvarString("shout_name8") != "" && dvarString("shout_health8") == "0" ) )
-		CHOICE_DBUTTON_VIS( 12, "0. " + dvarString("shout_name9") + " (" + dvarString("shout_class9") + ")", when( dvarString("shout_name9") != "" && dvarString("shout_health9") == "0" ) )
+        CHOICE_DBUTTON_VIS( 8, "6. " + dvarString("shout_name5") + " (" + dvarString("shout_class5") + ")", when( dvarString("shout_name5") != "" && dvarString("shout_health5") == "0" ) )
+        CHOICE_DBUTTON_VIS( 9, "7. " + dvarString("shout_name6") + " (" + dvarString("shout_class6") + ")", when( dvarString("shout_name6") != "" && dvarString("shout_health6") == "0" ) )
+        CHOICE_DBUTTON_VIS( 10, "8. " + dvarString("shout_name7") + " (" + dvarString("shout_class7") + ")", when( dvarString("shout_name7") != "" && dvarString("shout_health7") == "0" ) )
+        CHOICE_DBUTTON_VIS( 11, "9. " + dvarString("shout_name8") + " (" + dvarString("shout_class8") + ")", when( dvarString("shout_name8") != "" && dvarString("shout_health8") == "0" ) )
+        CHOICE_DBUTTON_VIS( 12, "0. " + dvarString("shout_name9") + " (" + dvarString("shout_class9") + ")", when( dvarString("shout_name9") != "" && dvarString("shout_health9") == "0" ) )
 
-		CHOICE_DBUTTON_VIS( 8, "6. No Player", when( dvarString("shout_name5") == "" ) )
-		CHOICE_DBUTTON_VIS( 9, "7. No Player", when( dvarString("shout_name6") == "" ) )
-		CHOICE_DBUTTON_VIS( 10, "8. No Player", when( dvarString("shout_name7") == "" ) )
-		CHOICE_DBUTTON_VIS( 11, "9. No Player", when( dvarString("shout_name8") == "" ) )
-		CHOICE_DBUTTON_VIS( 12, "0. No Player", when( dvarString("shout_name9") == "" ) )
+        CHOICE_DBUTTON_VIS( 8, "6. No Player", when( dvarString("shout_name5") == "" ) )
+        CHOICE_DBUTTON_VIS( 9, "7. No Player", when( dvarString("shout_name6") == "" ) )
+        CHOICE_DBUTTON_VIS( 10, "8. No Player", when( dvarString("shout_name7") == "" ) )
+        CHOICE_DBUTTON_VIS( 11, "9. No Player", when( dvarString("shout_name8") == "" ) )
+        CHOICE_DBUTTON_VIS( 12, "0. No Player", when( dvarString("shout_name9") == "" ) )
 
-		CHOICE_SECTION_TITLE( 21, "Class" )
+        CHOICE_SECTION_TITLE( 21, "Class" )
 
-		CHOICE_BUTTON_VIS( 22, "Cycle Assault Players", scriptMenuResponse "assault", when( dvarInt("shout_class_assault") > 0 ) )
-		CHOICE_BUTTON_VIS( 23, "Cycle Spec Ops Players", scriptMenuResponse "specops", when(  dvarInt("shout_class_specops") > 0 ) )
-		CHOICE_BUTTON_VIS( 24, "Cycle Demolitions Players", scriptMenuResponse "demolitions", when( dvarInt("shout_class_demolitions") > 0 ) )
-		CHOICE_BUTTON_VIS( 25, "Cycle Sniper Players", scriptMenuResponse "sniper", when( dvarInt("shout_class_sniper") > 0 ) )
+        CHOICE_BUTTON_VIS( 22, "Cycle Assault Players", scriptMenuResponse "assault", when( dvarInt("shout_class_assault") > 0 ) )
+        CHOICE_BUTTON_VIS( 23, "Cycle Spec Ops Players", scriptMenuResponse "specops", when(  dvarInt("shout_class_specops") > 0 ) )
+        CHOICE_BUTTON_VIS( 24, "Cycle Demolitions Players", scriptMenuResponse "demolitions", when( dvarInt("shout_class_demolitions") > 0 ) )
+        CHOICE_BUTTON_VIS( 25, "Cycle Sniper Players", scriptMenuResponse "sniper", when( dvarInt("shout_class_sniper") > 0 ) )
 
-		CHOICE_DBUTTON_VIS( 22, "Cycle Assault Players", when( dvarInt("shout_class_assault") == 0 ) )
-		CHOICE_DBUTTON_VIS( 23, "Cycle Spec Ops Players", when( dvarInt("shout_class_specops") == 0 ) )
-		CHOICE_DBUTTON_VIS( 24, "Cycle Demolitions Players", when( dvarInt("shout_class_demolitions") == 0 ) )
-		CHOICE_DBUTTON_VIS( 25, "Cycle Sniper Players", when( dvarInt("shout_class_sniper") == 0 ) )
-	}
+        CHOICE_DBUTTON_VIS( 22, "Cycle Assault Players", when( dvarInt("shout_class_assault") == 0 ) )
+        CHOICE_DBUTTON_VIS( 23, "Cycle Spec Ops Players", when( dvarInt("shout_class_specops") == 0 ) )
+        CHOICE_DBUTTON_VIS( 24, "Cycle Demolitions Players", when( dvarInt("shout_class_demolitions") == 0 ) )
+        CHOICE_DBUTTON_VIS( 25, "Cycle Sniper Players", when( dvarInt("shout_class_sniper") == 0 ) )
+    }
 }

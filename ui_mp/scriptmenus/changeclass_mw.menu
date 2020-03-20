@@ -11,32 +11,32 @@
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
 
-#define CAC_CLASS					200
-#define CAC_PRIMARY					201
-#define CAC_PRIMARY_ATTACHMENT		202
-#define CAC_SECONDARY				203
-#define CAC_SECONDARY_ATTACHMENT	204
-#define CAC_SPECIALTY_EQUIPMENT		205
-#define CAC_SPECIALTY_WEAPON		206
-#define CAC_SPECIALTY_ABILITY		207
-#define CAC_SPECIAL_GRENADE			208
-#define CAC_CAMO					209
+#define CAC_CLASS                   200
+#define CAC_PRIMARY                 201
+#define CAC_PRIMARY_ATTACHMENT      202
+#define CAC_SECONDARY               203
+#define CAC_SECONDARY_ATTACHMENT    204
+#define CAC_SPECIALTY_EQUIPMENT     205
+#define CAC_SPECIALTY_WEAPON        206
+#define CAC_SPECIALTY_ABILITY       207
+#define CAC_SPECIAL_GRENADE         208
+#define CAC_CAMO                    209
 
-#define CAC_S_CLASS					"200"
-#define CAC_S_PRIMARY				"201"
-#define CAC_S_PRIMARY_ATTACHMENT	"202"
-#define CAC_S_SECONDARY				"203"
-#define CAC_S_SECONDARY_ATTACHMENT	"204"
-#define CAC_S_SPECIALTY_EQUIPMENT	"205"
-#define CAC_S_SPECIALTY_WEAPON		"206"
-#define CAC_S_SPECIALTY_ABILITY		"207"
-#define CAC_S_SPECIAL_GRENADE		"208"
-#define CAC_S_CAMO					"209"
+#define CAC_S_CLASS                 "200"
+#define CAC_S_PRIMARY               "201"
+#define CAC_S_PRIMARY_ATTACHMENT    "202"
+#define CAC_S_SECONDARY             "203"
+#define CAC_S_SECONDARY_ATTACHMENT  "204"
+#define CAC_S_SPECIALTY_EQUIPMENT   "205"
+#define CAC_S_SPECIALTY_WEAPON      "206"
+#define CAC_S_SPECIALTY_ABILITY     "207"
+#define CAC_S_SPECIAL_GRENADE       "208"
+#define CAC_S_CAMO                  "209"
 
-#define CAC_MENU_NAME				"changeclass_mw"
-#define CAC_PREFIX					"mw_"
-#define CAC_CUSTOM_NAME				"customclass1"
+#define CAC_MENU_NAME               "changeclass_mw"
+#define CAC_PREFIX                  "mw_"
+#define CAC_CUSTOM_NAME             "customclass1"
 
 {
-	#include "ui_mp/cac_ingame.inc"
+    #include "ui_mp/cac_ingame.inc"
 }

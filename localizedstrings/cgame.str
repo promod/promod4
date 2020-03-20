@@ -6,11 +6,11 @@
 // Call of Duty 4 Promod is licensed under Promod Modder Ethical Public License.
 // Terms of license can be found in LICENSE.md document bundled with the project.
 
-VERSION				"1"
-CONFIG				"C:\trees\cod3\cod3\bin\StringEd.cfg"
-FILENOTES			""
+VERSION             "1"
+CONFIG              "C:\trees\cod3\cod3\bin\StringEd.cfg"
+FILENOTES           ""
 
-REFERENCE			SPECTATORS
-LANG_ENGLISH		"Shoutcaster"
+REFERENCE           SPECTATORS
+LANG_ENGLISH        "Shoutcaster"
 
 ENDMARKER

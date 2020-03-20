@@ -26,204 +26,204 @@
 #define ORIGIN_QUICKMESSAGEWINDOW 0 16
 
 {
-	menuDef
-	{
-		IMPROVED_POPUP_SETUP_ONOPEN( quickpromodgfx, 11.5, 4, 180, ;, setDvar cl_bypassMouseInput "1";, 0 )
-		onClose{ setDvar cl_bypassMouseInput "0" }
+    menuDef
+    {
+        IMPROVED_POPUP_SETUP_ONOPEN( quickpromodgfx, 11.5, 4, 180, ;, setDvar cl_bypassMouseInput "1";, 0 )
+        onClose{ setDvar cl_bypassMouseInput "0" }
 
-		CHOICE_POPMENU_TITLE( "Promod Graphics" )
+        CHOICE_POPMENU_TITLE( "Promod Graphics" )
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 20 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 0.7
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"Visibility:"
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 38 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			exp text		"1. Lighting: " + dvarString( sunlight )
-			visible			1
-			decoration
-		}
-		execKey "1" { scriptMenuResponse "1"; close quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 20 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 0.7
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "Visibility:"
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 38 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            exp text        "1. Lighting: " + dvarString( sunlight )
+            visible         1
+            decoration
+        }
+        execKey "1" { scriptMenuResponse "1"; close quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 54 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"2. Film Tweaks: Off"
-			visible			when ( !dvarInt( r_filmusetweaks ) )
-			decoration
-		}
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 54 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"2. Film Tweaks: On"
-			visible			when ( dvarInt( r_filmusetweaks ) )
-			decoration
-		}
-		execKey "2" { scriptMenuResponse "2"; close quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 54 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "2. Film Tweaks: Off"
+            visible         when ( !dvarInt( r_filmusetweaks ) )
+            decoration
+        }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 54 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "2. Film Tweaks: On"
+            visible         when ( dvarInt( r_filmusetweaks ) )
+            decoration
+        }
+        execKey "2" { scriptMenuResponse "2"; close quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 74 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 0.7
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"Textures:"
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 92 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"3. Texture Filtering: On"
-			visible			when ( !dvarInt( r_texfilterdisable ) )
-			decoration
-		}
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 92 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"3. Texture Filtering: Off"
-			visible			when ( dvarInt( r_texfilterdisable) )
-			decoration
-		}
-		execKey "3" { scriptMenuResponse "3"; close quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 74 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 0.7
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "Textures:"
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 92 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "3. Texture Filtering: On"
+            visible         when ( !dvarInt( r_texfilterdisable ) )
+            decoration
+        }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 92 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "3. Texture Filtering: Off"
+            visible         when ( dvarInt( r_texfilterdisable) )
+            decoration
+        }
+        execKey "3" { scriptMenuResponse "3"; close quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 108 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			exp text		"4. Normal Map: " + dvarString( r_normalmap )
-			visible			1
-			decoration
-		}
-		execKey "4" { scriptMenuResponse "4"; close quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 108 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            exp text        "4. Normal Map: " + dvarString( r_normalmap )
+            visible         1
+            decoration
+        }
+        execKey "4" { scriptMenuResponse "4"; close quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 128 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 0.7
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"Miscellaneous:"
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 146 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			exp text		( "5. FOV Scale: " + dvarString( cg_fovscale ) + " (" + int( dvarFloat( cg_fov ) * dvarFloat( cg_fovscale ) ) + ")" )
-			visible			1
-			decoration
-		}
-		execKey "5" { scriptMenuResponse "5"; close quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 128 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 0.7
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "Miscellaneous:"
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 146 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            exp text        ( "5. FOV Scale: " + dvarString( cg_fovscale ) + " (" + int( dvarFloat( cg_fov ) * dvarFloat( cg_fovscale ) ) + ")" )
+            visible         1
+            decoration
+        }
+        execKey "5" { scriptMenuResponse "5"; close quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 162 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			exp text		( "6. Screen Blur: " + dvarString( r_blur ) )
-			visible			1
-			decoration
-		}
-		execKey "6" { scriptMenuResponse "6"; close quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 162 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            exp text        ( "6. Screen Blur: " + dvarString( r_blur ) )
+            visible         1
+            decoration
+        }
+        execKey "6" { scriptMenuResponse "6"; close quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			group			ingamebox
-			rect			16 194 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"Esc. Exit"
-			visible			1
-			decoration
-		}
-	}
+        itemDef
+        {
+            name            "window"
+            group           ingamebox
+            rect            16 194 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "Esc. Exit"
+            visible         1
+            decoration
+        }
+    }
 }

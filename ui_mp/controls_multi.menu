@@ -10,64 +10,64 @@
 
 #include "ui/menudef.h"
 #include "ui_mp/common_macro.inc"
-#define CHOICE_SEP_1			26
-#define CHOICE_SEP_2			33
-#define	OPTIONS_STYLE 1
+#define CHOICE_SEP_1            26
+#define CHOICE_SEP_2            33
+#define OPTIONS_STYLE 1
 #include "ui_mp/menustyle.inc"
 #include "ui/choices_setup_common.menu"
 
 {
-	menuDef
-	{
-		name			"controls_multi"
-		fullScreen		0
-		rect			0 0 640 480
-		focusColor		COLOR_FOCUSED
-		onOpen
-		{
-			setLocalVarBool ui_hideBack 1;
-		}
-		onClose
-		{
-			setLocalVarBool ui_hideBack 0;
-		}
-		onESC
-		{
-			close self;
-		}
+    menuDef
+    {
+        name            "controls_multi"
+        fullScreen      0
+        rect            0 0 640 480
+        focusColor      COLOR_FOCUSED
+        onOpen
+        {
+            setLocalVarBool ui_hideBack 1;
+        }
+        onClose
+        {
+            setLocalVarBool ui_hideBack 0;
+        }
+        onESC
+        {
+            close self;
+        }
 
-		#include "ui_mp/leftside_controls.inc"
+        #include "ui_mp/leftside_controls.inc"
 
-		#undef CHOICE_SIZE_Y
-		#define CHOICE_SIZE_Y 20
+        #undef CHOICE_SIZE_Y
+        #define CHOICE_SIZE_Y 20
 
-		CHOICE_SECTION_TITLE( 21, "@MENU_MULTIPLAYER_CONTROLS" )
+        CHOICE_SECTION_TITLE( 21, "@MENU_MULTIPLAYER_CONTROLS" )
 
-		CHOICE_BIND( 22, "@MENU_VOTE_YES", "vote yes", ; )
-		CHOICE_BIND( 23, "@MENU_VOTE_NO", "vote no", ; )
-		CHOICE_BIND( 24, "@MENU_CHAT", "chatmodepublic", ; )
-		CHOICE_BIND( 25, "@MENU_TEAM_CHAT", "chatmodeteam", ; )
-		CHOICE_BIND( 26, "@MENU_QUICK_CHAT", "mp_QuickMessage", ; )
+        CHOICE_BIND( 22, "@MENU_VOTE_YES", "vote yes", ; )
+        CHOICE_BIND( 23, "@MENU_VOTE_NO", "vote no", ; )
+        CHOICE_BIND( 24, "@MENU_CHAT", "chatmodepublic", ; )
+        CHOICE_BIND( 25, "@MENU_TEAM_CHAT", "chatmodeteam", ; )
+        CHOICE_BIND( 26, "@MENU_QUICK_CHAT", "mp_QuickMessage", ; )
 
-		CHOICE_SEPARATOR( CHOICE_SEP_1 )
+        CHOICE_SEPARATOR( CHOICE_SEP_1 )
 
-		CHOICE_BIND( 27, "Assault Class", "openscriptmenu quickpromod assault", ; )
-		CHOICE_BIND( 28, "Spec Ops Class", "openscriptmenu quickpromod specops", ; )
-		CHOICE_BIND( 29, "Demolitions Class", "openscriptmenu quickpromod demolitions", ; )
-		CHOICE_BIND( 30, "Sniper Class", "openscriptmenu quickpromod sniper", ; )
-		CHOICE_BIND( 31, "Change Class Menu", "openscriptmenu quickpromod X", ; )
-		CHOICE_BIND( 32, "Call Timeout", "openscriptmenu quickpromod 1", ; )
-		CHOICE_BIND( 33, "Drop Bomb", "openscriptmenu quickpromod 2", ; )
+        CHOICE_BIND( 27, "Assault Class", "openscriptmenu quickpromod assault", ; )
+        CHOICE_BIND( 28, "Spec Ops Class", "openscriptmenu quickpromod specops", ; )
+        CHOICE_BIND( 29, "Demolitions Class", "openscriptmenu quickpromod demolitions", ; )
+        CHOICE_BIND( 30, "Sniper Class", "openscriptmenu quickpromod sniper", ; )
+        CHOICE_BIND( 31, "Change Class Menu", "openscriptmenu quickpromod X", ; )
+        CHOICE_BIND( 32, "Call Timeout", "openscriptmenu quickpromod 1", ; )
+        CHOICE_BIND( 33, "Drop Bomb", "openscriptmenu quickpromod 2", ; )
 
-		CHOICE_SEPARATOR( CHOICE_SEP_2 )
+        CHOICE_SEPARATOR( CHOICE_SEP_2 )
 
-		CHOICE_BIND( 34, "Toggle Grenade", "openscriptmenu quickpromod grenade", ; )
-		CHOICE_BIND( 35, "Toggle Silencer", "openscriptmenu quickpromod silencer", ; )
-		CHOICE_BIND( 36, "Toggle Lighting", "openscriptmenu quickpromodgfx 1", ; )
-		CHOICE_BIND( 37, "Toggle Film Tweaks", "openscriptmenu quickpromodgfx 2", ; )
-		CHOICE_BIND( 38, "Toggle Normal Map", "openscriptmenu quickpromodgfx 4", ; )
-		CHOICE_BIND( 39, "Toggle FOV Scale", "openscriptmenu quickpromodgfx 5", ; )
+        CHOICE_BIND( 34, "Toggle Grenade", "openscriptmenu quickpromod grenade", ; )
+        CHOICE_BIND( 35, "Toggle Silencer", "openscriptmenu quickpromod silencer", ; )
+        CHOICE_BIND( 36, "Toggle Lighting", "openscriptmenu quickpromodgfx 1", ; )
+        CHOICE_BIND( 37, "Toggle Film Tweaks", "openscriptmenu quickpromodgfx 2", ; )
+        CHOICE_BIND( 38, "Toggle Normal Map", "openscriptmenu quickpromodgfx 4", ; )
+        CHOICE_BIND( 39, "Toggle FOV Scale", "openscriptmenu quickpromodgfx 5", ; )
 
-		CHOICE_KEYBINDHELP
-	}
+        CHOICE_KEYBINDHELP
+    }
 }
