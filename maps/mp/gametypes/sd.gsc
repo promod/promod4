@@ -237,7 +237,7 @@ bombs()
 	precacheModel( "prop_suitcase_bomb" );
 	visuals[0] setModel( "prop_suitcase_bomb" );
 
-	if ( !level.multiBomb && !game["promod_do_readyup"] && !game["promod_timeout_called"] && !game["PROMOD_KNIFEROUND"] && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "strat" )
+	if ( !level.multiBomb && !game["promod_do_readyup"] && !game["promod_timeout_called"] && game["knife_end"]!=2 && !game["PROMOD_KNIFEROUND"] && isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] != "strat" )
 	{
 		level.sdBomb = maps\mp\gametypes\_gameobjects::createCarryObject( game["attackers"], trigger, visuals, (0,0,32) );
 		level.sdBomb maps\mp\gametypes\_gameobjects::allowCarry( "friendly" );

@@ -14,7 +14,6 @@ giveLoadout( team, class )
 
 	self setClientDvar( "loadout_curclass", class );
 	self.curClass = class;
-
 	sidearmWeapon();
 	primaryWeapon();
 

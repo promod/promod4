@@ -15,6 +15,7 @@ main()
 	setDvar( "scr_sd_scorelimit", 0 ); // [0->] (points)
 	setDvar( "scr_sd_timelimit", 1.75 ); // [0->] (minutes)
 	setDvar( "scr_sd_waverespawndelay", 0 ); // [0->] (seconds)
+	setDvar( "scr_sd_tiebreaker", 1 ); // [0-1] (Disabled,Enabled)
 
 	// dom
 	setDvar( "scr_dom_numlives", 0 ); // [0->] (amount of lives)

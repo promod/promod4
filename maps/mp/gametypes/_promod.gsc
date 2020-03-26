@@ -574,7 +574,7 @@ menuAcceptClass( response )
 
 	if ( self.sessionstate == "playing" )
 	{
-		if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
+		if ( isDefined( game["PROMOD_MATCH_MODE"] ) && game["PROMOD_MATCH_MODE"] == "strat" && game["knife_end"] != 2 || isDefined( level.rdyup ) && level.rdyup || isDefined( level.strat_over ) && !level.strat_over )
 			self maps\mp\gametypes\_class::giveLoadout( self.pers["team"], self.pers["class"] );
 		else
 		{
