@@ -88,9 +88,19 @@ main()
 
 			if ( !player.ready || isDefined( player.inrecmenu ) && player.inrecmenu && !player promod\client::get_config( "PROMOD_RECORD" ) )
 			{
-				level.not_ready_count++;
-				all_players_ready = false;
-				player.update = false;
+				if(player.pers["team"] == "spectator" && level.players.size > 1)
+				{
+					player.update = true;
+					player.pers["record_reminder_done"] = true;
+					player openMenu( game["menu_demo"] );
+					player.inrecmenu = true;
+				}
+				else
+				{
+					level.not_ready_count++;
+					all_players_ready = false;
+					player.update = false;
+				}
 			}
 
 			player.newready = player.update;
