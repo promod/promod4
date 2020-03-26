@@ -14,7 +14,7 @@ giveLoadout( team, class )
 
 	self setClientDvar( "loadout_curclass", class );
 	self.curClass = class;
-	if(isDefined(game["knife_end"]) && game["knife_end"] == 2 )return;
+	
 	sidearmWeapon();
 	primaryWeapon();
 
