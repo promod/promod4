@@ -18,114 +18,114 @@
 #include "ui/choices_setup_popmenu.menu"
 
 #undef CHOICE_SIZE_X
-#define CHOICE_SIZE_X			186
+#define CHOICE_SIZE_X           186
 
 #undef CHOICE_POPUP_BACKCOLOR
 #define CHOICE_POPUP_BACKCOLOR 0.2 0.2 0.22 0.65
 
-#define ORIGIN_QUICKMESSAGEWINDOW		0 16
+#define ORIGIN_QUICKMESSAGEWINDOW       0 16
 
 {
-	menuDef
-	{
-		IMPROVED_POPUP_SETUP_ONOPEN( quickmessage, 7.6, 4, 258, ;, setDvar cl_bypassMouseInput "1";, 0 )
-		onClose{ setDvar cl_bypassMouseInput "0" }
+    menuDef
+    {
+        IMPROVED_POPUP_SETUP_ONOPEN( quickmessage, 7.6, 4, 258, ;, setDvar cl_bypassMouseInput "1";, 0 )
+        onClose{ setDvar cl_bypassMouseInput "0" }
 
-		CHOICE_POPMENU_TITLE( "@QUICKMESSAGE_QUICK_MESSAGE" )
+        CHOICE_POPMENU_TITLE( "@QUICKMESSAGE_QUICK_MESSAGE" )
 
-		itemDef
-		{
-			name			"window"
-			visible			1
-			rect			16 20 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"@QUICKMESSAGE_1_COMMANDS"
-			decoration
-		}
-		execKey "1" { close quickmessage; open quickcommands }
+        itemDef
+        {
+            name            "window"
+            visible         1
+            rect            16 20 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "@QUICKMESSAGE_1_COMMANDS"
+            decoration
+        }
+        execKey "1" { close quickmessage; open quickcommands }
 
-		itemDef
-		{
-			name			"window"
-			visible			1
-			rect			16 36 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"@QUICKMESSAGE_2_STATEMENTS"
-			decoration
-		}
-		execKey "2" { close quickmessage; open quickstatements }
+        itemDef
+        {
+            name            "window"
+            visible         1
+            rect            16 36 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "@QUICKMESSAGE_2_STATEMENTS"
+            decoration
+        }
+        execKey "2" { close quickmessage; open quickstatements }
 
-		itemDef
-		{
-			name			"window"
-			visible			1
-			rect			16 52 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"@QUICKMESSAGE_3_RESPONSES"
-			decoration
-		}
-		execKey "3" { close quickmessage; open quickresponses }
+        itemDef
+        {
+            name            "window"
+            visible         1
+            rect            16 52 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "@QUICKMESSAGE_3_RESPONSES"
+            decoration
+        }
+        execKey "3" { close quickmessage; open quickresponses }
 
-		itemDef
-		{
-			name			"window"
-			visible			1
-			rect			16 68 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"4. Promod Controls"
-			decoration
-		}
-		execKey "4" { close quickmessage; open quickpromod }
+        itemDef
+        {
+            name            "window"
+            visible         1
+            rect            16 68 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "4. Promod Controls"
+            decoration
+        }
+        execKey "4" { close quickmessage; open quickpromod }
 
-		itemDef
-		{
-			name			"window"
-			visible			1
-			rect			16 84 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"5. Promod Graphics"
-			decoration
-		}
-		execKey "5" { close quickmessage; open quickpromodgfx }
+        itemDef
+        {
+            name            "window"
+            visible         1
+            rect            16 84 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "5. Promod Graphics"
+            decoration
+        }
+        execKey "5" { close quickmessage; open quickpromodgfx }
 
-		itemDef
-		{
-			name			"window"
-			visible			1
-			rect			16 116 0 0
-			origin			ORIGIN_QUICKMESSAGEWINDOW
-			forecolor		1 1 1 1
-			textfont		UI_FONT_NORMAL
-			textstyle		ITEM_TEXTSTYLE_SHADOWED
-			textscale		TEXTSIZE_SMALL
-			textaligny		8
-			text			"Esc. Exit"
-			decoration
-		}
-	}
+        itemDef
+        {
+            name            "window"
+            visible         1
+            rect            16 116 0 0
+            origin          ORIGIN_QUICKMESSAGEWINDOW
+            forecolor       1 1 1 1
+            textfont        UI_FONT_NORMAL
+            textstyle       ITEM_TEXTSTYLE_SHADOWED
+            textscale       TEXTSIZE_SMALL
+            textaligny      8
+            text            "Esc. Exit"
+            decoration
+        }
+    }
 }

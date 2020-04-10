@@ -10,35 +10,35 @@
 
 #include "ui/menudef.h"
 {
-	menuDef
-	{
-		name			"connect"
-		style			WINDOW_STYLE_FILLED
-		fullScreen		MENU_FALSE
-		focusColor		COLOR_FOCUSED
-		visible			MENU_FALSE
-		backcolor		1 1 1 1
-		background		"$levelBriefing"
-		rect			FULLSCREEN_WIDE
+    menuDef
+    {
+        name            "connect"
+        style           WINDOW_STYLE_FILLED
+        fullScreen      MENU_FALSE
+        focusColor      COLOR_FOCUSED
+        visible         MENU_FALSE
+        backcolor       1 1 1 1
+        background      "$levelBriefing"
+        rect            FULLSCREEN_WIDE
 
-		itemDef
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			-128 -40 260 4 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
-			origin			107 0
-			backcolor		0 0 0 0.8
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			name			"loadbar"
-			style			WINDOW_STYLE_LOADBAR
-			rect			-127 -39 258 2 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
-			origin			107 0
-			background		"white"
-			visible			1
-			decoration
-		}
-	}
+        itemDef
+        {
+            style           WINDOW_STYLE_FILLED
+            rect            -128 -40 260 4 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
+            origin          107 0
+            backcolor       0 0 0 0.8
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            name            "loadbar"
+            style           WINDOW_STYLE_LOADBAR
+            rect            -127 -39 258 2 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_BOTTOM
+            origin          107 0
+            background      "white"
+            visible         1
+            decoration
+        }
+    }
 }

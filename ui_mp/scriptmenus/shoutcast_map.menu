@@ -13,53 +13,53 @@
 #include "ui/choices_setup_common.menu"
 
 #define BACK_ENABLE 0
-#define UI_MAP_NAME	"@"+tablelookup("mp/mapsTable.csv",0,dvarString(mapname),3)
+#define UI_MAP_NAME "@"+tablelookup("mp/mapsTable.csv",0,dvarString(mapname),3)
 
 {
-	menuDef
-	{
-		name			"shoutcast_map"
-		rect			0 0 640 480
-		focuscolor		COLOR_FOCUSED
-		style			WINDOW_STYLE_EMPTY
-		blurWorld		7
-		onEsc
-		{
-			close self;
-		}
-		onClose
-		{
-			setDvar cl_bypassMouseInput "0";
-		}
+    menuDef
+    {
+        name            "shoutcast_map"
+        rect            0 0 640 480
+        focuscolor      COLOR_FOCUSED
+        style           WINDOW_STYLE_EMPTY
+        blurWorld       7
+        onEsc
+        {
+            close self;
+        }
+        onClose
+        {
+            setDvar cl_bypassMouseInput "0";
+        }
 
-		itemDef
-		{
-			style			WINDOW_STYLE_FILLED
-			rect			0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
-			backcolor		0 0 0 0.75
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
-			background		"gradient_top"
-			visible			1
-			decoration
-		}
-		itemDef
-		{
-			style			WINDOW_STYLE_SHADER
-			rect			0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
-			background		"gradient_bottom"
-			visible			1
-			decoration
-		}
+        itemDef
+        {
+            style           WINDOW_STYLE_FILLED
+            rect            0 0 640 480 HORIZONTAL_ALIGN_FULLSCREEN VERTICAL_ALIGN_FULLSCREEN
+            backcolor       0 0 0 0.75
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            style           WINDOW_STYLE_SHADER
+            rect            0 0 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+            background      "gradient_top"
+            visible         1
+            decoration
+        }
+        itemDef
+        {
+            style           WINDOW_STYLE_SHADER
+            rect            0 405 854 75 HORIZONTAL_ALIGN_FULLSCREEN 0
+            background      "gradient_bottom"
+            visible         1
+            decoration
+        }
 
-		CHOICE_MENU_TITLE (UI_MAP_NAME)
+        CHOICE_MENU_TITLE (UI_MAP_NAME)
 
-		#include "ui_mp/tactical_map_s.inc";
-		#include "ui_mp/navcontrols.inc";
-	}
+        #include "ui_mp/tactical_map_s.inc";
+        #include "ui_mp/navcontrols.inc";
+    }
 }
